@@ -1,0 +1,1809 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Data pareparation · Hivemall User Manual</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-etoc/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-callouts/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-toggle-chapters/toggle.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-codeblock-filename/block.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-expandable-chapters/expandable-chapters.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-multipart/multipart.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-emphasize/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-theme-api/theme-api.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="webspam_scw.html" />
+    
+    
+    <link rel="prev" href="webspam.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="http://hivemall.incubator.apache.org/" target="_blank" class="custom-link"><i class="fa fa-home"></i> Home</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        <li class="header">TABLE OF CONTENTS</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                        <b>1.1.</b>
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../getting_started/">
+            
+                <a href="../getting_started/">
+            
+                    
+                        <b>1.2.</b>
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../getting_started/installation.html">
+            
+                <a href="../getting_started/installation.html">
+            
+                    
+                        <b>1.2.1.</b>
+                    
+                    Installation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../getting_started/permanent-functions.html">
+            
+                <a href="../getting_started/permanent-functions.html">
+            
+                    
+                        <b>1.2.2.</b>
+                    
+                    Install as permanent functions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../getting_started/input-format.html">
+            
+                <a href="../getting_started/input-format.html">
+            
+                    
+                        <b>1.2.3.</b>
+                    
+                    Input Format
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../tips/">
+            
+                <a href="../tips/">
+            
+                    
+                        <b>1.3.</b>
+                    
+                    Tips for Effective Hivemall
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../tips/addbias.html">
+            
+                <a href="../tips/addbias.html">
+            
+                    
+                        <b>1.3.1.</b>
+                    
+                    Explicit addBias() for better prediction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../tips/rand_amplify.html">
+            
+                <a href="../tips/rand_amplify.html">
+            
+                    
+                        <b>1.3.2.</b>
+                    
+                    Use rand_amplify() to better prediction results
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../tips/rt_prediction.html">
+            
+                <a href="../tips/rt_prediction.html">
+            
+                    
+                        <b>1.3.3.</b>
+                    
+                    Real-time Prediction on RDBMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../tips/ensemble_learning.html">
+            
+                <a href="../tips/ensemble_learning.html">
+            
+                    
+                        <b>1.3.4.</b>
+                    
+                    Ensemble learning for stable prediction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../tips/mixserver.html">
+            
+                <a href="../tips/mixserver.html">
+            
+                    
+                        <b>1.3.5.</b>
+                    
+                    Mixing models for a better prediction convergence (MIX server)
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../tips/emr.html">
+            
+                <a href="../tips/emr.html">
+            
+                    
+                        <b>1.3.6.</b>
+                    
+                    Run Hivemall on Amazon Elastic MapReduce
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../tips/general_tips.html">
+            
+                <a href="../tips/general_tips.html">
+            
+                    
+                        <b>1.4.</b>
+                    
+                    General Hive/Hadoop tips
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../tips/rowid.html">
+            
+                <a href="../tips/rowid.html">
+            
+                    
+                        <b>1.4.1.</b>
+                    
+                    Adding rowid for each row
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../tips/hadoop_tuning.html">
+            
+                <a href="../tips/hadoop_tuning.html">
+            
+                    
+                        <b>1.4.2.</b>
+                    
+                    Hadoop tuning for Hivemall
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../troubleshooting/">
+            
+                <a href="../troubleshooting/">
+            
+                    
+                        <b>1.5.</b>
+                    
+                    Troubleshooting
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../troubleshooting/oom.html">
+            
+                <a href="../troubleshooting/oom.html">
+            
+                    
+                        <b>1.5.1.</b>
+                    
+                    OutOfMemoryError in training
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../troubleshooting/mapjoin_task_error.html">
+            
+                <a href="../troubleshooting/mapjoin_task_error.html">
+            
+                    
+                        <b>1.5.2.</b>
+                    
+                    SemanticException Generate Map Join Task Error: Cannot serialize object
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../troubleshooting/asterisk.html">
+            
+                <a href="../troubleshooting/asterisk.html">
+            
+                    
+                        <b>1.5.3.</b>
+                    
+                    Asterisk argument for UDTF does not work
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../troubleshooting/num_mappers.html">
+            
+                <a href="../troubleshooting/num_mappers.html">
+            
+                    
+                        <b>1.5.4.</b>
+                    
+                    The number of mappers is less than input splits in Hadoop 2.x
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../troubleshooting/mapjoin_classcastex.html">
+            
+                <a href="../troubleshooting/mapjoin_classcastex.html">
+            
+                    
+                        <b>1.5.5.</b>
+                    
+                    Map-side Join causes ClassCastException on Tez
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part II - Generic Features</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../misc/generic_funcs.html">
+            
+                <a href="../misc/generic_funcs.html">
+            
+                    
+                        <b>2.1.</b>
+                    
+                    List of generic Hivemall functions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" data-path="../misc/topk.html">
+            
+                <a href="../misc/topk.html">
+            
+                    
+                        <b>2.2.</b>
+                    
+                    Efficient Top-K query processing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3" data-path="../misc/tokenizer.html">
+            
+                <a href="../misc/tokenizer.html">
+            
+                    
+                        <b>2.3.</b>
+                    
+                    English/Japanese Text Tokenizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part III - Feature Engineering</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../ft_engineering/scaling.html">
+            
+                <a href="../ft_engineering/scaling.html">
+            
+                    
+                        <b>3.1.</b>
+                    
+                    Feature Scaling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../ft_engineering/hashing.html">
+            
+                <a href="../ft_engineering/hashing.html">
+            
+                    
+                        <b>3.2.</b>
+                    
+                    Feature Hashing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../ft_engineering/tfidf.html">
+            
+                <a href="../ft_engineering/tfidf.html">
+            
+                    
+                        <b>3.3.</b>
+                    
+                    TF-IDF calculation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4" data-path="../ft_engineering/ft_trans.html">
+            
+                <a href="../ft_engineering/ft_trans.html">
+            
+                    
+                        <b>3.4.</b>
+                    
+                    FEATURE TRANSFORMATION
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.4.1" data-path="../ft_engineering/vectorizer.html">
+            
+                <a href="../ft_engineering/vectorizer.html">
+            
+                    
+                        <b>3.4.1.</b>
+                    
+                    Vectorize Features
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4.2" data-path="../ft_engineering/quantify.html">
+            
+                <a href="../ft_engineering/quantify.html">
+            
+                    
+                        <b>3.4.2.</b>
+                    
+                    Quantify non-number features
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part IV - Evaluation</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" data-path="../eval/stat_eval.html">
+            
+                <a href="../eval/stat_eval.html">
+            
+                    
+                        <b>4.1.</b>
+                    
+                    Statistical evaluation of a prediction model
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" data-path="../eval/datagen.html">
+            
+                <a href="../eval/datagen.html">
+            
+                    
+                        <b>4.2.</b>
+                    
+                    Data Generation
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.2.1" data-path="../eval/lr_datagen.html">
+            
+                <a href="../eval/lr_datagen.html">
+            
+                    
+                        <b>4.2.1.</b>
+                    
+                    Logistic Regression data generation
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part V - Binary classification</li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" data-path="a9a.html">
+            
+                <a href="a9a.html">
+            
+                    
+                        <b>5.1.</b>
+                    
+                    a9a Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="a9a_dataset.html">
+            
+                <a href="a9a_dataset.html">
+            
+                    
+                        <b>5.1.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.2" data-path="a9a_lr.html">
+            
+                <a href="a9a_lr.html">
+            
+                    
+                        <b>5.1.2.</b>
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.3" data-path="a9a_minibatch.html">
+            
+                <a href="a9a_minibatch.html">
+            
+                    
+                        <b>5.1.3.</b>
+                    
+                    Mini-batch Gradient Descent
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2" data-path="news20.html">
+            
+                <a href="news20.html">
+            
+                    
+                        <b>5.2.</b>
+                    
+                    News20 Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.2.1" data-path="news20_dataset.html">
+            
+                <a href="news20_dataset.html">
+            
+                    
+                        <b>5.2.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.2" data-path="news20_pa.html">
+            
+                <a href="news20_pa.html">
+            
+                    
+                        <b>5.2.2.</b>
+                    
+                    Perceptron, Passive Aggressive
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.3" data-path="news20_scw.html">
+            
+                <a href="news20_scw.html">
+            
+                    
+                        <b>5.2.3.</b>
+                    
+                    CW, AROW, SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.4" data-path="news20_adagrad.html">
+            
+                <a href="news20_adagrad.html">
+            
+                    
+                        <b>5.2.4.</b>
+                    
+                    AdaGradRDA, AdaGrad, AdaDelta
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3" data-path="kdd2010a.html">
+            
+                <a href="kdd2010a.html">
+            
+                    
+                        <b>5.3.</b>
+                    
+                    KDD2010a Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.3.1" data-path="kdd2010a_dataset.html">
+            
+                <a href="kdd2010a_dataset.html">
+            
+                    
+                        <b>5.3.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.2" data-path="kdd2010a_scw.html">
+            
+                <a href="kdd2010a_scw.html">
+            
+                    
+                        <b>5.3.2.</b>
+                    
+                    PA, CW, AROW, SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.4" data-path="kdd2010b.html">
+            
+                <a href="kdd2010b.html">
+            
+                    
+                        <b>5.4.</b>
+                    
+                    KDD2010b Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.4.1" data-path="kdd2010b_dataset.html">
+            
+                <a href="kdd2010b_dataset.html">
+            
+                    
+                        <b>5.4.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.4.2" data-path="kdd2010b_arow.html">
+            
+                <a href="kdd2010b_arow.html">
+            
+                    
+                        <b>5.4.2.</b>
+                    
+                    AROW
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.5" data-path="webspam.html">
+            
+                <a href="webspam.html">
+            
+                    
+                        <b>5.5.</b>
+                    
+                    Webspam Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="5.5.1" data-path="webspam_dataset.html">
+            
+                <a href="webspam_dataset.html">
+            
+                    
+                        <b>5.5.1.</b>
+                    
+                    Data pareparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.5.2" data-path="webspam_scw.html">
+            
+                <a href="webspam_scw.html">
+            
+                    
+                        <b>5.5.2.</b>
+                    
+                    PA1, AROW, SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part VI - Multiclass classification</li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" data-path="../multiclass/news20.html">
+            
+                <a href="../multiclass/news20.html">
+            
+                    
+                        <b>6.1.</b>
+                    
+                    News20 Multiclass Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.1.1" data-path="../multiclass/news20_dataset.html">
+            
+                <a href="../multiclass/news20_dataset.html">
+            
+                    
+                        <b>6.1.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../multiclass/news20_one-vs-the-rest_dataset.html">
+            
+                <a href="../multiclass/news20_one-vs-the-rest_dataset.html">
+            
+                    
+                        <b>6.1.2.</b>
+                    
+                    Data preparation for one-vs-the-rest classifiers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.3" data-path="../multiclass/news20_pa.html">
+            
+                <a href="../multiclass/news20_pa.html">
+            
+                    
+                        <b>6.1.3.</b>
+                    
+                    PA
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.4" data-path="../multiclass/news20_scw.html">
+            
+                <a href="../multiclass/news20_scw.html">
+            
+                    
+                        <b>6.1.4.</b>
+                    
+                    CW, AROW, SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.5" data-path="../multiclass/news20_ensemble.html">
+            
+                <a href="../multiclass/news20_ensemble.html">
+            
+                    
+                        <b>6.1.5.</b>
+                    
+                    Ensemble learning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.6" data-path="../multiclass/news20_one-vs-the-rest.html">
+            
+                <a href="../multiclass/news20_one-vs-the-rest.html">
+            
+                    
+                        <b>6.1.6.</b>
+                    
+                    one-vs-the-rest classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2" data-path="../multiclass/iris.html">
+            
+                <a href="../multiclass/iris.html">
+            
+                    
+                        <b>6.2.</b>
+                    
+                    Iris Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.2.1" data-path="../multiclass/iris_dataset.html">
+            
+                <a href="../multiclass/iris_dataset.html">
+            
+                    
+                        <b>6.2.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.2" data-path="../multiclass/iris_scw.html">
+            
+                <a href="../multiclass/iris_scw.html">
+            
+                    
+                        <b>6.2.2.</b>
+                    
+                    SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.3" data-path="../multiclass/iris_randomforest.html">
+            
+                <a href="../multiclass/iris_randomforest.html">
+            
+                    
+                        <b>6.2.3.</b>
+                    
+                    RandomForest
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part VII - Regression</li>
+        
+        
+    
+        <li class="chapter " data-level="7.1" data-path="../regression/e2006.html">
+            
+                <a href="../regression/e2006.html">
+            
+                    
+                        <b>7.1.</b>
+                    
+                    E2006-tfidf regression Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.1.1" data-path="../regression/e2006_dataset.html">
+            
+                <a href="../regression/e2006_dataset.html">
+            
+                    
+                        <b>7.1.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.1.2" data-path="../regression/e2006_arow.html">
+            
+                <a href="../regression/e2006_arow.html">
+            
+                    
+                        <b>7.1.2.</b>
+                    
+                    Passive Aggressive, AROW
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2" data-path="../regression/kddcup12tr2.html">
+            
+                <a href="../regression/kddcup12tr2.html">
+            
+                    
+                        <b>7.2.</b>
+                    
+                    KDDCup 2012 track 2 CTR prediction Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.2.1" data-path="../regression/kddcup12tr2_dataset.html">
+            
+                <a href="../regression/kddcup12tr2_dataset.html">
+            
+                    
+                        <b>7.2.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.2" data-path="../regression/kddcup12tr2_lr.html">
+            
+                <a href="../regression/kddcup12tr2_lr.html">
+            
+                    
+                        <b>7.2.2.</b>
+                    
+                    Logistic Regression, Passive Aggressive
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.3" data-path="../regression/kddcup12tr2_lr_amplify.html">
+            
+                <a href="../regression/kddcup12tr2_lr_amplify.html">
+            
+                    
+                        <b>7.2.3.</b>
+                    
+                    Logistic Regression with Amplifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.4" data-path="../regression/kddcup12tr2_adagrad.html">
+            
+                <a href="../regression/kddcup12tr2_adagrad.html">
+            
+                    
+                        <b>7.2.4.</b>
+                    
+                    AdaGrad, AdaDelta
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part VIII - Recommendation</li>
+        
+        
+    
+        <li class="chapter " data-level="8.1" data-path="../recommend/cf.html">
+            
+                <a href="../recommend/cf.html">
+            
+                    
+                        <b>8.1.</b>
+                    
+                    Collaborative Filtering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="8.1.1" data-path="../recommend/item_based_cf.html">
+            
+                <a href="../recommend/item_based_cf.html">
+            
+                    
+                        <b>8.1.1.</b>
+                    
+                    Item-based Collaborative Filtering
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2" data-path="../recommend/news20.html">
+            
+                <a href="../recommend/news20.html">
+            
+                    
+                        <b>8.2.</b>
+                    
+                    News20 related article recommendation Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="8.2.1" data-path="../multiclass/news20_dataset.html">
+            
+                <a href="../multiclass/news20_dataset.html">
+            
+                    
+                        <b>8.2.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.2" data-path="../recommend/news20_jaccard.html">
+            
+                <a href="../recommend/news20_jaccard.html">
+            
+                    
+                        <b>8.2.2.</b>
+                    
+                    LSH/Minhash and Jaccard Similarity
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.3" data-path="../recommend/news20_knn.html">
+            
+                <a href="../recommend/news20_knn.html">
+            
+                    
+                        <b>8.2.3.</b>
+                    
+                    LSH/Minhash and Brute-Force Search
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.4" data-path="../recommend/news20_bbit_minhash.html">
+            
+                <a href="../recommend/news20_bbit_minhash.html">
+            
+                    
+                        <b>8.2.4.</b>
+                    
+                    kNN search using b-Bits Minhash
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3" data-path="../recommend/movielens.html">
+            
+                <a href="../recommend/movielens.html">
+            
+                    
+                        <b>8.3.</b>
+                    
+                    MovieLens movie recommendation Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="8.3.1" data-path="../recommend/movielens_dataset.html">
+            
+                <a href="../recommend/movielens_dataset.html">
+            
+                    
+                        <b>8.3.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3.2" data-path="../recommend/movielens_mf.html">
+            
+                <a href="../recommend/movielens_mf.html">
+            
+                    
+                        <b>8.3.2.</b>
+                    
+                    Matrix Factorization
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3.3" data-path="../recommend/movielens_fm.html">
+            
+                <a href="../recommend/movielens_fm.html">
+            
+                    
+                        <b>8.3.3.</b>
+                    
+                    Factorization Machine
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3.4" data-path="../recommend/movielens_cv.html">
+            
+                <a href="../recommend/movielens_cv.html">
+            
+                    
+                        <b>8.3.4.</b>
+                    
+                    10-fold Cross Validation (Matrix Factorization)
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part IX - Anomaly Detection</li>
+        
+        
+    
+        <li class="chapter " data-level="9.1" data-path="../anomaly/lof.html">
+            
+                <a href="../anomaly/lof.html">
+            
+                    
+                        <b>9.1.</b>
+                    
+                    Outlier Detection using Local Outlier Factor (LOF)
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part X - External References</li>
+        
+        
+    
+        <li class="chapter " data-level="10.1" >
+            
+                <a target="_blank" href="https://github.com/maropu/hivemall-spark">
+            
+                    
+                        <b>10.1.</b>
+                    
+                    Hivemall on Apache Spark
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.2" >
+            
+                <a target="_blank" href="https://github.com/daijyc/hivemall/wiki/PigHome">
+            
+                    
+                        <b>10.2.</b>
+                    
+                    Hivemall on Apache Pig
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Data pareparation</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <p>Get the dataset from 
+<a href="http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#webspam" target="_blank">http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#webspam</a></p>
+<h1 id="putting-data-on-hdfs">Putting data on HDFS</h1>
+<pre><code class="lang-sql">hadoop fs -mkdir -p /dataset/webspam/raw
+
+awk -f conv.awk webspam_wc_normalized_trigram.svm | \
+hadoop fs -put - /dataset/webspam/raw/
+</code></pre>
+<h1 id="table-preparation">Table preparation</h1>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">database</span> webspam;
+<span class="hljs-keyword">use</span> webspam;
+
+<span class="hljs-keyword">delete</span> jar ./tmp/hivemall.jar;
+add jar ./tmp/hivemall.jar;
+source ./tmp/define-all.hive;
+
+<span class="hljs-keyword">create</span> <span class="hljs-keyword">external</span> <span class="hljs-keyword">table</span> webspam_raw (
+  <span class="hljs-keyword">rowid</span> <span class="hljs-built_in">int</span>,
+  label <span class="hljs-built_in">int</span>,
+  features <span class="hljs-built_in">ARRAY</span>&lt;<span class="hljs-keyword">STRING</span>&gt;
+) <span class="hljs-keyword">ROW</span> <span class="hljs-keyword">FORMAT</span> 
+<span class="hljs-keyword">DELIMITED</span> <span class="hljs-keyword">FIELDS</span> <span class="hljs-keyword">TERMINATED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">&apos;\t&apos;</span> 
+COLLECTION ITEMS <span class="hljs-keyword">TERMINATED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">&quot;,&quot;</span> 
+<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> TEXTFILE LOCATION <span class="hljs-string">&apos;/dataset/webspam/raw&apos;</span>;
+
+<span class="hljs-keyword">set</span> hive.<span class="hljs-keyword">sample</span>.seednumber=<span class="hljs-number">43</span>;
+<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> webspam_test
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> webspam_raw TABLESAMPLE(<span class="hljs-number">1000</span> <span class="hljs-keyword">ROWS</span>) s
+CLUSTER <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</span>(<span class="hljs-number">43</span>)
+<span class="hljs-keyword">limit</span> <span class="hljs-number">70000</span>;
+</code></pre>
+<h1 id="make-auxiliary-tables">Make auxiliary tables</h1>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> webspam_train_orcfile (
+ <span class="hljs-keyword">rowid</span> <span class="hljs-built_in">int</span>,
+ label <span class="hljs-built_in">int</span>,
+ features <span class="hljs-built_in">array</span>&lt;<span class="hljs-keyword">string</span>&gt;
+) <span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> orc tblproperties (<span class="hljs-string">&quot;orc.compress&quot;</span>=<span class="hljs-string">&quot;SNAPPY&quot;</span>);
+
+<span class="hljs-comment">-- SET mapred.reduce.tasks=128;</span>
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> webspam_train_orcfile
+<span class="hljs-keyword">select</span>
+  s.<span class="hljs-keyword">rowid</span>, 
+  label,
+  addBias(features) <span class="hljs-keyword">as</span> features
+<span class="hljs-keyword">from</span> webspam_raw s
+<span class="hljs-keyword">where</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">exists</span> (<span class="hljs-keyword">select</span> <span class="hljs-keyword">rowid</span> <span class="hljs-keyword">from</span> webspam_test t <span class="hljs-keyword">where</span> s.<span class="hljs-keyword">rowid</span> = t.<span class="hljs-keyword">rowid</span>)
+CLUSTER <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</span>(<span class="hljs-number">43</span>);
+<span class="hljs-comment">-- SET mapred.reduce.tasks=-1;</span>
+
+<span class="hljs-keyword">set</span> hivevar:xtimes=<span class="hljs-number">3</span>;
+<span class="hljs-keyword">set</span> hivevar:shufflebuffersize=<span class="hljs-number">100</span>;
+<span class="hljs-keyword">set</span> hivemall.amplify.<span class="hljs-keyword">seed</span>=<span class="hljs-number">32</span>;
+<span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> webspam_train_x3
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span>
+   rand_amplify(${xtimes}, ${shufflebuffersize}, *) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rowid</span>, label, features)
+<span class="hljs-keyword">from</span>  
+   webspam_train_orcfile;
+
+<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> webspam_test_exploded <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span> 
+  <span class="hljs-keyword">rowid</span>,
+  label,
+  <span class="hljs-keyword">split</span>(feature,<span class="hljs-string">&quot;:&quot;</span>)[<span class="hljs-number">0</span>] <span class="hljs-keyword">as</span> feature,
+  <span class="hljs-keyword">cast</span>(<span class="hljs-keyword">split</span>(feature,<span class="hljs-string">&quot;:&quot;</span>)[<span class="hljs-number">1</span>] <span class="hljs-keyword">as</span> <span class="hljs-built_in">float</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+<span class="hljs-keyword">from</span> 
+  webspam_test LATERAL <span class="hljs-keyword">VIEW</span> explode(addBias(features)) t <span class="hljs-keyword">AS</span> feature;
+</code></pre>
+<p><em>Caution:</em> For this dataset, use small <em>shufflebuffersize</em> because each training example has lots of features though (xtimes <em> shufflebuffersize </em> N) training examples are cached in memory.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Data pareparation","level":"5.5.1","depth":2,"next":{"title":"PA1, AROW, SCW","level":"5.5.2","depth":2,"path":"binaryclass/webspam_scw.md","ref":"binaryclass/webspam_scw.md","articles":[]},"previous":{"title":"Webspam Tutorial","level":"5.5","depth":1,"path":"binaryclass/webspam.md","ref":"binaryclass/webspam.md","articles":[{"title":"Data pareparation","level":"5.5.1","depth":2,"path":"binaryclass/webspam_dataset.md","ref":"binaryclass/webspam_dataset.md","articles":[]},{"title":"PA1, AROW, SCW","level":"5.5.2","depth":2,"path":"binaryclass/webspam_scw.md","ref":"binaryclass/webspam_scw.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"binaryclass/webspam_dataset.md","mtime":"2016-10-22T17:51:41.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-10-22T19:10:36.585Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-edit-link/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-etoc/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-toggle-chapters/toggle.js"></script>
+        
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-anchorjs/anchor-style.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-expandable-chapters/expandable-chapters.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-theme-api/theme-api.js"></script>
+        
+    
+
+    </body>
+</html>
+

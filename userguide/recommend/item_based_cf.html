@@ -1,0 +1,2348 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Item-based Collaborative Filtering · Hivemall User Manual</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-etoc/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-callouts/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-toggle-chapters/toggle.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-codeblock-filename/block.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-expandable-chapters/expandable-chapters.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-multipart/multipart.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-katex/katex.min.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-emphasize/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-theme-api/theme-api.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="news20.html" />
+    
+    
+    <link rel="prev" href="cf.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="http://hivemall.incubator.apache.org/" target="_blank" class="custom-link"><i class="fa fa-home"></i> Home</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        <li class="header">TABLE OF CONTENTS</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                        <b>1.1.</b>
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../getting_started/">
+            
+                <a href="../getting_started/">
+            
+                    
+                        <b>1.2.</b>
+                    
+                    Getting Started
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../getting_started/installation.html">
+            
+                <a href="../getting_started/installation.html">
+            
+                    
+                        <b>1.2.1.</b>
+                    
+                    Installation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../getting_started/permanent-functions.html">
+            
+                <a href="../getting_started/permanent-functions.html">
+            
+                    
+                        <b>1.2.2.</b>
+                    
+                    Install as permanent functions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../getting_started/input-format.html">
+            
+                <a href="../getting_started/input-format.html">
+            
+                    
+                        <b>1.2.3.</b>
+                    
+                    Input Format
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../tips/">
+            
+                <a href="../tips/">
+            
+                    
+                        <b>1.3.</b>
+                    
+                    Tips for Effective Hivemall
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../tips/addbias.html">
+            
+                <a href="../tips/addbias.html">
+            
+                    
+                        <b>1.3.1.</b>
+                    
+                    Explicit addBias() for better prediction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../tips/rand_amplify.html">
+            
+                <a href="../tips/rand_amplify.html">
+            
+                    
+                        <b>1.3.2.</b>
+                    
+                    Use rand_amplify() to better prediction results
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../tips/rt_prediction.html">
+            
+                <a href="../tips/rt_prediction.html">
+            
+                    
+                        <b>1.3.3.</b>
+                    
+                    Real-time Prediction on RDBMS
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../tips/ensemble_learning.html">
+            
+                <a href="../tips/ensemble_learning.html">
+            
+                    
+                        <b>1.3.4.</b>
+                    
+                    Ensemble learning for stable prediction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../tips/mixserver.html">
+            
+                <a href="../tips/mixserver.html">
+            
+                    
+                        <b>1.3.5.</b>
+                    
+                    Mixing models for a better prediction convergence (MIX server)
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../tips/emr.html">
+            
+                <a href="../tips/emr.html">
+            
+                    
+                        <b>1.3.6.</b>
+                    
+                    Run Hivemall on Amazon Elastic MapReduce
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../tips/general_tips.html">
+            
+                <a href="../tips/general_tips.html">
+            
+                    
+                        <b>1.4.</b>
+                    
+                    General Hive/Hadoop tips
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../tips/rowid.html">
+            
+                <a href="../tips/rowid.html">
+            
+                    
+                        <b>1.4.1.</b>
+                    
+                    Adding rowid for each row
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../tips/hadoop_tuning.html">
+            
+                <a href="../tips/hadoop_tuning.html">
+            
+                    
+                        <b>1.4.2.</b>
+                    
+                    Hadoop tuning for Hivemall
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../troubleshooting/">
+            
+                <a href="../troubleshooting/">
+            
+                    
+                        <b>1.5.</b>
+                    
+                    Troubleshooting
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../troubleshooting/oom.html">
+            
+                <a href="../troubleshooting/oom.html">
+            
+                    
+                        <b>1.5.1.</b>
+                    
+                    OutOfMemoryError in training
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../troubleshooting/mapjoin_task_error.html">
+            
+                <a href="../troubleshooting/mapjoin_task_error.html">
+            
+                    
+                        <b>1.5.2.</b>
+                    
+                    SemanticException Generate Map Join Task Error: Cannot serialize object
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../troubleshooting/asterisk.html">
+            
+                <a href="../troubleshooting/asterisk.html">
+            
+                    
+                        <b>1.5.3.</b>
+                    
+                    Asterisk argument for UDTF does not work
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../troubleshooting/num_mappers.html">
+            
+                <a href="../troubleshooting/num_mappers.html">
+            
+                    
+                        <b>1.5.4.</b>
+                    
+                    The number of mappers is less than input splits in Hadoop 2.x
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../troubleshooting/mapjoin_classcastex.html">
+            
+                <a href="../troubleshooting/mapjoin_classcastex.html">
+            
+                    
+                        <b>1.5.5.</b>
+                    
+                    Map-side Join causes ClassCastException on Tez
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part II - Generic Features</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../misc/generic_funcs.html">
+            
+                <a href="../misc/generic_funcs.html">
+            
+                    
+                        <b>2.1.</b>
+                    
+                    List of generic Hivemall functions
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" data-path="../misc/topk.html">
+            
+                <a href="../misc/topk.html">
+            
+                    
+                        <b>2.2.</b>
+                    
+                    Efficient Top-K query processing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3" data-path="../misc/tokenizer.html">
+            
+                <a href="../misc/tokenizer.html">
+            
+                    
+                        <b>2.3.</b>
+                    
+                    English/Japanese Text Tokenizer
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part III - Feature Engineering</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../ft_engineering/scaling.html">
+            
+                <a href="../ft_engineering/scaling.html">
+            
+                    
+                        <b>3.1.</b>
+                    
+                    Feature Scaling
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../ft_engineering/hashing.html">
+            
+                <a href="../ft_engineering/hashing.html">
+            
+                    
+                        <b>3.2.</b>
+                    
+                    Feature Hashing
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../ft_engineering/tfidf.html">
+            
+                <a href="../ft_engineering/tfidf.html">
+            
+                    
+                        <b>3.3.</b>
+                    
+                    TF-IDF calculation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4" data-path="../ft_engineering/ft_trans.html">
+            
+                <a href="../ft_engineering/ft_trans.html">
+            
+                    
+                        <b>3.4.</b>
+                    
+                    FEATURE TRANSFORMATION
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.4.1" data-path="../ft_engineering/vectorizer.html">
+            
+                <a href="../ft_engineering/vectorizer.html">
+            
+                    
+                        <b>3.4.1.</b>
+                    
+                    Vectorize Features
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4.2" data-path="../ft_engineering/quantify.html">
+            
+                <a href="../ft_engineering/quantify.html">
+            
+                    
+                        <b>3.4.2.</b>
+                    
+                    Quantify non-number features
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part IV - Evaluation</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" data-path="../eval/stat_eval.html">
+            
+                <a href="../eval/stat_eval.html">
+            
+                    
+                        <b>4.1.</b>
+                    
+                    Statistical evaluation of a prediction model
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" data-path="../eval/datagen.html">
+            
+                <a href="../eval/datagen.html">
+            
+                    
+                        <b>4.2.</b>
+                    
+                    Data Generation
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.2.1" data-path="../eval/lr_datagen.html">
+            
+                <a href="../eval/lr_datagen.html">
+            
+                    
+                        <b>4.2.1.</b>
+                    
+                    Logistic Regression data generation
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part V - Binary classification</li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" data-path="../binaryclass/a9a.html">
+            
+                <a href="../binaryclass/a9a.html">
+            
+                    
+                        <b>5.1.</b>
+                    
+                    a9a Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="../binaryclass/a9a_dataset.html">
+            
+                <a href="../binaryclass/a9a_dataset.html">
+            
+                    
+                        <b>5.1.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.2" data-path="../binaryclass/a9a_lr.html">
+            
+                <a href="../binaryclass/a9a_lr.html">
+            
+                    
+                        <b>5.1.2.</b>
+                    
+                    Logistic Regression
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.3" data-path="../binaryclass/a9a_minibatch.html">
+            
+                <a href="../binaryclass/a9a_minibatch.html">
+            
+                    
+                        <b>5.1.3.</b>
+                    
+                    Mini-batch Gradient Descent
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2" data-path="../binaryclass/news20.html">
+            
+                <a href="../binaryclass/news20.html">
+            
+                    
+                        <b>5.2.</b>
+                    
+                    News20 Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.2.1" data-path="../binaryclass/news20_dataset.html">
+            
+                <a href="../binaryclass/news20_dataset.html">
+            
+                    
+                        <b>5.2.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.2" data-path="../binaryclass/news20_pa.html">
+            
+                <a href="../binaryclass/news20_pa.html">
+            
+                    
+                        <b>5.2.2.</b>
+                    
+                    Perceptron, Passive Aggressive
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.3" data-path="../binaryclass/news20_scw.html">
+            
+                <a href="../binaryclass/news20_scw.html">
+            
+                    
+                        <b>5.2.3.</b>
+                    
+                    CW, AROW, SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.2.4" data-path="../binaryclass/news20_adagrad.html">
+            
+                <a href="../binaryclass/news20_adagrad.html">
+            
+                    
+                        <b>5.2.4.</b>
+                    
+                    AdaGradRDA, AdaGrad, AdaDelta
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3" data-path="../binaryclass/kdd2010a.html">
+            
+                <a href="../binaryclass/kdd2010a.html">
+            
+                    
+                        <b>5.3.</b>
+                    
+                    KDD2010a Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.3.1" data-path="../binaryclass/kdd2010a_dataset.html">
+            
+                <a href="../binaryclass/kdd2010a_dataset.html">
+            
+                    
+                        <b>5.3.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.3.2" data-path="../binaryclass/kdd2010a_scw.html">
+            
+                <a href="../binaryclass/kdd2010a_scw.html">
+            
+                    
+                        <b>5.3.2.</b>
+                    
+                    PA, CW, AROW, SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.4" data-path="../binaryclass/kdd2010b.html">
+            
+                <a href="../binaryclass/kdd2010b.html">
+            
+                    
+                        <b>5.4.</b>
+                    
+                    KDD2010b Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.4.1" data-path="../binaryclass/kdd2010b_dataset.html">
+            
+                <a href="../binaryclass/kdd2010b_dataset.html">
+            
+                    
+                        <b>5.4.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.4.2" data-path="../binaryclass/kdd2010b_arow.html">
+            
+                <a href="../binaryclass/kdd2010b_arow.html">
+            
+                    
+                        <b>5.4.2.</b>
+                    
+                    AROW
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="5.5" data-path="../binaryclass/webspam.html">
+            
+                <a href="../binaryclass/webspam.html">
+            
+                    
+                        <b>5.5.</b>
+                    
+                    Webspam Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.5.1" data-path="../binaryclass/webspam_dataset.html">
+            
+                <a href="../binaryclass/webspam_dataset.html">
+            
+                    
+                        <b>5.5.1.</b>
+                    
+                    Data pareparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.5.2" data-path="../binaryclass/webspam_scw.html">
+            
+                <a href="../binaryclass/webspam_scw.html">
+            
+                    
+                        <b>5.5.2.</b>
+                    
+                    PA1, AROW, SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part VI - Multiclass classification</li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" data-path="../multiclass/news20.html">
+            
+                <a href="../multiclass/news20.html">
+            
+                    
+                        <b>6.1.</b>
+                    
+                    News20 Multiclass Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.1.1" data-path="../multiclass/news20_dataset.html">
+            
+                <a href="../multiclass/news20_dataset.html">
+            
+                    
+                        <b>6.1.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../multiclass/news20_one-vs-the-rest_dataset.html">
+            
+                <a href="../multiclass/news20_one-vs-the-rest_dataset.html">
+            
+                    
+                        <b>6.1.2.</b>
+                    
+                    Data preparation for one-vs-the-rest classifiers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.3" data-path="../multiclass/news20_pa.html">
+            
+                <a href="../multiclass/news20_pa.html">
+            
+                    
+                        <b>6.1.3.</b>
+                    
+                    PA
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.4" data-path="../multiclass/news20_scw.html">
+            
+                <a href="../multiclass/news20_scw.html">
+            
+                    
+                        <b>6.1.4.</b>
+                    
+                    CW, AROW, SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.5" data-path="../multiclass/news20_ensemble.html">
+            
+                <a href="../multiclass/news20_ensemble.html">
+            
+                    
+                        <b>6.1.5.</b>
+                    
+                    Ensemble learning
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.6" data-path="../multiclass/news20_one-vs-the-rest.html">
+            
+                <a href="../multiclass/news20_one-vs-the-rest.html">
+            
+                    
+                        <b>6.1.6.</b>
+                    
+                    one-vs-the-rest classifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2" data-path="../multiclass/iris.html">
+            
+                <a href="../multiclass/iris.html">
+            
+                    
+                        <b>6.2.</b>
+                    
+                    Iris Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.2.1" data-path="../multiclass/iris_dataset.html">
+            
+                <a href="../multiclass/iris_dataset.html">
+            
+                    
+                        <b>6.2.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.2" data-path="../multiclass/iris_scw.html">
+            
+                <a href="../multiclass/iris_scw.html">
+            
+                    
+                        <b>6.2.2.</b>
+                    
+                    SCW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2.3" data-path="../multiclass/iris_randomforest.html">
+            
+                <a href="../multiclass/iris_randomforest.html">
+            
+                    
+                        <b>6.2.3.</b>
+                    
+                    RandomForest
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part VII - Regression</li>
+        
+        
+    
+        <li class="chapter " data-level="7.1" data-path="../regression/e2006.html">
+            
+                <a href="../regression/e2006.html">
+            
+                    
+                        <b>7.1.</b>
+                    
+                    E2006-tfidf regression Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.1.1" data-path="../regression/e2006_dataset.html">
+            
+                <a href="../regression/e2006_dataset.html">
+            
+                    
+                        <b>7.1.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.1.2" data-path="../regression/e2006_arow.html">
+            
+                <a href="../regression/e2006_arow.html">
+            
+                    
+                        <b>7.1.2.</b>
+                    
+                    Passive Aggressive, AROW
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2" data-path="../regression/kddcup12tr2.html">
+            
+                <a href="../regression/kddcup12tr2.html">
+            
+                    
+                        <b>7.2.</b>
+                    
+                    KDDCup 2012 track 2 CTR prediction Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.2.1" data-path="../regression/kddcup12tr2_dataset.html">
+            
+                <a href="../regression/kddcup12tr2_dataset.html">
+            
+                    
+                        <b>7.2.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.2" data-path="../regression/kddcup12tr2_lr.html">
+            
+                <a href="../regression/kddcup12tr2_lr.html">
+            
+                    
+                        <b>7.2.2.</b>
+                    
+                    Logistic Regression, Passive Aggressive
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.3" data-path="../regression/kddcup12tr2_lr_amplify.html">
+            
+                <a href="../regression/kddcup12tr2_lr_amplify.html">
+            
+                    
+                        <b>7.2.3.</b>
+                    
+                    Logistic Regression with Amplifier
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.4" data-path="../regression/kddcup12tr2_adagrad.html">
+            
+                <a href="../regression/kddcup12tr2_adagrad.html">
+            
+                    
+                        <b>7.2.4.</b>
+                    
+                    AdaGrad, AdaDelta
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part VIII - Recommendation</li>
+        
+        
+    
+        <li class="chapter " data-level="8.1" data-path="cf.html">
+            
+                <a href="cf.html">
+            
+                    
+                        <b>8.1.</b>
+                    
+                    Collaborative Filtering
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="8.1.1" data-path="item_based_cf.html">
+            
+                <a href="item_based_cf.html">
+            
+                    
+                        <b>8.1.1.</b>
+                    
+                    Item-based Collaborative Filtering
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2" data-path="news20.html">
+            
+                <a href="news20.html">
+            
+                    
+                        <b>8.2.</b>
+                    
+                    News20 related article recommendation Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="8.2.1" data-path="../multiclass/news20_dataset.html">
+            
+                <a href="../multiclass/news20_dataset.html">
+            
+                    
+                        <b>8.2.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.2" data-path="news20_jaccard.html">
+            
+                <a href="news20_jaccard.html">
+            
+                    
+                        <b>8.2.2.</b>
+                    
+                    LSH/Minhash and Jaccard Similarity
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.3" data-path="news20_knn.html">
+            
+                <a href="news20_knn.html">
+            
+                    
+                        <b>8.2.3.</b>
+                    
+                    LSH/Minhash and Brute-Force Search
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.4" data-path="news20_bbit_minhash.html">
+            
+                <a href="news20_bbit_minhash.html">
+            
+                    
+                        <b>8.2.4.</b>
+                    
+                    kNN search using b-Bits Minhash
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3" data-path="movielens.html">
+            
+                <a href="movielens.html">
+            
+                    
+                        <b>8.3.</b>
+                    
+                    MovieLens movie recommendation Tutorial
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="8.3.1" data-path="movielens_dataset.html">
+            
+                <a href="movielens_dataset.html">
+            
+                    
+                        <b>8.3.1.</b>
+                    
+                    Data preparation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3.2" data-path="movielens_mf.html">
+            
+                <a href="movielens_mf.html">
+            
+                    
+                        <b>8.3.2.</b>
+                    
+                    Matrix Factorization
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3.3" data-path="movielens_fm.html">
+            
+                <a href="movielens_fm.html">
+            
+                    
+                        <b>8.3.3.</b>
+                    
+                    Factorization Machine
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3.4" data-path="movielens_cv.html">
+            
+                <a href="movielens_cv.html">
+            
+                    
+                        <b>8.3.4.</b>
+                    
+                    10-fold Cross Validation (Matrix Factorization)
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part IX - Anomaly Detection</li>
+        
+        
+    
+        <li class="chapter " data-level="9.1" data-path="../anomaly/lof.html">
+            
+                <a href="../anomaly/lof.html">
+            
+                    
+                        <b>9.1.</b>
+                    
+                    Outlier Detection using Local Outlier Factor (LOF)
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Part X - External References</li>
+        
+        
+    
+        <li class="chapter " data-level="10.1" >
+            
+                <a target="_blank" href="https://github.com/maropu/hivemall-spark">
+            
+                    
+                        <b>10.1.</b>
+                    
+                    Hivemall on Apache Spark
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.2" >
+            
+                <a target="_blank" href="https://github.com/daijyc/hivemall/wiki/PigHome">
+            
+                    
+                        <b>10.2.</b>
+                    
+                    Hivemall on Apache Pig
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Item-based Collaborative Filtering</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <p>This document describe how to do Item-based Collaborative Filtering using Hivemall.</p>
+<p><em>Caution: naive similarity computation is <code>O(n^2)</code> to compute all item-item pair similarity. <a href="https://en.wikipedia.org/wiki/MinHash#Jaccard_similarity_and_minimum_hash_values" target="_blank">MinHash</a> is an efficient scheme for computing jaccard similarity. Section 6 show how to use MinHash in Hivemall.</em></p>
+<h2 id="1-prepare-transaction-table">1. Prepare transaction table</h2>
+<p>Prepare following transaction table. We are generating <code>feature_vector</code> for each <code>item_id</code> based on cooccurrence of purchased items, a sort of bucket analysis.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">userid</th>
+<th style="text-align:center">itemid</th>
+<th style="text-align:center">purchase_at <code>timestamp</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">2015-04-9 00:29:02</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">13212</td>
+<td style="text-align:center">2016-05-24 16:29:02</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">312</td>
+<td style="text-align:center">2016-06-03 23:29:02</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">2313</td>
+<td style="text-align:center">2016-06-04 19:29:02</td>
+</tr>
+<tr>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-create-itemfeatures-table">2. Create item_features table</h2>
+<p>What we want for creating a feature vector for each item is the following <code>cooccurrence</code> relation.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">itemid</th>
+<th style="text-align:center">other</th>
+<th style="text-align:center">cnt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">583266</td>
+<td style="text-align:center">621056</td>
+<td style="text-align:center">9999</td>
+</tr>
+<tr>
+<td style="text-align:center">583266</td>
+<td style="text-align:center">583266</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">13212</td>
+<td style="text-align:center">129</td>
+</tr>
+<tr>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">9833</td>
+<td style="text-align:center">953</td>
+</tr>
+<tr>
+<td style="text-align:center">...</td>
+<td style="text-align:center">...</td>
+<td style="text-align:center">...</td>
+</tr>
+</tbody>
+</table>
+<p>Feature vectors of each item will be as follows:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">itemid</th>
+<th style="text-align:center">feature_vector <code>array&lt;string&gt;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">583266</td>
+<td style="text-align:center">621056:9999, 583266:18</td>
+</tr>
+<tr>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">13212:129, 31231:3, 9833:953</td>
+</tr>
+<tr>
+<td style="text-align:center">...</td>
+<td style="text-align:center">...</td>
+</tr>
+</tbody>
+</table>
+<p>Note that value of feature vector should be scaled for k-NN similarity computation e.g., as follows:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">itemid</th>
+<th style="text-align:center">feature_vector <code>array&lt;string&gt;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">583266</td>
+<td style="text-align:center">621056:<code>ln(9999+1)</code>, 583266:<code>ln(18+1)</code></td>
+</tr>
+<tr>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">13212:<code>ln(129+1)</code>, 31231:<code>ln(3+1)</code>, 9833:<code>ln(953+1)</code></td>
+</tr>
+<tr>
+<td style="text-align:center">...</td>
+<td style="text-align:center">...</td>
+</tr>
+</tbody>
+</table>
+<p>The following queries results in creating the above table.</p>
+<h3 id="21-creating-item-purchased-table">2.1. Creating Item purchased table</h3>
+<p>The following query creates a table that contains userid, itemid, and purchased_at. The table represents the last user-item contact (purchase) while the <code>transaction</code> table holds all contacts.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> user_purchased <span class="hljs-keyword">as</span>
+<span class="hljs-comment">-- INSERT OVERWRITE TABLE user_purchased</span>
+<span class="hljs-keyword">select</span> 
+  userid,
+  itemid,
+  <span class="hljs-keyword">max</span>(purchased_at) <span class="hljs-keyword">as</span> purchased_at,
+  <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> purchase_count
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">transaction</span>
+<span class="hljs-comment">-- where purchased_at &lt; xxx -- divide training/testing data by time </span>
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  userid, itemid
+;
+</code></pre>
+<p><strong>Note:</strong> <em>Better to avoid too old transactions because those information would be outdated though an enough number of transactions is required for recommendation.</em></p>
+<h3 id="22-creating-cooccurrence-table">2.2. Creating cooccurrence table</h3>
+<p><strong>Caution:</strong> <em>Item-Item cooccurrence matrix is a symmetric matrix that has the number of total occurrence for each diagonal element . If the size of items are <code>k</code>, then the size of expected matrix is <code>k * (k - 1) / 2</code>, usually a very large one.</em></p>
+<p><em>Better to use <a href="https://github.com/myui/hivemall/wiki/Item-based-Collaborative-Filtering#limiting-size-of-elements-in-cooccurrence_upper_triangular" target="_blank">2.2.2.</a> instead of <a href="https://github.com/myui/hivemall/wiki/Item-based-Collaborative-Filtering#221-create-cooccurrence-table-directly" target="_blank">2.2.1.</a> for creating a <code>cooccurrence</code> table where dataset is large.</em></p>
+<h3 id="221-create-cooccurrence-table-directly">2.2.1. Create cooccurrence table directly</h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence <span class="hljs-keyword">as</span> 
+<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence</span>
+<span class="hljs-keyword">select</span>
+  u1.itemid,
+  u2.itemid <span class="hljs-keyword">as</span> other, 
+  <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> cnt
+<span class="hljs-keyword">from</span>
+  user_purchased u1
+  <span class="hljs-keyword">JOIN</span> user_purchased u2 <span class="hljs-keyword">ON</span> (u1.userid = u2.userid)
+<span class="hljs-keyword">where</span>
+  u1.itemid != u2.itemid 
+  <span class="hljs-comment">-- AND u2.purchased_at &gt;= u1.purchased_at -- the other item should be purchased with/after the base item</span>
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  u1.itemid, u2.itemid
+<span class="hljs-comment">-- having -- optional but recommended to have this condition where dataset is large</span>
+<span class="hljs-comment">--  cnt &gt;= 2 -- count(1) &gt;= 2</span>
+;
+</code></pre>
+<p><strong>Caution:</strong> Note that specifying <code>having cnt &gt;= 2</code> has a drawback that item cooccurrence is not calculated where <code>cnt</code> is less than 2. It could result no recommended items for certain items. Please ignore <code>having cnt &gt;= 2</code> if the following computations finish in an acceptable/reasonable time.</p>
+<p><strong>Caution:</strong> <em>We ignore a purchase order in the following example. It means that the occurrence counts of <code>ItemA -&gt; ItemB</code> and <code>ItemB -&gt; ItemA</code> are assumed to be same. It is sometimes not a good idea e.g., for <code>Camera -&gt; SD card</code> and <code>SD card -&gt; Camera</code>.</em></p>
+<h3 id="222-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">2.2.2. Create cooccurrence table from Upper Triangular Matrix of cooccurrence</h3>
+<p>Better to create <a href="https://en.wikipedia.org/wiki/Triangular_matrix#Description" target="_blank">Upper Triangular Matrix</a> that has <code>itemid &gt; other</code> if resulting table is very large. No need to create Upper Triangular Matrix if your Hadoop cluster can handle the following instructions without considering it.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence_upper_triangular <span class="hljs-keyword">as</span> 
+<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence_upper_triangular</span>
+<span class="hljs-keyword">select</span>
+  u1.itemid,
+  u2.itemid <span class="hljs-keyword">as</span> other, 
+  <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> cnt
+<span class="hljs-keyword">from</span>
+  user_purchased u1
+  <span class="hljs-keyword">JOIN</span> user_purchased u2 <span class="hljs-keyword">ON</span> (u1.userid = u2.userid)
+<span class="hljs-keyword">where</span>
+  u1.itemid &gt; u2.itemid 
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  u1.itemid, u2.itemid
+;
+</code></pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence <span class="hljs-keyword">as</span> 
+<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence</span>
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span> itemid, other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
+  <span class="hljs-keyword">UNION</span> ALL
+  <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
+) t;
+</code></pre>
+<p><em>Note: <code>UNION ALL</code> <a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Union#LanguageManualUnion-UNIONwithinaFROMClause" target="_blank">required to be embedded</a> in Hive.</em></p>
+<h3 id="limiting-size-of-elements-in-cooccurrenceuppertriangular">Limiting size of elements in cooccurrence_upper_triangular</h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence_upper_triangular <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">WITH</span> t1 <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    u1.itemid,
+    u2.itemid <span class="hljs-keyword">as</span> other, 
+    <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> cnt
+  <span class="hljs-keyword">from</span>
+    user_purchased u1
+    <span class="hljs-keyword">JOIN</span> user_purchased u2 <span class="hljs-keyword">ON</span> (u1.userid = u2.userid)
+  <span class="hljs-keyword">where</span>
+    u1.itemid &gt; u2.itemid 
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    u1.itemid, u2.itemid
+),
+t2 <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    each_top_k( <span class="hljs-comment">-- top 1000</span>
+      <span class="hljs-number">1000</span>, itemid, cnt, 
+      itemid, other, cnt
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, cmpkey, itemid, other, cnt)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> t1
+    CLUSTER <span class="hljs-keyword">BY</span> itemid
+  ) t;
+)
+<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence_upper_triangular</span>
+<span class="hljs-keyword">select</span> itemid, other, cnt
+<span class="hljs-keyword">from</span> t2;
+</code></pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence <span class="hljs-keyword">as</span> 
+<span class="hljs-keyword">WITh</span> t1 <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span> itemid, other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
+  <span class="hljs-keyword">UNION</span> ALL
+  <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
+),
+t2 <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    each_top_k(
+      <span class="hljs-number">1000</span>, itemid, cnt,
+      itemid, other, cnt
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, cmpkey, itemid, other, cnt)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> t1
+    CLUSTER <span class="hljs-keyword">BY</span> itemid
+  ) t
+)
+<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence</span>
+<span class="hljs-keyword">select</span> itemid, other, cnt
+<span class="hljs-keyword">from</span> t2;
+</code></pre>
+<h3 id="223-computing-cooccurrence-ratio-optional-step">2.2.3. Computing cooccurrence ratio (optional step)</h3>
+<p>You can optionally compute cooccurrence ratio as follows:</p>
+<pre><code class="lang-sql">WITH stats as (
+  <span class="hljs-keyword">select</span> 
+    itemid,
+    <span class="hljs-keyword">sum</span>(cnt) <span class="hljs-keyword">as</span> totalcnt
+  <span class="hljs-keyword">from</span> 
+    cooccurrence
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    itemid
+)
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> cooccurrence_ratio
+<span class="hljs-keyword">SELECT</span>
+  l.itemid,
+  l.other, 
+  (l.cnt / r.totalcnt) <span class="hljs-keyword">as</span> ratio
+<span class="hljs-keyword">FROM</span>
+  cooccurrence l
+  <span class="hljs-keyword">JOIN</span> stats r <span class="hljs-keyword">ON</span> (l.itemid = r.itemid)
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  l.itemid, l.other
+;
+</code></pre>
+<p><code>l.cnt / r.totalcnt</code> represents a cooccurrence ratio of range <code>[0,1]</code>.</p>
+<h3 id="23-creating-a-feature-vector-for-each-item">2.3. creating a feature vector for each item</h3>
+<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_features
+<span class="hljs-keyword">SELECT</span>
+  itemid,
+  <span class="hljs-comment">-- scaling `ln(cnt+1)` to avoid large value in the feature vector</span>
+  <span class="hljs-comment">-- rounding to xxx.yyyyy to reduce size of feature_vector in array&lt;string&gt;</span>
+  collect_list(feature(other, <span class="hljs-keyword">round</span>(<span class="hljs-keyword">ln</span>(cnt+<span class="hljs-number">1</span>),<span class="hljs-number">5</span>))) <span class="hljs-keyword">as</span> feature_vector
+<span class="hljs-keyword">FROM</span>
+  cooccurrence
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span>
+  itemid
+;
+</code></pre>
+<h2 id="3-computing-item-similarity-scores">3. Computing Item similarity scores</h2>
+<p>Item-Item similarity computation is known to be computation complexity <code>O(n^2)</code> where <code>n</code> is the number of items.
+Depending on your cluster size and your dataset, the optimal solution differs.</p>
+<p><strong>Note:</strong> <em>Better to use <a href="https://github.com/myui/hivemall/wiki/Item-based-Collaborative-Filtering#311-similarity-computation-using-the-symmetric-property-of-item-similarity-matrix" target="_blank">3.1.1.</a> scheme where dataset is large.</em></p>
+<h3 id="31-shuffle-heavy-similarity-computation">3.1. Shuffle heavy similarity computation</h3>
+<p>This version involves 3-way joins w/ large data shuffle; However, this version works in parallel where a cluster has enough task slots.</p>
+<pre><code class="lang-sql">WITH similarity as (
+  <span class="hljs-keyword">select</span>
+    o.itemid,
+    o.other,
+    cosine_similarity(t1.feature_vector, t2.feature_vector) <span class="hljs-keyword">as</span> similarity
+  <span class="hljs-keyword">from</span>
+    cooccurrence o
+    <span class="hljs-keyword">JOIN</span> item_features t1 <span class="hljs-keyword">ON</span> (o.itemid = t1.itemid)
+    <span class="hljs-keyword">JOIN</span> item_features t2 <span class="hljs-keyword">ON</span> (o.other = t2.itemid)
+),
+topk <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
+      <span class="hljs-number">10</span>, itemid, similarity,
+      itemid, other <span class="hljs-comment">-- output items</span>
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
+    <span class="hljs-keyword">where</span> similarity &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- similarity &gt; 0.01</span>
+    CLUSTER <span class="hljs-keyword">BY</span> itemid
+  ) t
+)
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_similarity
+<span class="hljs-keyword">select</span> 
+  itemid, other, similarity
+<span class="hljs-keyword">from</span> 
+  topk;
+</code></pre>
+<h3 id="311-similarity-computation-using-the-symmetric-property-of-item-similarity-matrix">3.1.1. Similarity computation using the symmetric property of Item similarity matrix</h3>
+<p>Note <code>item_similarity</code> is a similarity matrix. So, you can compute it from an upper triangular matrix as follows.</p>
+<pre><code class="lang-sql">WITH cooccurrence_top100 as (
+  <span class="hljs-keyword">select</span>
+    each_top_k(
+      <span class="hljs-number">100</span>, itemid, cnt,  
+      itemid, other
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, cmpkey, itemid, other)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
+    CLUSTER <span class="hljs-keyword">BY</span> itemid
+  ) t
+), 
+similarity <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    o.itemid,
+    o.other,
+    cosine_similarity(t1.feature_vector, t2.feature_vector) <span class="hljs-keyword">as</span> similarity
+  <span class="hljs-keyword">from</span>
+    cooccurrence_top100 o&#x3000;
+    <span class="hljs-comment">-- cooccurrence_upper_triangular o</span>
+    <span class="hljs-keyword">JOIN</span> item_features t1 <span class="hljs-keyword">ON</span> (o.itemid = t1.itemid)
+    <span class="hljs-keyword">JOIN</span> item_features t2 <span class="hljs-keyword">ON</span> (o.other = t2.itemid)
+),
+topk <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
+      <span class="hljs-number">10</span>, itemid, similarity,
+      itemid, other <span class="hljs-comment">-- output items</span>
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
+    <span class="hljs-keyword">where</span> similarity &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- similarity &gt; 0.01</span>
+    CLUSTER <span class="hljs-keyword">BY</span> itemid
+  ) t
+)
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_similarity_upper_triangler
+<span class="hljs-keyword">select</span> 
+  itemid, other, similarity
+<span class="hljs-keyword">from</span> 
+  topk;
+</code></pre>
+<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_similarity
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span> itemid, other, similarity <span class="hljs-keyword">from</span> item_similarity_upper_triangler
+  <span class="hljs-keyword">UNION</span> ALL
+  <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, similarity <span class="hljs-keyword">from</span> item_similarity_upper_triangler
+) t;
+</code></pre>
+<h3 id="32-computation-heavy-similarity-computation">3.2. Computation heavy similarity computation</h3>
+<p>Alternatively, you can compute cosine similarity as follows. This version involves cross join and thus runs sequentially in a single task. However, it involves less shuffle when compared to 3.1.</p>
+<pre><code class="lang-sql">WITH similarity as (
+  <span class="hljs-keyword">select</span>
+   t1.itemid,
+   t2.itemid <span class="hljs-keyword">as</span> other,
+   cosine_similarity(t1.feature_vector, t2.feature_vector) <span class="hljs-keyword">as</span> similarity
+  <span class="hljs-keyword">from</span>
+   item_features t1
+   <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> item_features t2
+  <span class="hljs-keyword">WHERE</span>
+    t1.itemid != t2.itemid
+),
+topk <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
+      <span class="hljs-number">10</span>, itemid, similarity,
+      itemid, other <span class="hljs-comment">-- output items</span>
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
+    <span class="hljs-keyword">where</span> similarity &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- similarity &gt; 0.01</span>
+    CLUSTER <span class="hljs-keyword">BY</span> itemid
+  ) t
+)
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_similarity
+<span class="hljs-keyword">select</span> 
+  itemid, other, similarity
+<span class="hljs-keyword">from</span> 
+  topk
+;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">item</th>
+<th style="text-align:center">other</th>
+<th style="text-align:center">similarity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">583266</td>
+<td style="text-align:center">621056</td>
+<td style="text-align:center">0.33</td>
+</tr>
+<tr>
+<td style="text-align:center">583266</td>
+<td style="text-align:center">583266</td>
+<td style="text-align:center">0.18</td>
+</tr>
+<tr>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">13212</td>
+<td style="text-align:center">1.29</td>
+</tr>
+<tr>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">0.3</td>
+</tr>
+<tr>
+<td style="text-align:center">31231</td>
+<td style="text-align:center">9833</td>
+<td style="text-align:center">0.953</td>
+</tr>
+<tr>
+<td style="text-align:center">...</td>
+<td style="text-align:center">...</td>
+<td style="text-align:center">...</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-item-based-recommendation">4. Item-based Recommendation</h2>
+<p>This section introduces item-based recommendation based on recently purchased items by each user.</p>
+<p><strong>Caution:</strong> <em>It would better to ignore recommending some of items that user already purchased (only 1 time) while items that are purchased twice or more would be okey to be included in the recommendation list (e.g., repeatedly purchased daily necessities). So, you would need an item property table showing that each item is repeatedly purchased items or not.</em></p>
+<h3 id="41-computes-top-k-recently-purchaed-items-for-each-user">4.1. Computes top-k recently purchaed items for each user</h3>
+<p>First, prepare <code>recently_purchased_items</code> table as follows:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> recently_purchased_items
+<span class="hljs-keyword">select</span>
+  each_top_k( <span class="hljs-comment">-- get top-5 recently purchased items for each user</span>
+     <span class="hljs-number">5</span>, userid, purchased_at,
+     userid, itemid
+  ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, purchased_at, userid, itemid)
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span>
+    purchased_at, userid, itemid
+  <span class="hljs-keyword">from</span> 
+    user_purchased
+  <span class="hljs-comment">-- where [optional filtering]</span>
+  <span class="hljs-comment">--  purchased_at &gt;= xxx -- divide training/test data by time</span>
+  CLUSTER <span class="hljs-keyword">BY</span>
+    user_id <span class="hljs-comment">-- Note CLUSTER BY is mandatory when using each_top_k</span>
+) t;
+</code></pre>
+<h3 id="42-recommend-top-k-items-based-on-the-cooccurrence-for-each-users-recently-purchased-item">4.2. Recommend top-k items based on the cooccurrence for each user&apos;s recently purchased item</h3>
+<pre><code class="lang-sql">WITH topk as (
+  <span class="hljs-keyword">select</span>
+    each_top_k(
+       <span class="hljs-number">5</span>, userid, cnt,
+       userid, other
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, cnt, userid, rec_item)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> 
+      t1.userid, t2.other, <span class="hljs-keyword">max</span>(t2.cnt) <span class="hljs-keyword">as</span> cnt
+    <span class="hljs-keyword">from</span>
+      recently_purchased_items t1
+      <span class="hljs-keyword">JOIN</span> cooccurrence t2 <span class="hljs-keyword">ON</span> (t1.itemid = t2.itemid)
+    <span class="hljs-keyword">where</span>
+      t1.itemid != t2.other <span class="hljs-comment">-- do not include items that user already purchased</span>
+      <span class="hljs-keyword">AND</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">EXISTS</span> (
+        <span class="hljs-keyword">SELECT</span> a.itemid <span class="hljs-keyword">FROM</span> user_purchased a
+        <span class="hljs-keyword">WHERE</span> a.userid = t1.userid <span class="hljs-keyword">AND</span> a.itemid = t2.other
+<span class="hljs-comment">--        AND a.purchased_count &lt;= 1 -- optional</span>
+      )
+    <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+      t1.userid, t2.other
+    CLUSTER <span class="hljs-keyword">BY</span>
+      userid <span class="hljs-comment">-- top-k grouping by userid</span>
+  ) t1
+)
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_recommendation
+<span class="hljs-keyword">select</span>
+  userid,
+  map_values(to_ordered_map(<span class="hljs-keyword">rank</span>, rec_item)) <span class="hljs-keyword">as</span> rec_items
+<span class="hljs-keyword">from</span>
+  topk
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  userid
+;
+</code></pre>
+<h3 id="43-recommend-top-k-items-based-on-the-cooccurrence-similarity-for-each-users-recently-purchased-item">4.3. Recommend top-k items based on the (cooccurrence) similarity for each user&apos;s recently purchased item</h3>
+<pre><code class="lang-sql">WITH topk as (
+  <span class="hljs-keyword">select</span>
+    each_top_k(
+       <span class="hljs-number">5</span>, userid, similarity,
+       userid, other
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, userid, rec_item)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span>
+      t1.userid, t2.other, <span class="hljs-keyword">max</span>(t2.similarity) <span class="hljs-keyword">as</span> similarity
+    <span class="hljs-keyword">from</span>
+      recently_purchased_items t1
+      <span class="hljs-keyword">JOIN</span> item_similarity t2 <span class="hljs-keyword">ON</span> (t1.itemid = t2.itemid)
+    <span class="hljs-keyword">where</span>
+      t1.itemid != t2.other <span class="hljs-comment">-- do not include items that user already purchased</span>
+      <span class="hljs-keyword">AND</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">EXISTS</span> (
+        <span class="hljs-keyword">SELECT</span> a.itemid <span class="hljs-keyword">FROM</span> user_purchased a
+        <span class="hljs-keyword">WHERE</span> a.userid = t1.userid <span class="hljs-keyword">AND</span> a.itemid = t2.other
+<span class="hljs-comment">--        AND a.purchased_count &lt;= 1 -- optional</span>
+      )
+    <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+      t1.userid, t2.other
+    CLUSTER <span class="hljs-keyword">BY</span>
+      userid <span class="hljs-comment">-- top-k grouping by userid</span>
+  ) t1
+)
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_recommendation
+<span class="hljs-keyword">select</span>
+  userid,
+  map_values(to_ordered_map(<span class="hljs-keyword">rank</span>, rec_item)) <span class="hljs-keyword">as</span> rec_items
+<span class="hljs-keyword">from</span>
+  topk
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  userid
+;
+</code></pre>
+<h2 id="5-pseudo-jaccard-similarity-computation-using-minhash">5. Pseudo Jaccard Similarity computation using MinHash</h2>
+<p>Refer <a href="https://en.wikipedia.org/wiki/MinHash#Jaccard_similarity_and_minimum_hash_values" target="_blank">this article</a> to get details about MinHash and Jarccard similarity. <a href="https://blog.treasuredata.com/blog/2016/02/16/minhash-in-hivemall/" target="_blank">This blog article</a> also explains about Hivemall&apos;s minhash.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> minhash <span class="hljs-comment">-- results in 30x records of item_features</span>
+<span class="hljs-keyword">select</span>  
+  <span class="hljs-comment">-- assign 30 minhash values for each item</span>
+  minhash(itemid, feature_vector, <span class="hljs-string">&quot;-n 30&quot;</span>) <span class="hljs-keyword">as</span> (clusterid, itemid) <span class="hljs-comment">-- &apos;-n&apos; would be 10~100</span>
+<span class="hljs-keyword">from</span>
+  item_features
+;
+
+WITH t1 as (
+  <span class="hljs-keyword">select</span>
+    l.itemid,
+    r.itemid <span class="hljs-keyword">as</span> other,
+    <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) / <span class="hljs-number">30</span> <span class="hljs-keyword">as</span> similarity <span class="hljs-comment">-- Pseudo jaccard similarity &apos;-n 30&apos;</span>
+  <span class="hljs-keyword">from</span>
+    minhash l 
+    <span class="hljs-keyword">JOIN</span> minhash r 
+      <span class="hljs-keyword">ON</span> (l.clusterid = r.clusterid)
+  <span class="hljs-keyword">where</span> 
+    l.itemid != r.itemid
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    l.itemid, r.itemid
+  <span class="hljs-keyword">having</span>
+    <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) &gt;= <span class="hljs-number">3</span> <span class="hljs-comment">-- [optional] filtering equals to (count(1)/30) &gt;= 0.1</span>
+),
+top100 <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    each_top_k(<span class="hljs-number">100</span>, itemid, similarity, itemid, other)
+      <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> t1 
+    <span class="hljs-comment">-- where similarity &gt;= 0.1 -- Optional filtering. Can be ignored.</span>
+    CLUSTER <span class="hljs-keyword">BY</span> itemid 
+  ) t2
+)
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> jaccard_similarity
+<span class="hljs-keyword">select</span>
+  itemid, other, similarity
+<span class="hljs-keyword">from</span>
+  top100
+;
+</code></pre>
+<p><em>Caution: Note that there might be no similar item for certain items.</em></p>
+<h3 id="51-cosine-similarity-computation-following-minhash-based-similarity-items-filtering">5.1. Cosine similarity computation following minhash-based similarity items filtering</h3>
+<p>You can compute <code>top-k</code> similar items based on cosine similarity, following rough <code>top-N</code> similar items listing using minhash, where <code>k &lt;&lt; N</code> (e.g., k=10 and N=100).</p>
+<pre><code class="lang-sql">WITH similarity as (
+  <span class="hljs-keyword">select</span>
+    o.itemid,
+    o.other,
+    cosine_similarity(t1.feature_vector, t2.feature_vector) <span class="hljs-keyword">as</span> similarity
+  <span class="hljs-keyword">from</span>
+    jaccard_similarity o
+    <span class="hljs-keyword">JOIN</span> item_features t1 <span class="hljs-keyword">ON</span> (o.itemid = t1.itemid)
+    <span class="hljs-keyword">JOIN</span> item_features t2 <span class="hljs-keyword">ON</span> (o.other = t2.itemid)
+),
+topk <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
+      <span class="hljs-number">10</span>, itemid, similarity,
+      itemid, other <span class="hljs-comment">-- output items</span>
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
+    <span class="hljs-keyword">where</span> similarity &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- similarity &gt; 0.01</span>
+    CLUSTER <span class="hljs-keyword">BY</span> itemid
+  ) t
+)
+<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> cosine_similarity
+<span class="hljs-keyword">select</span> 
+  itemid, other, similarity
+<span class="hljs-keyword">from</span> 
+  topk;
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"next":{"title":"News20 related article recommendation Tutorial","level":"8.2","depth":1,"path":"recommend/news20.md","ref":"recommend/news20.md","articles":[{"title":"Data preparation","level":"8.2.1","depth":2,"path":"multiclass/news20_dataset.md","ref":"multiclass/news20_dataset.md","articles":[]},{"title":"LSH/Minhash and Jaccard Similarity","level":"8.2.2","depth":2,"path":"recommend/news20_jaccard.md","ref":"recommend/news20_jaccard.md","articles":[]},{"title":"LSH/Minhash and Brute-Force Search","level":"8.2.3","depth":2,"path":"recommend/news20_knn.md","ref":"recommend/news20_knn.md","articles":[]},{"title":"kNN search using b-Bits Minhash","level":"8.2.4","depth":2,"path":"recommend/news20_bbit_minhash.md","ref":"recommend/news20_bbit_minhash.md","articles":[]}]},"previous":{"title":"Collaborative Filtering","level":"8.1","depth":1,"path":"recommend/cf.md","ref":"recommend/cf.md","articles":[{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"path":"recommend/item_based_cf.md","ref":"recommend/item_based_cf.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/item_based_cf.md","mtime":"2016-10-22T18:15:37.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-10-22T19:10:36.585Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-edit-link/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-etoc/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-toggle-chapters/toggle.js"></script>
+        
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-anchorjs/anchor-style.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-expandable-chapters/expandable-chapters.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-theme-api/theme-api.js"></script>
+        
+    
+
+    </body>
+</html>
+
