@@ -1631,7 +1631,25 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> xxx
+                                <!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> xxx
 <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">SELECT</span> 
   regexp_replace(reflect(<span class="hljs-string">&apos;java.util.UUID&apos;</span>,<span class="hljs-string">&apos;randomUUID&apos;</span>), <span class="hljs-string">&apos;-&apos;</span>, <span class="hljs-string">&apos;&apos;</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">rowid</span>,
@@ -1657,6 +1675,10 @@ However, the query execution would become too slow for large dataset because the
 <span class="hljs-keyword">from</span> 
   xxx
 </code></pre>
+<p><div id="page-footer"><hr><p><sub><font color="gray">
+Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
+</font></sub></p>
+</div></p>
 
                                 
                                 </section>
@@ -1690,7 +1712,7 @@ However, the query execution would become too slow for large dataset because the
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Adding rowid for each row","level":"1.4.1","depth":2,"next":{"title":"Hadoop tuning for Hivemall","level":"1.4.2","depth":2,"path":"tips/hadoop_tuning.md","ref":"tips/hadoop_tuning.md","articles":[]},"previous":{"title":"General Hive/Hadoop tips","level":"1.4","depth":1,"path":"tips/general_tips.md","ref":"tips/general_tips.md","articles":[{"title":"Adding rowid for each row","level":"1.4.1","depth":2,"path":"tips/rowid.md","ref":"tips/rowid.md","articles":[]},{"title":"Hadoop tuning for Hivemall","level":"1.4.2","depth":2,"path":"tips/hadoop_tuning.md","ref":"tips/hadoop_tuning.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"tips/rowid.md","mtime":"2016-10-22T16:13:01.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-10-22T19:10:36.585Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Adding rowid for each row","level":"1.4.1","depth":2,"next":{"title":"Hadoop tuning for Hivemall","level":"1.4.2","depth":2,"path":"tips/hadoop_tuning.md","ref":"tips/hadoop_tuning.md","articles":[]},"previous":{"title":"General Hive/Hadoop tips","level":"1.4","depth":1,"path":"tips/general_tips.md","ref":"tips/general_tips.md","articles":[{"title":"Adding rowid for each row","level":"1.4.1","depth":2,"path":"tips/rowid.md","ref":"tips/rowid.md","articles":[]},{"title":"Hadoop tuning for Hivemall","level":"1.4.2","depth":2,"path":"tips/hadoop_tuning.md","ref":"tips/hadoop_tuning.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"tips/rowid.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

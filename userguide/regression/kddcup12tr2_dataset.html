@@ -1631,7 +1631,25 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <p>The task is predicting the click through rate (CTR) of advertisement, meaning that we are to predict the probability of each ad being clicked. 
+                                <!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p>The task is predicting the click through rate (CTR) of advertisement, meaning that we are to predict the probability of each ad being clicked. 
 <a href="http://www.kddcup2012.org/c/kddcup2012-track2" target="_blank">http://www.kddcup2012.org/c/kddcup2012-track2</a></p>
 <hr>
 <p><strong>Dataset</strong>  </p>
@@ -1879,7 +1897,11 @@ CLUSTER <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</sp
   testing2 
   LATERAL <span class="hljs-keyword">VIEW</span> explode(features) t <span class="hljs-keyword">AS</span> feature;
 </code></pre>
-<p><em>Caution: We recommend you to set &quot;mapred.reduce.tasks&quot; in the above example to partition the training_orcfile table into pieces.</em></p>
+<p><em>Caution: We recommend you to set &quot;mapred.reduce.tasks&quot; in the above example to partition the training_orcfile table into pieces.</em>
+<div id="page-footer"><hr><p><sub><font color="gray">
+Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
+</font></sub></p>
+</div></p>
 
                                 
                                 </section>
@@ -1913,7 +1935,7 @@ CLUSTER <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</sp
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Data preparation","level":"7.2.1","depth":2,"next":{"title":"Logistic Regression, Passive Aggressive","level":"7.2.2","depth":2,"path":"regression/kddcup12tr2_lr.md","ref":"regression/kddcup12tr2_lr.md","articles":[]},"previous":{"title":"KDDCup 2012 track 2 CTR prediction Tutorial","level":"7.2","depth":1,"path":"regression/kddcup12tr2.md","ref":"regression/kddcup12tr2.md","articles":[{"title":"Data preparation","level":"7.2.1","depth":2,"path":"regression/kddcup12tr2_dataset.md","ref":"regression/kddcup12tr2_dataset.md","articles":[]},{"title":"Logistic Regression, Passive Aggressive","level":"7.2.2","depth":2,"path":"regression/kddcup12tr2_lr.md","ref":"regression/kddcup12tr2_lr.md","articles":[]},{"title":"Logistic Regression with Amplifier","level":"7.2.3","depth":2,"path":"regression/kddcup12tr2_lr_amplify.md","ref":"regression/kddcup12tr2_lr_amplify.md","articles":[]},{"title":"AdaGrad, AdaDelta","level":"7.2.4","depth":2,"path":"regression/kddcup12tr2_adagrad.md","ref":"regression/kddcup12tr2_adagrad.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"regression/kddcup12tr2_dataset.md","mtime":"2016-10-22T18:08:09.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-10-22T19:10:36.585Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Data preparation","level":"7.2.1","depth":2,"next":{"title":"Logistic Regression, Passive Aggressive","level":"7.2.2","depth":2,"path":"regression/kddcup12tr2_lr.md","ref":"regression/kddcup12tr2_lr.md","articles":[]},"previous":{"title":"KDDCup 2012 track 2 CTR prediction Tutorial","level":"7.2","depth":1,"path":"regression/kddcup12tr2.md","ref":"regression/kddcup12tr2.md","articles":[{"title":"Data preparation","level":"7.2.1","depth":2,"path":"regression/kddcup12tr2_dataset.md","ref":"regression/kddcup12tr2_dataset.md","articles":[]},{"title":"Logistic Regression, Passive Aggressive","level":"7.2.2","depth":2,"path":"regression/kddcup12tr2_lr.md","ref":"regression/kddcup12tr2_lr.md","articles":[]},{"title":"Logistic Regression with Amplifier","level":"7.2.3","depth":2,"path":"regression/kddcup12tr2_lr_amplify.md","ref":"regression/kddcup12tr2_lr_amplify.md","articles":[]},{"title":"AdaGrad, AdaDelta","level":"7.2.4","depth":2,"path":"regression/kddcup12tr2_adagrad.md","ref":"regression/kddcup12tr2_adagrad.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"regression/kddcup12tr2_dataset.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
