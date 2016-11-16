@@ -1651,17 +1651,133 @@
 -->
 <p><code>each_top_k(int k, ANY group, double value, arg1, arg2, ..., argN)</code> returns a top-k records for each <code>group</code>. It returns a relation consists of <code>(int rank, double value, arg1, arg2, .., argN)</code>.</p>
 <p>This function is particularly useful for applying a similarity/distance function where the computation complexity is <strong>O(nm)</strong>.</p>
-<p><code>each_top_k</code> is very fast when compared to other methods running top-k queries (e.g., <a href="https://ragrawal.wordpress.com/2011/11/18/extract-top-n-records-in-each-group-in-hadoophive/" target="_blank"><code>rank/distributed by</code></a>) in Hive.</p>
+<p><code>each_top_k</code> is very fast when compared to other methods running top-k queries (e.g., <a href="https://ragrawal.wordpress.com/2011/11/18/extract-top-n-records-in-each-group-in-hadoophive/" target="_blank"><code>rank/distribute by</code></a>) in Hive.</p>
 <h2 id="caution">Caution</h2>
 <ul>
 <li><code>each_top_k</code> is supported from Hivemall v0.3.2-3 or later.</li>
-<li>This UDTF assumes that input records are sorted by <code>group</code>. Use <code>DISTRIBUTED BY group SORTED BY group</code> to ensure that. Or, you can use <code>LEFT OUTER JOIN</code> for certain cases.</li>
+<li>This UDTF assumes that input records are sorted by <code>group</code>. Use <code>DISTRIBUTE BY group SORT BY group</code> to ensure that. Or, you can use <code>LEFT OUTER JOIN</code> for certain cases.</li>
 <li>It takes variable lengths arguments in <code>argN</code>. </li>
 <li>The third argument <code>value</code> is used for the comparison.</li>
 <li><code>Any number types</code> or <code>timestamp</code> are accepted for the type of <code>value</code>.</li>
 <li>If k is less than 0, reverse order is used and <code>tail-K</code> records are returned for each <code>group</code>.</li>
 <li>Note that this function returns <a href="http://www.michaelpollmeier.com/selecting-top-k-items-from-a-list-efficiently-in-java-groovy/" target="_blank">a pseudo ranking</a> for top-k. It always returns <code>at-most K</code> records for each group. The ranking scheme is similar to <code>dense_rank</code> but slightly different in certain cases.</li>
 </ul>
+<h1 id="efficient-top-k-query-processing-using-eachtopk">Efficient Top-k Query Processing using <code>each_top_k</code></h1>
+<p>Efficient processing of Top-k queries is a crucial requirement in many interactive environments that involve massive amounts of data. 
+Our Hive extension <code>each_top_k</code> helps running Top-k processing efficiently.</p>
+<ul>
+<li>Suppose the following table as the input</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">student</th>
+<th style="text-align:center">class</th>
+<th style="text-align:center">score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">b</td>
+<td style="text-align:center">70</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">a</td>
+<td style="text-align:center">80</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">a</td>
+<td style="text-align:center">90</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">b</td>
+<td style="text-align:center">50</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">a</td>
+<td style="text-align:center">70</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">b</td>
+<td style="text-align:center">60</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Then, list top-2 students for each class</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">student</th>
+<th style="text-align:center">class</th>
+<th style="text-align:center">score</th>
+<th style="text-align:center">rank</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">a</td>
+<td style="text-align:center">90</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">a</td>
+<td style="text-align:center">80</td>
+<td style="text-align:center">2</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">b</td>
+<td style="text-align:center">70</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">b</td>
+<td style="text-align:center">60</td>
+<td style="text-align:center">2</td>
+</tr>
+</tbody>
+</table>
+<p>The standard way using SQL window function would be as follows:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+  student, <span class="hljs-keyword">class</span>, score, <span class="hljs-keyword">rank</span>
+<span class="hljs-keyword">FROM</span> (
+  <span class="hljs-keyword">SELECT</span>
+    student, <span class="hljs-keyword">class</span>, score, 
+    <span class="hljs-keyword">rank</span>() <span class="hljs-keyword">over</span> (<span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">class</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> score <span class="hljs-keyword">DESC</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">rank</span>
+  <span class="hljs-keyword">FROM</span>
+    <span class="hljs-keyword">table</span>
+) t
+WHRE <span class="hljs-keyword">rank</span> &lt;= <span class="hljs-number">2</span>
+</code></pre>
+<p>An alternative and efficient way to compute top-k items using <code>each_top_k</code> is as follows:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+  each_top_k(
+    <span class="hljs-number">2</span>, <span class="hljs-keyword">class</span>, score,
+    <span class="hljs-keyword">class</span>, student <span class="hljs-comment">-- output columns other in addition to rank and score</span>
+  ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, score, <span class="hljs-keyword">class</span>, student)
+<span class="hljs-keyword">FROM</span> (
+  <span class="hljs-keyword">SELECT</span> * <span class="hljs-keyword">FROM</span> <span class="hljs-keyword">table</span>
+  CLUSTER <span class="hljs-keyword">BY</span> <span class="hljs-keyword">class</span> <span class="hljs-comment">-- Mandatory for `each_top_k`</span>
+) t
+</code></pre>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p><code>CLUSTER BY x</code> is a synonym of <code>DISTRIBUTE BY x CLASS SORT BY x</code> and required when using <code>each_top_k</code>.</p></div></div>
+<p>The function signature of <code>each_top_k</code> is <code>each_top_k(int k, ANY group, double value, arg1, arg2, ..., argN)</code> and it returns a relation <code>(int rank, double value, arg1, arg2, .., argN)</code>.</p>
+<p>Any number types or timestamp are accepted for the type of <code>value</code> but it MUST be not NULL. 
+Do null hanlding like <code>if(value is null, -1, value)</code> to avoid null.</p>
+<p>If <code>k</code> is less than 0, reverse order is used and tail-K records are returned for each <code>group</code>.</p>
+<p>The ranking semantics of <code>each_top_k</code> follows SQL&apos;s <code>dense_rank</code> and then limits results by <code>k</code>. </p>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p><code>each_top_k</code> is benefical where the number of grouping keys are large. If the number of grouping keys are not so large (e.g., less than 100), consider using <code>rank() over</code> instead.</p></div></div>
 <h1 id="usage">Usage</h1>
 <h2 id="top-k-clicks">top-k clicks</h2>
 <p><a href="http://stackoverflow.com/questions/9390698/hive-getting-top-n-records-in-group-by-query/32559050#32559050" target="_blank">http://stackoverflow.com/questions/9390698/hive-getting-top-n-records-in-group-by-query/32559050#32559050</a></p>
@@ -1699,33 +1815,202 @@
   test_hivemall t2 
   <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> train_hivemall t1;
 </code></pre>
-<pre><code>1       0.8594650626182556      12      10514   0
-2       0.8585299849510193      12      11719   0
-3       0.856602132320404       12      21009   0
-4       0.8562054634094238      12      17582   0
-5       0.8516314029693604      12      22006   0
-6       0.8499397039413452      12      25364   0
-7       0.8467264771461487      12      900     0
-8       0.8463355302810669      12      8018    0
-9       0.8439178466796875      12      7041    0
-10      0.8438876867294312      12      21595   0
-1       0.8390793800354004      25      21125   0
-2       0.8344510793685913      25      14073   0
-3       0.8340602517127991      25      9008    0
-4       0.8328862190246582      25      6598    0
-5       0.8301891088485718      25      943     0
-6       0.8271955251693726      25      20400   0
-7       0.8255619406700134      25      10922   0
-8       0.8241575956344604      25      8477    0
-9       0.822281539440155       25      25977   0
-10      0.8205751180648804      25      21115   0
-1       0.9761330485343933      34      2513    0
-2       0.9536819458007812      34      8697    0
-3       0.9531533122062683      34      7326    0
-4       0.9493276476860046      34      15173   0
-5       0.9480557441711426      34      19468   0
-...
-</code></pre><h3 id="explicit-grouping-using-distribute-by-and-sort-by">Explicit grouping using <code>distribute by</code> and <code>sort by</code></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">rank</th>
+<th style="text-align:center">similarity</th>
+<th style="text-align:center">base_id</th>
+<th style="text-align:center">neighbor_id</th>
+<th style="text-align:center">y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.8594650626182556</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">10514</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.8585299849510193</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">11719</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0.856602132320404</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">21009</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0.8562054634094238</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">17582</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0.8516314029693604</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">22006</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0.8499397039413452</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">25364</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">0.8467264771461487</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">900</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">0.8463355302810669</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">8018</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">0.8439178466796875</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">7041</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">0.8438876867294312</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">21595</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.8390793800354004</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">21125</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.8344510793685913</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">14073</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0.8340602517127991</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">9008</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0.8328862190246582</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">6598</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0.8301891088485718</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">943</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0.8271955251693726</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">20400</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">0.8255619406700134</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">10922</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">0.8241575956344604</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">8477</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">0.822281539440155</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">25977</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">0.8205751180648804</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">21115</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.9761330485343933</td>
+<td style="text-align:center">34</td>
+<td style="text-align:center">2513</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.9536819458007812</td>
+<td style="text-align:center">34</td>
+<td style="text-align:center">8697</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0.9531533122062683</td>
+<td style="text-align:center">34</td>
+<td style="text-align:center">7326</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0.9493276476860046</td>
+<td style="text-align:center">34</td>
+<td style="text-align:center">15173</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0.9480557441711426</td>
+<td style="text-align:center">34</td>
+<td style="text-align:center">19468</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+</tr>
+</tbody>
+</table>
+<h3 id="explicit-grouping-using-distribute-by-and-sort-by">Explicit grouping using <code>distribute by</code> and <code>sort by</code></h3>
 <pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span>
   each_top_k(
     <span class="hljs-number">10</span>, id1, angular_similarity(features1, features2), 
@@ -1887,33 +2172,220 @@ s05 <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> train_hivemall t1
 <span class="hljs-comment">-- limit 25</span>
 </code></pre>
-<pre><code>1       0.4383084177970886      1       7503    0
-2       0.44166821241378784     1       10143   0
-3       0.4424300789833069      1       11073   0
-4       0.44254064559936523     1       17782   0
-5       0.4442034363746643      1       18556   0
-6       0.45163780450820923     1       3786    0
-7       0.45244503021240234     1       10242   0
-8       0.4525672197341919      1       21657   0
-9       0.4527127146720886      1       17218   0
-10      0.45314133167266846     1       25141   0
-1       0.44030147790908813     2       3786    0
-2       0.4408798813819885      2       23386   0
-3       0.44112563133239746     2       11073   0
-4       0.4415401816368103      2       22853   0
-5       0.4422193765640259      2       21657   0
-6       0.4429032802581787      2       10143   0
-7       0.4435907006263733      2       24413   0
-8       0.44569307565689087     2       7503    0
-9       0.4460843801498413      2       25141   0
-10      0.4464914798736572      2       24289   0
-1       0.43862903118133545     3       23150   1
-2       0.4398220181465149      3       9881    1
-3       0.44283604621887207     3       27121   0
-4       0.4432108402252197      3       26220   1
-5       0.44323229789733887     3       18541   0
-...
-</code></pre><p><div id="page-footer"><hr><p><sub><font color="gray">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">rank</th>
+<th style="text-align:center">similarity</th>
+<th style="text-align:center">base_id</th>
+<th style="text-align:center">neighbor_id</th>
+<th style="text-align:center">y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.4383084177970886</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">7503</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.44166821241378784</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">10143</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0.4424300789833069</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">11073</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0.44254064559936523</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">17782</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0.4442034363746643</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">18556</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0.45163780450820923</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">3786</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">0.45244503021240234</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">10242</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">0.4525672197341919</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">21657</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">0.4527127146720886</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">17218</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">0.45314133167266846</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">25141</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.44030147790908813</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3786</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.4408798813819885</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">23386</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0.44112563133239746</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">11073</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0.4415401816368103</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">22853</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0.4422193765640259</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">21657</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0.4429032802581787</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">10143</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">0.4435907006263733</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">24413</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">0.44569307565689087</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">7503</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">0.4460843801498413</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">25141</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">0.4464914798736572</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">24289</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0.43862903118133545</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">23150</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0.4398220181465149</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">9881</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0.44283604621887207</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">27121</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">0.4432108402252197</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">26220</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">0.44323229789733887</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">18541</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+<td style="text-align:center">..</td>
+</tr>
+</tbody>
+</table>
+<p><div id="page-footer"><hr><!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p><sub><font color="gray">
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
@@ -1950,7 +2422,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"next":{"title":"English/Japanese Text Tokenizer","level":"2.3","depth":1,"path":"misc/tokenizer.md","ref":"misc/tokenizer.md","articles":[]},"previous":{"title":"List of generic Hivemall functions","level":"2.1","depth":1,"path":"misc/generic_funcs.md","ref":"misc/generic_funcs.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/topk.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"next":{"title":"English/Japanese Text Tokenizer","level":"2.3","depth":1,"path":"misc/tokenizer.md","ref":"misc/tokenizer.md","articles":[]},"previous":{"title":"List of generic Hivemall functions","level":"2.1","depth":1,"path":"misc/generic_funcs.md","ref":"misc/generic_funcs.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/topk.md","mtime":"2016-11-16T08:32:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-16T08:36:45.392Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
