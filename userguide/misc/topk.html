@@ -999,6 +999,21 @@
             
         </li>
     
+        <li class="chapter " data-level="5.6" data-path="../binaryclass/titanic_rf.html">
+            
+                <a href="../binaryclass/titanic_rf.html">
+            
+                    
+                        <b>5.6.</b>
+                    
+                    Kaggle Titanic Tutorial
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1652,7 +1667,25 @@
 <p><code>each_top_k(int k, ANY group, double value, arg1, arg2, ..., argN)</code> returns a top-k records for each <code>group</code>. It returns a relation consists of <code>(int rank, double value, arg1, arg2, .., argN)</code>.</p>
 <p>This function is particularly useful for applying a similarity/distance function where the computation complexity is <strong>O(nm)</strong>.</p>
 <p><code>each_top_k</code> is very fast when compared to other methods running top-k queries (e.g., <a href="https://ragrawal.wordpress.com/2011/11/18/extract-top-n-records-in-each-group-in-hadoophive/" target="_blank"><code>rank/distribute by</code></a>) in Hive.</p>
-<h2 id="caution">Caution</h2>
+<!-- toc --><div id="toc" class="toc">
+
+<ul>
+<li><a href="#caution">Caution</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#efficient-top-k-query-processing-using-eachtopk">Efficient Top-k Query Processing using <code>each_top_k</code></a></li>
+<li><a href="#top-k-clicks">top-k clicks</a></li>
+<li><a href="#top-k-similarity-computation">Top-k similarity computation</a><ul>
+<li><a href="#explicit-grouping-using-distribute-by-and-sort-by">Explicit grouping using <code>distribute by</code> and <code>sort by</code></a></li>
+<li><a href="#parallelization-of-similarity-computation-using-with-clause">Parallelization of similarity computation using WITH clause</a></li>
+</ul>
+</li>
+<li><a href="#tail-k">tail-K</a></li>
+</ul>
+</li>
+</ul>
+
+</div><!-- tocstop -->
+<h1 id="caution">Caution</h1>
 <ul>
 <li><code>each_top_k</code> is supported from Hivemall v0.3.2-3 or later.</li>
 <li>This UDTF assumes that input records are sorted by <code>group</code>. Use <code>DISTRIBUTE BY group SORT BY group</code> to ensure that. Or, you can use <code>LEFT OUTER JOIN</code> for certain cases.</li>
@@ -1662,7 +1695,8 @@
 <li>If k is less than 0, reverse order is used and <code>tail-K</code> records are returned for each <code>group</code>.</li>
 <li>Note that this function returns <a href="http://www.michaelpollmeier.com/selecting-top-k-items-from-a-list-efficiently-in-java-groovy/" target="_blank">a pseudo ranking</a> for top-k. It always returns <code>at-most K</code> records for each group. The ranking scheme is similar to <code>dense_rank</code> but slightly different in certain cases.</li>
 </ul>
-<h1 id="efficient-top-k-query-processing-using-eachtopk">Efficient Top-k Query Processing using <code>each_top_k</code></h1>
+<h1 id="usage">Usage</h1>
+<h2 id="efficient-top-k-query-processing-using-eachtopk">Efficient Top-k Query Processing using <code>each_top_k</code></h2>
 <p>Efficient processing of Top-k queries is a crucial requirement in many interactive environments that involve massive amounts of data. 
 Our Hive extension <code>each_top_k</code> helps running Top-k processing efficiently.</p>
 <ul>
@@ -1778,7 +1812,6 @@ Do null hanlding like <code>if(value is null, -1, value)</code> to avoid null.</
 <p>If <code>k</code> is less than 0, reverse order is used and tail-K records are returned for each <code>group</code>.</p>
 <p>The ranking semantics of <code>each_top_k</code> follows SQL&apos;s <code>dense_rank</code> and then limits results by <code>k</code>. </p>
 <div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p><code>each_top_k</code> is benefical where the number of grouping keys are large. If the number of grouping keys are not so large (e.g., less than 100), consider using <code>rank() over</code> instead.</p></div></div>
-<h1 id="usage">Usage</h1>
 <h2 id="top-k-clicks">top-k clicks</h2>
 <p><a href="http://stackoverflow.com/questions/9390698/hive-getting-top-n-records-in-group-by-query/32559050#32559050" target="_blank">http://stackoverflow.com/questions/9390698/hive-getting-top-n-records-in-group-by-query/32559050#32559050</a></p>
 <pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:k=<span class="hljs-number">5</span>;
@@ -2422,7 +2455,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"next":{"title":"English/Japanese Text Tokenizer","level":"2.3","depth":1,"path":"misc/tokenizer.md","ref":"misc/tokenizer.md","articles":[]},"previous":{"title":"List of generic Hivemall functions","level":"2.1","depth":1,"path":"misc/generic_funcs.md","ref":"misc/generic_funcs.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/topk.md","mtime":"2016-11-16T08:32:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-16T08:36:45.392Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"next":{"title":"English/Japanese Text Tokenizer","level":"2.3","depth":1,"path":"misc/tokenizer.md","ref":"misc/tokenizer.md","articles":[]},"previous":{"title":"List of generic Hivemall functions","level":"2.1","depth":1,"path":"misc/generic_funcs.md","ref":"misc/generic_funcs.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/topk.md","mtime":"2016-11-17T09:58:26.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-17T12:16:14.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

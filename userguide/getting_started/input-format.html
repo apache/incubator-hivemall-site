@@ -999,6 +999,21 @@
             
         </li>
     
+        <li class="chapter " data-level="5.6" data-path="../binaryclass/titanic_rf.html">
+            
+                <a href="../binaryclass/titanic_rf.html">
+            
+                    
+                        <b>5.6.</b>
+                    
+                    Kaggle Titanic Tutorial
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1678,11 +1693,11 @@ Here, we use <a href="http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_
 
 </div><!-- tocstop -->
 <h1 id="input-format-for-classification">Input Format for Classification</h1>
-<p>The classifiers of Hivemall takes 2 (or 3) arguments: <em>features</em>, <em>label</em>, and <em>options</em> (a.k.a. <a href="http://en.wikipedia.org/wiki/Hyperparameter" target="_blank">hyperparameters</a>). The first two arguments of training functions (e.g., <a href="https://github.com/myui/hivemall/wiki/a9a-binary-classification-(logistic-regression" target="_blank">logress</a>) and <a href="https://github.com/myui/hivemall/wiki/news20-binary-classification-%232-(CW,-AROW,-SCW" target="_blank">train_scw</a>)) represents training examples. </p>
+<p>The classifiers of Hivemall takes 2 (or 3) arguments: <em>features</em>, <em>label</em>, and <em>options</em> (a.k.a. <a href="http://en.wikipedia.org/wiki/Hyperparameter" target="_blank">hyperparameters</a>). The first two arguments of training functions represents training examples. </p>
 <p>In Statistics, <em>features</em> and <em>label</em> are called <a href="http://www.oswego.edu/~srp/stats/variable_types.htm" target="_blank">Explanatory variable and Response Variable</a>, respectively.</p>
 <h1 id="features-format-for-classification-and-regression">Features format (for classification and regression)</h1>
 <p>The format of <em>features</em> is common between (binary and multi-class) classification and regression.
-Hivemall accepts ARRAY&lt;INT|BIGINT|TEXT&gt; for the type of <em>features</em> column.</p>
+Hivemall accepts <code>ARRAY&amp;lt;INT|BIGINT|TEXT&gt;</code> for the type of <em>features</em> column.</p>
 <p>Hivemall uses a <em>sparse</em> data format (cf. <a href="http://netlib.org/linalg/html_templates/node91.html" target="_blank">Compressed Row Storage</a>) which is similar to <a href="http://stackoverflow.com/questions/12112558/read-write-data-in-libsvm-format" target="_blank">LIBSVM</a> and <a href="https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format" target="_blank">Vowpal Wabbit</a>.</p>
 <p>The format of each feature in an array is as follows:</p>
 <pre><code>feature ::= &lt;index&gt;:&lt;weight&gt; or &lt;index&gt;
@@ -1692,7 +1707,7 @@ weight ::= &lt;FLOAT&gt;
 </code></pre><p>The <em>index</em> are usually a number (INT or BIGINT) starting from 1. 
 Here is an instance of a features.</p>
 <pre><code>10:3.4  123:0.5  34567:0.231
-</code></pre><p><em>Note:</em> As mentioned later, <em>index</em> &quot;0&quot; is reserved for a <a href="https://github.com/myui/hivemall/wiki/Using-explicit-addBias(" target="_blank">Bias/Dummy variable</a>-for-a-better-prediction).</p>
+</code></pre><p><em>Note:</em> As mentioned later, <em>index</em> &quot;0&quot; is reserved for a <a href="../tips/addbias.html">Bias/Dummy variable</a>.</p>
 <p>In addition to numbers, you can use a TEXT value for an index. For example, you can use array(&quot;height:1.5&quot;, &quot;length:2.0&quot;) for the features.</p>
 <pre><code>&quot;height:1.5&quot; &quot;length:2.0&quot;
 </code></pre><h2 id="quantitative-and-categorical-variables">Quantitative and Categorical variables</h2>
@@ -1708,11 +1723,11 @@ Here is an instance of a features.</p>
 </code></pre><p>Note 1.0 is used for the weight when omitting <em>weight</em>. </p>
 <h2 id="biasdummy-variable-in-features">Bias/Dummy Variable in features</h2>
 <p>Note that &quot;0&quot; is reserved for a Bias variable (called dummy variable in Statistics). </p>
-<p>The <a href="https://github.com/myui/hivemall/wiki/Using-explicit-addBias(" target="_blank">addBias</a>-for-a-better-prediction) function is Hivemall appends &quot;0:1.0&quot; as an element of array in <em>features</em>.</p>
+<p>The <a href="../tips/addbias.html">addBias</a> function is Hivemall appends &quot;0:1.0&quot; as an element of array in <em>features</em>.</p>
 <h2 id="feature-hashing">Feature hashing</h2>
-<p>Hivemall supports <a href="http://en.wikipedia.org/wiki/Feature_hashing" target="_blank">feature hashing/hashing trick</a> through <a href="https://github.com/myui/hivemall/wiki/KDDCup-2012-track-2-CTR-prediction-dataset#converting-feature-representation-by-feature-hashing" target="_blank">mhash function</a>.</p>
+<p>Hivemall supports <a href="http://en.wikipedia.org/wiki/Feature_hashing" target="_blank">feature hashing/hashing trick</a> through <a href="../ft_engineering/hashing.html#mhash-function">mhash function</a>.</p>
 <p>The mhash function takes a feature (i.e., <em>index</em>) of TEXT format and generates a hash number of a range from 1 to 2^24 (=16777216) by the default setting.</p>
-<p>Feature hashing is useful where the dimension of feature vector (i.e., the number of elements in <em>features</em>) is so large. Consider applying <a href="(https:/github.com/myui/hivemall/wiki/KDDCup-2012-track-2-CTR-prediction-dataset#converting-feature-representation-by-feature-hashing">mhash function</a>) when a prediction model does not fit in memory and OutOfMemory exception happens.</p>
+<p>Feature hashing is useful where the dimension of feature vector (i.e., the number of elements in <em>features</em>) is so large. Consider applying <a href="(../ft_engineering/hashing.html#mhash-function">mhash function</a>) when a prediction model does not fit in memory and OutOfMemory exception happens.</p>
 <p>In general, you don&apos;t need to use mhash when the dimension of feature vector is less than 16777216.
 If feature <em>index</em> is very long TEXT (e.g., &quot;xxxxxxx-yyyyyy-weight:55.3&quot;) and uses huge memory spaces, consider using mhash as follows:</p>
 <pre><code class="lang-sql"><span class="hljs-comment">-- feature is v0.3.2 or before</span>
@@ -1725,7 +1740,7 @@ feature(mhash(extract_feature(&quot;xxxxxxx-yyyyyy-weight:55.3&quot;)), extract_
 <p>43352:55.3</p>
 </blockquote>
 <h2 id="feature-normalization">Feature Normalization</h2>
-<p>Feature (weight) normalization is important in machine learning. Please refer <a href="https://github.com/myui/hivemall/wiki/Feature-scaling" target="_blank">https://github.com/myui/hivemall/wiki/Feature-scaling</a> for detail.</p>
+<p>Feature (weight) normalization is important in machine learning. Please refer <a href="../ft_engineering/scaling.html">this article</a> for detail.</p>
 <hr>
 <h1 id="label-format-in-binary-classification">Label format in Binary Classification</h1>
 <p>The <em>label</em> must be an <em>INT</em> typed column and the values are positive (+1) or negative (-1) as follows:</p>
@@ -1815,7 +1830,25 @@ feature(mhash(extract_feature(&quot;xxxxxxx-yyyyyy-weight:55.3&quot;)), extract_
 <span class="hljs-keyword">from</span>
   <span class="hljs-keyword">table</span>;
 </code></pre>
-<p><div id="page-footer"><hr><p><sub><font color="gray">
+<p><div id="page-footer"><hr><!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p><sub><font color="gray">
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
@@ -1852,7 +1885,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Input Format","level":"1.2.3","depth":2,"next":{"title":"Tips for Effective Hivemall","level":"1.3","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit addBias() for better prediction","level":"1.3.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.3.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time Prediction on RDBMS","level":"1.3.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.3.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.3.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.3.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Install as permanent functions","level":"1.2.2","depth":2,"path":"getting_started/permanent-functions.md","ref":"getting_started/permanent-functions.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"getting_started/input-format.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Input Format","level":"1.2.3","depth":2,"next":{"title":"Tips for Effective Hivemall","level":"1.3","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit addBias() for better prediction","level":"1.3.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.3.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time Prediction on RDBMS","level":"1.3.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.3.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.3.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.3.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Install as permanent functions","level":"1.2.2","depth":2,"path":"getting_started/permanent-functions.md","ref":"getting_started/permanent-functions.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"getting_started/input-format.md","mtime":"2016-11-17T10:42:51.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-17T12:16:14.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

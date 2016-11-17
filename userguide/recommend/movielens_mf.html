@@ -999,6 +999,21 @@
             
         </li>
     
+        <li class="chapter " data-level="5.6" data-path="../binaryclass/titanic_rf.html">
+            
+                <a href="../binaryclass/titanic_rf.html">
+            
+                    
+                        <b>5.6.</b>
+                    
+                    Kaggle Titanic Tutorial
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1649,8 +1664,21 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>This page explains how to run matrix factorization on <a href="https://github.com/myui/hivemall/wiki/MovieLens-Dataset" target="_blank">MovieLens 1M dataset</a>.</p>
-<p><em>Caution:</em> Matrix factorization is supported in Hivemall v0.3 or later.</p>
+<p>This page explains how to run matrix factorization on <a href="movielens_dataset.html">MovieLens 1M dataset</a>.</p>
+<!-- toc --><div id="toc" class="toc">
+
+<ul>
+<li><a href="#calculate-the-mean-rating-in-the-training-dataset">Calculate the mean rating in the training dataset</a></li>
+<li><a href="#set-variables-hyperparameters-for-training">Set variables (hyperparameters) for training</a></li>
+<li><a href="#training">Training</a><ul>
+<li><a href="#predict">Predict</a></li>
+<li><a href="#evaluate-computes-mae-and-rmse">Evaluate (computes MAE and RMSE)</a></li>
+<li><a href="#item-recommendation">Item Recommendation</a></li>
+</ul>
+</li>
+</ul>
+
+</div><!-- tocstop -->
 <h2 id="calculate-the-mean-rating-in-the-training-dataset">Calculate the mean rating in the training dataset</h2>
 <pre><code class="lang-sql"><span class="hljs-keyword">use</span> movielens;
 
@@ -1667,8 +1695,7 @@
 <span class="hljs-comment">-- maximum number of training iterations</span>
 <span class="hljs-keyword">set</span> hivevar:iters=<span class="hljs-number">50</span>;
 </code></pre>
-<p>See <a href="https://github.com/myui/hivemall/wiki/List-of-parameters-of-Matrix-Factorization" target="_blank">this article</a> or <a href="https://github.com/myui/hivemall/blob/master/src/main/java/hivemall/mf/OnlineMatrixFactorizationUDTF.java#L123" target="_blank">OnlineMatrixFactorizationUDTF#getOption()</a> to get the details of options.</p>
-<p>Note that there are no need to set an exact value for $mu. It actually works without setting $mu but recommended to set one for getting a better prediction.</p>
+<p>Note that there are no need to set an exact value for <code>$mu</code>. It actually works without setting <code>$mu</code> but recommended to set one for getting a better prediction.</p>
 <p><em>Due to <a href="https://issues.apache.org/jira/browse/HIVE-8396" target="_blank">a bug</a> in Hive, do not issue comments in CLI.</em></p>
 <h2 id="training">Training</h2>
 <pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> sgd_model
@@ -1681,13 +1708,14 @@
   <span class="hljs-keyword">avg</span>(m_bias) <span class="hljs-keyword">as</span> Bi
 <span class="hljs-keyword">from</span> (
   <span class="hljs-keyword">select</span> 
-    train_mf_sgd(userid, movieid, rating, <span class="hljs-string">&quot;-factor ${factor} -mu ${mu} -iter ${iters}&quot;</span>) <span class="hljs-keyword">as</span> (idx, u_rank, m_rank, u_bias, m_bias)
+    train_mf_sgd(userid, movieid, rating, <span class="hljs-string">&apos;-factor ${factor} -mu ${mu} -iter ${iters}&apos;</span>) <span class="hljs-keyword">as</span> (idx, u_rank, m_rank, u_bias, m_bias)
   <span class="hljs-keyword">from</span> 
     training
 ) t
 <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> idx;
 </code></pre>
-<p>Note: Hivemall also provides <em>train_mf_adagrad</em> for training using AdaGrad.</p>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>Hivemall also provides <em>train_mf_adagrad</em> for training using AdaGrad. 
+<code>-help</code> option shows a complete list of hyperparameters.</p></div></div>
 <h1 id="predict">Predict</h1>
 <pre><code class="lang-sql"><span class="hljs-keyword">select</span>
   t2.actual,
@@ -1729,10 +1757,20 @@
   <span class="hljs-keyword">ON</span> (t2.movieid = p2.idx)
 ) t;
 </code></pre>
-<blockquote>
-<p>0.6728969407733578 (MAE) </p>
-<p>0.8584162122694449 (RMSE)</p>
-</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">MAE</th>
+<th style="text-align:center">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.6728969407733578</td>
+<td style="text-align:center">0.8584162122694449</td>
+</tr>
+</tbody>
+</table>
 <h1 id="item-recommendation">Item Recommendation</h1>
 <p>Recommend top-k movies that a user have not ever seen.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:userid=<span class="hljs-number">1</span>;
@@ -1794,7 +1832,25 @@
 </tr>
 </tbody>
 </table>
-<p><div id="page-footer"><hr><p><sub><font color="gray">
+<p><div id="page-footer"><hr><!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p><sub><font color="gray">
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
@@ -1831,7 +1887,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Matrix Factorization","level":"8.3.2","depth":2,"next":{"title":"Factorization Machine","level":"8.3.3","depth":2,"path":"recommend/movielens_fm.md","ref":"recommend/movielens_fm.md","articles":[]},"previous":{"title":"Data preparation","level":"8.3.1","depth":2,"path":"recommend/movielens_dataset.md","ref":"recommend/movielens_dataset.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_mf.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Matrix Factorization","level":"8.3.2","depth":2,"next":{"title":"Factorization Machine","level":"8.3.3","depth":2,"path":"recommend/movielens_fm.md","ref":"recommend/movielens_fm.md","articles":[]},"previous":{"title":"Data preparation","level":"8.3.1","depth":2,"path":"recommend/movielens_dataset.md","ref":"recommend/movielens_dataset.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_mf.md","mtime":"2016-11-17T11:32:54.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-17T12:16:14.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -999,6 +999,21 @@
             
         </li>
     
+        <li class="chapter " data-level="5.6" data-path="../binaryclass/titanic_rf.html">
+            
+                <a href="../binaryclass/titanic_rf.html">
+            
+                    
+                        <b>5.6.</b>
+                    
+                    Kaggle Titanic Tutorial
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1649,15 +1664,24 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>In this page, we will explain how to use model mixing on Hivemall. The model mixing is useful for a better prediction performance and faster convergence in training classifiers. </p>
-<!--
-You can find a brief explanation of the internal design of MIX protocol in [this slide](http://www.slideshare.net/myui/hivemall-mix-internal).
--->
+<p>In this page, we will explain how to use model mixing on Hivemall. The model mixing is useful for a better prediction performance and faster convergence in training classifiers. 
+You can find a brief explanation of the internal design of MIX protocol in <a href="http://www.slideshare.net/myui/hivemall-mix-internal" target="_blank">this slide</a>.</p>
+<!-- toc --><div id="toc" class="toc">
+
+<ul>
+<li><a href="#prerequisite">Prerequisite</a></li>
+<li><a href="#running-mix-server">Running Mix Server</a></li>
+<li><a href="#using-mix-protocol-through-hivemall">Using Mix Protocol through Hivemall</a></li>
+<li><a href="#the-effect-of-model-mixing">The effect of model mixing</a></li>
+</ul>
+
+</div><!-- tocstop -->
 <h1 id="prerequisite">Prerequisite</h1>
 <ul>
-<li>Hivemall v0.3 or later</li>
+<li><p>Hivemall v0.3 or later</p>
+<p>  We recommend to use Mixing in a cluster with fast networking. The current standard GbE is enough though.</p>
+</li>
 </ul>
-<p>We recommend to use Mixing in a cluster with fast networking. The current standard GbE is enough though.</p>
 <h1 id="running-mix-server">Running Mix Server</h1>
 <p>First, put the following files on server(s) that are accessible from Hadoop worker nodes:</p>
 <ul>
@@ -1673,9 +1697,9 @@ The default port used by Mix server is 11212 and the port is configurable throug
 <p>See <a href="https://github.com/myui/hivemall/blob/master/mixserv/src/main/java/hivemall/mix/server/MixServer.java#L90" target="_blank">MixServer.java</a> to get detail of the Mix server options.</p>
 <p>We recommended to use multiple MIX servers to get better MIX throughput (3-5 or so would be enough for normal cluster size). The MIX protocol of Hivemall is <em>horizontally scalable</em> by adding MIX server nodes.</p>
 <h1 id="using-mix-protocol-through-hivemall">Using Mix Protocol through Hivemall</h1>
-<p><a href="https://github.com/myui/hivemall/wiki/Installation" target="_blank">Install Hivemall</a> on Hive.</p>
+<p><a href="../getting_started/installation.html">Install Hivemall</a> on Hive.</p>
 <p><em>Make sure that <a href="https://github.com/myui/hivemall/raw/master/target/hivemall-with-dependencies.jar" target="_blank">hivemall-with-dependencies.jar</a> is used for installation. The jar contains minimum requirement jars (netty,jsr305) for running Hivemall on Hive.</em></p>
-<p>Now, we explain that how to use mixing in <a href="https://github.com/myui/hivemall/wiki/KDD2010a-classification" target="_blank">an example using KDD2010a dataset</a>.</p>
+<p>Now, we explain that how to use mixing in <a href="../binaryclass/kdd2010a_dataset.html">an example using KDD2010a dataset</a>.</p>
 <p>Enabling the mixing on Hivemall is simple as follows:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">use</span> kdd2010;
 
@@ -1694,8 +1718,26 @@ The default port used by Mix server is 11212 and the port is configurable throug
 <p>All you have to do is just adding &quot;<em>-mix</em>&quot; training option as seen in the above query.</p>
 <h1 id="the-effect-of-model-mixing">The effect of model mixing</h1>
 <p>In my experience, the MIX improved the prediction accuracy of the above KDD2010a PA1 training on a 32 nodes cluster from 0.844835019263103 (w/o mix) to 0.8678096499719774 (w/ mix).</p>
-<p>The overhead of using the MIX protocol is <em>almost negligible</em> because the MIX communication is efficiently handled using asynchronous non-blocking I/O. Furthermore, the training time could be improved on certain settings because of the faster convergence due to mixing. 
-<div id="page-footer"><hr><p><sub><font color="gray">
+<p>The overhead of using the MIX protocol is <em>almost negligible</em> because the MIX communication is efficiently handled using asynchronous non-blocking I/O. Furthermore, the training time could be improved on certain settings because of the faster convergence due to mixing.
+<div id="page-footer"><hr><!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p><sub><font color="gray">
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
@@ -1732,7 +1774,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.3.5","depth":2,"next":{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.3.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]},"previous":{"title":"Ensemble learning for stable prediction","level":"1.3.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"tips/mixserver.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.3.5","depth":2,"next":{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.3.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]},"previous":{"title":"Ensemble learning for stable prediction","level":"1.3.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"tips/mixserver.md","mtime":"2016-11-17T12:10:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-17T12:16:14.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

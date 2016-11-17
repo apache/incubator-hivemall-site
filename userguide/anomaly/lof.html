@@ -997,6 +997,21 @@
             
         </li>
     
+        <li class="chapter " data-level="5.6" data-path="../binaryclass/titanic_rf.html">
+            
+                <a href="../binaryclass/titanic_rf.html">
+            
+                    
+                        <b>5.6.</b>
+                    
+                    Kaggle Titanic Tutorial
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1648,6 +1663,18 @@
   under the License.
 -->
 <p>This article introduce how to find outliers using <a href="http://en.wikipedia.org/wiki/Local_outlier_factor" target="_blank">Local Outlier Detection (LOF)</a> on Hivemall.</p>
+<!-- toc --><div id="toc" class="toc">
+
+<ul>
+<li><a href="#data-preparation">Data Preparation</a><ul>
+<li><a href="#apply-data-normalization">Apply Data Normalization</a></li>
+</ul>
+</li>
+<li><a href="#outlier-detection-using-local-outlier-facotor-lof">Outlier Detection using Local Outlier Facotor (LOF)</a></li>
+<li><a href="#parallelize-top-k-computation">Parallelize Top-k computation</a></li>
+</ul>
+
+</div><!-- tocstop -->
 <h1 id="data-preparation">Data Preparation</h1>
 <pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">database</span> lof;
 <span class="hljs-keyword">use</span> lof;
@@ -1662,8 +1689,8 @@
   <span class="hljs-keyword">FIELDS</span> <span class="hljs-keyword">TERMINATED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">&apos; &apos;</span>
 <span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> TEXTFILE LOCATION <span class="hljs-string">&apos;/dataset/lof/hundred_balls&apos;</span>;
 </code></pre>
-<p>Download <a href="https://github.com/myui/hivemall/blob/master/resources/examples/lof/hundred_balls.txt" target="_blank">hundred_balls.txt</a> that is originally provides in <a href="http://next.rikunabi.com/tech/docs/ct_s03600.jsp?p=002259" target="_blank">this article</a>.</p>
-<p>You can find outliers in <a href="http://next.rikunabi.com/tech/contents/ts_report/img/201303/002259/part1_img1.jpg" target="_blank">this picture</a>. As you can see, Rowid <code>87</code> is apparently an outlier.</p>
+<p>Download <a href="https://gist.githubusercontent.com/myui/f8b44ab925bc198e6d11b18fdd21269d/raw/bed05f811e4c351ed959e0159405690f2f11e577/hundred_balls.txt" target="_blank">hundred_balls.txt</a> that is originally provides in <a href="http://next.rikunabi.com/tech/docs/ct_s03600.jsp?p=002259" target="_blank">this article</a>.</p>
+<p>In this example, Rowid <code>87</code> is apparently an outlier.</p>
 <pre><code class="lang-sh">awk <span class="hljs-string">&apos;{FS=&quot; &quot;; OFS=&quot; &quot;; print NR,$0}&apos;</span> hundred_balls.txt | \
 hadoop fs -put - /dataset/lof/hundred_balls/hundred_balls.txt
 </code></pre>
@@ -1753,9 +1780,9 @@ norm_fv <span class="hljs-keyword">as</span> (
   t1.<span class="hljs-keyword">rowid</span> != t2.<span class="hljs-keyword">rowid</span>
 ;
 </code></pre>
-<p><em>Note: <code>list_neighbours</code> table SHOULD be created because <code>list_neighbours</code> is used multiple times.</em></p>
-<p><em>Note: <a href="https://github.com/myui/hivemall/pull/196" target="_blank"><code>each_top_k</code></a> is supported from Hivemall v0.3.2-3 or later.</em></p>
-<p><em>Note: To parallelize a top-k computation, break LEFT-hand table into piece as describe in <a href="https://github.com/myui/hivemall/wiki/Efficient-Top-k-computation-on-Apache-Hive-using-Hivemall-UDTF#parallelization-of-similarity-computation-using-with-clause" target="_blank">this page</a>.</em></p>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p><code>list_neighbours</code> table SHOULD be created because <code>list_neighbours</code> is used multiple times.</p></div></div>
+<h1 id="parallelize-top-k-computation">Parallelize Top-k computation</h1>
+<div class="panel panel-info"><div class="panel-heading"><h3 class="panel-title" id="info"><i class="fa fa-info"></i> Info</h3></div><div class="panel-body"><p>To parallelize a top-k computation, break LEFT-hand table into piece as describe in <a href="../misc/topk.html">this page</a>.</p></div></div>
 <pre><code class="lang-sql">WITH k_distance as (
 <span class="hljs-keyword">select</span>
   target, 
@@ -1804,7 +1831,25 @@ neighbours_lrd <span class="hljs-keyword">as</span> (
 <pre><code>&gt; 87      3.031143749957831
 &gt; 16      1.9755564408378874
 &gt; 1       1.8415763570939774
-</code></pre><p><div id="page-footer"><hr><p><sub><font color="gray">
+</code></pre><p><div id="page-footer"><hr><!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p><sub><font color="gray">
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
@@ -1841,7 +1886,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Outlier Detection using Local Outlier Factor (LOF)","level":"9.1","depth":1,"next":{"title":"Hivemall on Apache Spark","level":"10.1","depth":1,"url":"https://github.com/maropu/hivemall-spark","ref":"https://github.com/maropu/hivemall-spark","articles":[]},"previous":{"title":"10-fold Cross Validation (Matrix Factorization)","level":"8.3.4","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"anomaly/lof.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Outlier Detection using Local Outlier Factor (LOF)","level":"9.1","depth":1,"next":{"title":"Hivemall on Apache Spark","level":"10.1","depth":1,"url":"https://github.com/maropu/hivemall-spark","ref":"https://github.com/maropu/hivemall-spark","articles":[]},"previous":{"title":"10-fold Cross Validation (Matrix Factorization)","level":"8.3.4","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"anomaly/lof.md","mtime":"2016-11-17T09:55:36.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-17T12:16:14.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

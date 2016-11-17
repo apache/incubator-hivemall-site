@@ -999,6 +999,21 @@
             
         </li>
     
+        <li class="chapter " data-level="5.6" data-path="../binaryclass/titanic_rf.html">
+            
+                <a href="../binaryclass/titanic_rf.html">
+            
+                    
+                        <b>5.6.</b>
+                    
+                    Kaggle Titanic Tutorial
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1650,53 +1665,74 @@
   under the License.
 -->
 <p>This page describes a list of useful Hivemall generic functions.</p>
+<!-- toc --><div id="toc" class="toc">
+
+<ul>
+<li><a href="#array-functions">Array functions</a><ul>
+<li><a href="#array-udfs">Array UDFs</a></li>
+<li><a href="#array-udafs">Array UDAFs</a></li>
+</ul>
+</li>
+<li><a href="#bitset-functions">Bitset functions</a><ul>
+<li><a href="#bitset-udf">Bitset UDF</a></li>
+<li><a href="#bitset-udaf">Bitset UDAF</a></li>
+</ul>
+</li>
+<li><a href="#compression-functions">Compression functions</a></li>
+<li><a href="#map-functions">Map functions</a><ul>
+<li><a href="#map-udfs">Map UDFs</a></li>
+<li><a href="#map-udafs">MAP UDAFs</a></li>
+</ul>
+</li>
+<li><a href="#mapreduce-functions">MapReduce functions</a></li>
+<li><a href="#math-functions">Math functions</a></li>
+<li><a href="#text-processing-functions">Text processing functions</a></li>
+<li><a href="#other-functions">Other functions</a></li>
+</ul>
+
+</div><!-- tocstop -->
 <h1 id="array-functions">Array functions</h1>
 <h2 id="array-udfs">Array UDFs</h2>
 <ul>
-<li><code>array_concat(array&lt;ANY&gt; x1, array&lt;ANY&gt; x2, ..)</code> - Returns a concatenated array</li>
-</ul>
-<pre><code class="lang-sql">select array_concat(array(1),array(2,3));
-&gt; [1,2,3]
+<li><p><code>array_concat(array&lt;ANY&gt; x1, array&lt;ANY&gt; x2, ..)</code> - Returns a concatenated array</p>
+<pre><code class="lang-sql">  select array_concat(array(1),array(2,3));
+  &gt; [1,2,3]
 </code></pre>
-<ul>
-<li><code>array_intersect(array&lt;ANY&gt; x1, array&lt;ANY&gt; x2, ..)</code> - Returns an intersect of given arrays</li>
-</ul>
-<pre><code class="lang-sql">select array_intersect(array(1,3,4),array(2,3,4),array(3,5));
-&gt; [3]
+</li>
+<li><p><code>array_intersect(array&lt;ANY&gt; x1, array&lt;ANY&gt; x2, ..)</code> - Returns an intersect of given arrays</p>
+<pre><code class="lang-sql">  select array_intersect(array(1,3,4),array(2,3,4),array(3,5));
+  &gt; [3]
 </code></pre>
-<ul>
-<li><code>array_remove(array&lt;int|text&gt; original, int|text|array&lt;int&gt; target)</code> - Returns an array that the target is removed from the original array</li>
-</ul>
-<pre><code class="lang-sql">select array_remove(array(1,null,3),array(null));
-&gt; [3]
+</li>
+<li><p><code>array_remove(array&lt;int|text&gt; original, int|text|array&lt;int&gt; target)</code> - Returns an array that the target is removed from the original array</p>
+<pre><code class="lang-sql">  select array_remove(array(1,null,3),array(null));
+  &gt; [3]
 
-select array_remove(array(&quot;aaa&quot;,&quot;bbb&quot;),&quot;bbb&quot;);
-&gt; [&quot;aaa&quot;]
+  select array_remove(array(&quot;aaa&quot;,&quot;bbb&quot;),&quot;bbb&quot;);
+  &gt; [&quot;aaa&quot;]
 </code></pre>
-<ul>
-<li><code>sort_and_uniq_array(array&lt;int&gt;)</code> - Takes an array of type int and returns a sorted array in a natural order with duplicate elements eliminated</li>
+</li>
+<li><p><code>sort_and_uniq_array(array&lt;int&gt;)</code> - Takes an array of type INT and returns a sorted array in a natural order with duplicate elements eliminated</p>
+<pre><code class="lang-sql">  select sort_and_uniq_array(array(3,1,1,-2,10));
+  &gt; [-2,1,3,10]
+</code></pre>
+</li>
+<li><p><code>subarray_endwith(array&lt;int|text&gt; original, int|text key)</code> - Returns an array that ends with the specified key</p>
+<pre><code class="lang-sql">  select subarray_endwith(array(1,2,3,4), 3);
+  &gt; [1,2,3]
+</code></pre>
+</li>
+<li><p><code>subarray_startwith(array&lt;int|text&gt; original, int|text key)</code> - Returns an array that starts with the specified key</p>
+<pre><code class="lang-sql">  select subarray_startwith(array(1,2,3,4), 2);
+  &gt; [2,3,4]
+</code></pre>
+</li>
+<li><p><code>subarray(array&lt;int&gt; orignal, int fromIndex, int toIndex)</code> - Returns a slice of the original array between the inclusive <code>fromIndex</code> and the exclusive <code>toIndex</code></p>
+<pre><code class="lang-sql">  select subarray(array(1,2,3,4,5,6), 2,4);
+  &gt; [3,4]
+</code></pre>
+</li>
 </ul>
-<pre><code class="lang-sql">select sort_and_uniq_array(array(3,1,1,-2,10));
-&gt; [-2,1,3,10]
-</code></pre>
-<ul>
-<li><code>subarray_endwith(array&lt;int|text&gt; original, int|text key)</code> - Returns an array that ends with the specified key</li>
-</ul>
-<pre><code class="lang-sql">select subarray_endwith(array(1,2,3,4), 3);
-&gt; [1,2,3]
-</code></pre>
-<ul>
-<li><code>subarray_startwith(array&lt;int|text&gt; original, int|text key)</code> - Returns an array that starts with the specified key</li>
-</ul>
-<pre><code class="lang-sql">select subarray_startwith(array(1,2,3,4), 2);
-&gt; [2,3,4]
-</code></pre>
-<ul>
-<li><code>subarray(array&lt;int&gt; orignal, int fromIndex, int toIndex)</code> - Returns a slice of the original array between the inclusive fromIndex and the exclusive toIndex</li>
-</ul>
-<pre><code class="lang-sql">select subarray(array(1,2,3,4,5,6), 2,4);
-&gt; [3,4]
-</code></pre>
 <h2 id="array-udafs">Array UDAFs</h2>
 <ul>
 <li><p><code>array_avg(array&lt;NUMBER&gt;)</code> - Returns an array<double> in which each element is the mean of a set of numbers</double></p>
@@ -1707,41 +1743,40 @@ select array_remove(array(&quot;aaa&quot;,&quot;bbb&quot;),&quot;bbb&quot;);
 <h1 id="bitset-functions">Bitset functions</h1>
 <h2 id="bitset-udf">Bitset UDF</h2>
 <ul>
-<li><code>to_bits(int[] indexes)</code> - Returns an bitset representation if the given indexes in long[]</li>
-</ul>
-<pre><code class="lang-sql">select to_bits(array(1,2,3,128));
-&gt;[14,-9223372036854775808]
+<li><p><code>to_bits(int[] indexes)</code> - Returns an bitset representation if the given indexes in long[]</p>
+<pre><code class="lang-sql">  select to_bits(array(1,2,3,128));
+  &gt;[14,-9223372036854775808]
 </code></pre>
-<ul>
-<li><code>unbits(long[] bitset)</code> - Returns an long array of the give bitset representation</li>
-</ul>
-<pre><code class="lang-sql">select unbits(to_bits(array(1,4,2,3)));
-&gt; [1,2,3,4]
+</li>
+<li><p><code>unbits(long[] bitset)</code> - Returns an long array of the give bitset representation</p>
+<pre><code class="lang-sql">  select unbits(to_bits(array(1,4,2,3)));
+  &gt; [1,2,3,4]
 </code></pre>
-<ul>
-<li><code>bits_or(array&lt;long&gt; b1, array&lt;long&gt; b2, ..)</code> - Returns a logical OR given bitsets</li>
-</ul>
-<pre><code class="lang-sql">select unbits(bits_or(to_bits(array(1,4)),to_bits(array(2,3))));
-&gt; [1,2,3,4]
+</li>
+<li><p><code>bits_or(array&lt;long&gt; b1, array&lt;long&gt; b2, ..)</code> - Returns a logical OR given bitsets</p>
+<pre><code class="lang-sql">  select unbits(bits_or(to_bits(array(1,4)),to_bits(array(2,3))));
+  &gt; [1,2,3,4]
 </code></pre>
+</li>
+</ul>
 <h2 id="bitset-udaf">Bitset UDAF</h2>
 <ul>
 <li><code>bits_collect(int|long x)</code> - Returns a bitset in array<long></long></li>
 </ul>
 <h1 id="compression-functions">Compression functions</h1>
 <ul>
-<li><code>deflate(TEXT data [, const int compressionLevel])</code> - Returns a compressed BINARY obeject by using Deflater.
-The compression level must be in range [-1,9]</li>
-</ul>
-<pre><code class="lang-sql">select base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;));
-&gt; AA+=kaIM|WTt!+wbGAA
+<li><p><code>deflate(TEXT data [, const int compressionLevel])</code> - Returns a compressed BINARY object by using Deflater.
+The compression level must be in range [-1,9]</p>
+<pre><code class="lang-sql">  select base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;));
+  &gt; AA+=kaIM|WTt!+wbGAA
 </code></pre>
-<ul>
-<li><code>inflate(BINARY compressedData)</code> - Returns a decompressed STRING by using Inflater</li>
-</ul>
-<pre><code class="lang-sql">select inflate(unbase91(base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;))));
-&gt; aaaaaaaaaaaaaaaabbbbccc
+</li>
+<li><p><code>inflate(BINARY compressedData)</code> - Returns a decompressed STRING by using Inflater</p>
+<pre><code class="lang-sql">  select inflate(unbase91(base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;))));
+  &gt; aaaaaaaaaaaaaaaabbbbccc
 </code></pre>
+</li>
+</ul>
 <h1 id="map-functions">Map functions</h1>
 <h2 id="map-udfs">Map UDFs</h2>
 <ul>
@@ -1766,81 +1801,88 @@ The compression level must be in range [-1,9]</li>
 </ul>
 <h1 id="math-functions">Math functions</h1>
 <ul>
-<li><code>sigmoid(x)</code> - Returns 1.0 / (1.0 + exp(-x))</li>
+<li><code>sigmoid(x)</code> - Returns <code>1.0 / (1.0 + exp(-x))</code></li>
 </ul>
 <h1 id="text-processing-functions">Text processing functions</h1>
 <ul>
-<li><code>base91(binary)</code> - Convert the argument from binary to a BASE91 string</li>
-</ul>
-<pre><code class="lang-sql">select base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;));
-&gt; AA+=kaIM|WTt!+wbGAA
+<li><p><code>base91(binary)</code> - Convert the argument from binary to a BASE91 string</p>
+<pre><code class="lang-sql">  select base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;));
+  &gt; AA+=kaIM|WTt!+wbGAA
 </code></pre>
-<ul>
-<li><code>unbase91(string)</code> - Convert a BASE91 string to a binary</li>
-</ul>
-<pre><code class="lang-sql">select inflate(unbase91(base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;))));
-&gt; aaaaaaaaaaaaaaaabbbbccc
+</li>
+<li><p><code>unbase91(string)</code> - Convert a BASE91 string to a binary</p>
+<pre><code class="lang-sql">  select inflate(unbase91(base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;))));
+  &gt; aaaaaaaaaaaaaaaabbbbccc
 </code></pre>
-<ul>
-<li><code>normalize_unicode(string str [, string form])</code> - Transforms <code>str</code> with the specified normalization form. The <code>form</code> takes one of NFC (default), NFD, NFKC, or NFKD</li>
-</ul>
-<pre><code class="lang-sql">select normalize_unicode(&apos;&#xFF8A;&#xFF9D;&#xFF76;&#xFF78;&#xFF76;&#xFF85;&apos;,&apos;NFKC&apos;);
-&gt; &#x30CF;&#x30F3;&#x30AB;&#x30AF;&#x30AB;&#x30CA;
+</li>
+<li><p><code>normalize_unicode(string str [, string form])</code> - Transforms <code>str</code> with the specified normalization form. The <code>form</code> takes one of NFC (default), NFD, NFKC, or NFKD</p>
+<pre><code class="lang-sql">  select normalize_unicode(&apos;&#xFF8A;&#xFF9D;&#xFF76;&#xFF78;&#xFF76;&#xFF85;&apos;,&apos;NFKC&apos;);
+  &gt; &#x30CF;&#x30F3;&#x30AB;&#x30AF;&#x30AB;&#x30CA;
 
-select normalize_unicode(&apos;&#x3231;&#x3327;&#x3326;&#x2162;&apos;,&apos;NFKC&apos;);
-&gt; (&#x682A;)&#x30C8;&#x30F3;&#x30C9;&#x30EB;III
+  select normalize_unicode(&apos;&#x3231;&#x3327;&#x3326;&#x2162;&apos;,&apos;NFKC&apos;);
+  &gt; (&#x682A;)&#x30C8;&#x30F3;&#x30C9;&#x30EB;III
 </code></pre>
-<ul>
+</li>
 <li><p><code>split_words(string query [, string regex])</code> - Returns an array<text> containing splitted strings</text></p>
 </li>
 <li><p><code>is_stopword(string word)</code> - Returns whether English stopword or not</p>
 </li>
 <li><p><code>tokenize(string englishText [, boolean toLowerCase])</code> - Returns words in array<string></string></p>
 </li>
-<li><p><code>tokenize_ja(String line [, const string mode = &quot;normal&quot;, const list&lt;string&gt; stopWords, const list&lt;string&gt; stopTags])</code> - returns tokenized strings in array<string></string></p>
+<li><p><code>tokenize_ja(String line [, const string mode = &quot;normal&quot;, const list&lt;string&gt; stopWords, const list&lt;string&gt; stopTags])</code> - returns tokenized strings in array<string>. Refer <a href="tokenizer.html">this article</a> for detail.</string></p>
+<pre><code class="lang-sql">  select tokenize_ja(&quot;kuromoji&#x3092;&#x4F7F;&#x3063;&#x305F;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&#x306E;&#x30C6;&#x30B9;&#x30C8;&#x3067;&#x3059;&#x3002;&#x7B2C;&#x4E8C;&#x5F15;&#x6570;&#x306B;&#x306F;normal/search/extended&#x3092;&#x6307;&#x5B9A;&#x3067;&#x304D;&#x307E;&#x3059;&#x3002;&#x30C7;&#x30D5;&#x30A9;&#x30EB;&#x30C8;&#x3067;&#x306F;normal&#x30E2;&#x30FC;&#x30C9;&#x3067;&#x3059;&#x3002;&quot;);
+
+  &gt; [&quot;kuromoji&quot;,&quot;&#x4F7F;&#x3046;&quot;,&quot;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&quot;,&quot;&#x30C6;&#x30B9;&#x30C8;&quot;,&quot;&#x7B2C;&quot;,&quot;&#x4E8C;&quot;,&quot;&#x5F15;&#x6570;&quot;,&quot;normal&quot;,&quot;search&quot;,&quot;extended&quot;,&quot;&#x6307;&#x5B9A;&quot;,&quot;&#x30C7;&#x30D5;&#x30A9;&#x30EB;&#x30C8;&quot;,&quot;normal&quot;,&quot; &#x30E2;&#x30FC;&#x30C9;&quot;]
+</code></pre>
 </li>
 </ul>
-<pre><code class="lang-sql">select tokenize_ja(&quot;kuromoji&#x3092;&#x4F7F;&#x3063;&#x305F;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&#x306E;&#x30C6;&#x30B9;&#x30C8;&#x3067;&#x3059;&#x3002;&#x7B2C;&#x4E8C;&#x5F15;&#x6570;&#x306B;&#x306F;normal/search/extended&#x3092;&#x6307;&#x5B9A;&#x3067;&#x304D;&#x307E;&#x3059;&#x3002;&#x30C7;&#x30D5;&#x30A9;&#x30EB;&#x30C8;&#x3067;&#x306F;normal&#x30E2;&#x30FC;&#x30C9;&#x3067;&#x3059;&#x3002;&quot;);
-
-&gt; [&quot;kuromoji&quot;,&quot;&#x4F7F;&#x3046;&quot;,&quot;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&quot;,&quot;&#x30C6;&#x30B9;&#x30C8;&quot;,&quot;&#x7B2C;&quot;,&quot;&#x4E8C;&quot;,&quot;&#x5F15;&#x6570;&quot;,&quot;normal&quot;,&quot;search&quot;,&quot;extended&quot;,&quot;&#x6307;&#x5B9A;&quot;,&quot;&#x30C7;&#x30D5;&#x30A9;&#x30EB;&#x30C8;&quot;,&quot;normal&quot;,&quot; &#x30E2;&#x30FC;&#x30C9;&quot;]
-</code></pre>
-<p><a href="https://github.com/myui/hivemall/wiki/Tokenizer" target="_blank">https://github.com/myui/hivemall/wiki/Tokenizer</a></p>
 <h1 id="other-functions">Other functions</h1>
 <ul>
 <li><p><code>convert_label(const int|const float)</code> - Convert from -1|1 to 0.0f|1.0f, or from 0.0f|1.0f to -1|1</p>
 </li>
-<li><p><code>each_top_k(int K, Object group, double cmpKey, *)</code> - Returns top-K values (or tail-K values when k is less than 0)</p>
+<li><p><code>each_top_k(int K, Object group, double cmpKey, *)</code> - Returns top-K values (or tail-K values when k is less than 0). Refer <a href="topk.html">this article</a> for detail.</p>
+</li>
+<li><p><code>generate_series(const int|bigint start, const int|bigint end)</code> - Generate a series of values, from start to end</p>
+<pre><code class="lang-sql">  <span class="hljs-keyword">select</span> generate_series(<span class="hljs-number">1</span>,<span class="hljs-number">9</span>);
+
+  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+</code></pre>
+<p>  A similar function to PostgreSQL&apos;s <code>generate_serics</code>.
+  <a href="http://www.postgresql.org/docs/current/static/functions-srf.html" target="_blank">http://www.postgresql.org/docs/current/static/functions-srf.html</a></p>
+</li>
+<li><p><code>x_rank(KEY)</code> - Generates a pseudo sequence number starting from 1 for each key</p>
 </li>
 </ul>
-<p><a href="https://github.com/myui/hivemall/wiki/Efficient-Top-k-computation-on-Apache-Hive-using-Hivemall-UDTF" target="_blank">https://github.com/myui/hivemall/wiki/Efficient-Top-k-computation-on-Apache-Hive-using-Hivemall-UDTF</a></p>
-<ul>
-<li><code>generate_series(const int|bigint start, const int|bigint end)</code> - Generate a series of values, from start to end</li>
-</ul>
-<pre><code class="lang-sql">WITH dual as (
-  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span>
-)
-<span class="hljs-keyword">select</span> generate_series(<span class="hljs-number">1</span>,<span class="hljs-number">9</span>)
-<span class="hljs-keyword">from</span> dual;
+<p><div id="page-footer"><hr><!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-</code></pre>
-<p>A similar function to PostgreSQL&apos;s <code>generate_serics</code>.
-<a href="http://www.postgresql.org/docs/current/static/functions-srf.html" target="_blank">http://www.postgresql.org/docs/current/static/functions-srf.html</a></p>
-<ul>
-<li><code>x_rank(KEY)</code> - Generates a pseudo sequence number starting from 1 for each key
-<div id="page-footer"><hr><p><sub><font color="gray">
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p><sub><font color="gray">
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
-</div></li>
-</ul>
+</div></p>
 
                                 
                                 </section>
@@ -1874,7 +1916,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List of generic Hivemall functions","level":"2.1","depth":1,"next":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"previous":{"title":"Map-side Join causes ClassCastException on Tez","level":"1.5.5","depth":2,"path":"troubleshooting/mapjoin_classcastex.md","ref":"troubleshooting/mapjoin_classcastex.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/generic_funcs.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of generic Hivemall functions","level":"2.1","depth":1,"next":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"previous":{"title":"Map-side Join causes ClassCastException on Tez","level":"1.5.5","depth":2,"path":"troubleshooting/mapjoin_classcastex.md","ref":"troubleshooting/mapjoin_classcastex.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/generic_funcs.md","mtime":"2016-11-17T11:12:15.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-17T12:16:14.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

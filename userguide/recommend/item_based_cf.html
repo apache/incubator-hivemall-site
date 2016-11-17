@@ -999,6 +999,21 @@
             
         </li>
     
+        <li class="chapter " data-level="5.6" data-path="../binaryclass/titanic_rf.html">
+            
+                <a href="../binaryclass/titanic_rf.html">
+            
+                    
+                        <b>5.6.</b>
+                    
+                    Kaggle Titanic Tutorial
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1798,7 +1813,7 @@
 <p><strong>Note:</strong> <em>Better to avoid too old transactions because those information would be outdated though an enough number of transactions is required for recommendation.</em></p>
 <h3 id="22-creating-cooccurrence-table">2.2. Creating cooccurrence table</h3>
 <p><strong>Caution:</strong> <em>Item-Item cooccurrence matrix is a symmetric matrix that has the number of total occurrence for each diagonal element . If the size of items are <code>k</code>, then the size of expected matrix is <code>k * (k - 1) / 2</code>, usually a very large one.</em></p>
-<p><em>Better to use <a href="https://github.com/myui/hivemall/wiki/Item-based-Collaborative-Filtering#limiting-size-of-elements-in-cooccurrence_upper_triangular" target="_blank">2.2.2.</a> instead of <a href="https://github.com/myui/hivemall/wiki/Item-based-Collaborative-Filtering#221-create-cooccurrence-table-directly" target="_blank">2.2.1.</a> for creating a <code>cooccurrence</code> table where dataset is large.</em></p>
+<p><em>Better to use <a href="#222-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">2.2.2.</a> instead of <a href="#221-create-cooccurrence-table-directly">2.2.1.</a> for creating a <code>cooccurrence</code> table where dataset is large.</em></p>
 <h3 id="221-create-cooccurrence-table-directly">2.2.1. Create cooccurrence table directly</h3>
 <pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence <span class="hljs-keyword">as</span> 
 <span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence</span>
@@ -1937,7 +1952,7 @@ t2 <span class="hljs-keyword">as</span> (
 <h2 id="3-computing-item-similarity-scores">3. Computing Item similarity scores</h2>
 <p>Item-Item similarity computation is known to be computation complexity <code>O(n^2)</code> where <code>n</code> is the number of items.
 Depending on your cluster size and your dataset, the optimal solution differs.</p>
-<p><strong>Note:</strong> <em>Better to use <a href="https://github.com/myui/hivemall/wiki/Item-based-Collaborative-Filtering#311-similarity-computation-using-the-symmetric-property-of-item-similarity-matrix" target="_blank">3.1.1.</a> scheme where dataset is large.</em></p>
+<p><strong>Note:</strong> <em>Better to use <a href="#311-similarity-computation-using-the-symmetric-property-of-item-similarity-matrix">3.1.1.</a> scheme where dataset is large.</em></p>
 <h3 id="31-shuffle-heavy-similarity-computation">3.1. Shuffle heavy similarity computation</h3>
 <p>This version involves 3-way joins w/ large data shuffle; However, this version works in parallel where a cluster has enough task slots.</p>
 <pre><code class="lang-sql">WITH similarity as (
@@ -2258,7 +2273,25 @@ topk <span class="hljs-keyword">as</span> (
 <span class="hljs-keyword">from</span> 
   topk;
 </code></pre>
-<p><div id="page-footer"><hr><p><sub><font color="gray">
+<p><div id="page-footer"><hr><!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p><sub><font color="gray">
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
@@ -2295,7 +2328,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"next":{"title":"News20 related article recommendation Tutorial","level":"8.2","depth":1,"path":"recommend/news20.md","ref":"recommend/news20.md","articles":[{"title":"Data preparation","level":"8.2.1","depth":2,"path":"multiclass/news20_dataset.md","ref":"multiclass/news20_dataset.md","articles":[]},{"title":"LSH/Minhash and Jaccard Similarity","level":"8.2.2","depth":2,"path":"recommend/news20_jaccard.md","ref":"recommend/news20_jaccard.md","articles":[]},{"title":"LSH/Minhash and Brute-Force Search","level":"8.2.3","depth":2,"path":"recommend/news20_knn.md","ref":"recommend/news20_knn.md","articles":[]},{"title":"kNN search using b-Bits Minhash","level":"8.2.4","depth":2,"path":"recommend/news20_bbit_minhash.md","ref":"recommend/news20_bbit_minhash.md","articles":[]}]},"previous":{"title":"Collaborative Filtering","level":"8.1","depth":1,"path":"recommend/cf.md","ref":"recommend/cf.md","articles":[{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"path":"recommend/item_based_cf.md","ref":"recommend/item_based_cf.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/item_based_cf.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"next":{"title":"News20 related article recommendation Tutorial","level":"8.2","depth":1,"path":"recommend/news20.md","ref":"recommend/news20.md","articles":[{"title":"Data preparation","level":"8.2.1","depth":2,"path":"multiclass/news20_dataset.md","ref":"multiclass/news20_dataset.md","articles":[]},{"title":"LSH/Minhash and Jaccard Similarity","level":"8.2.2","depth":2,"path":"recommend/news20_jaccard.md","ref":"recommend/news20_jaccard.md","articles":[]},{"title":"LSH/Minhash and Brute-Force Search","level":"8.2.3","depth":2,"path":"recommend/news20_knn.md","ref":"recommend/news20_knn.md","articles":[]},{"title":"kNN search using b-Bits Minhash","level":"8.2.4","depth":2,"path":"recommend/news20_bbit_minhash.md","ref":"recommend/news20_bbit_minhash.md","articles":[]}]},"previous":{"title":"Collaborative Filtering","level":"8.1","depth":1,"path":"recommend/cf.md","ref":"recommend/cf.md","articles":[{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"path":"recommend/item_based_cf.md","ref":"recommend/item_based_cf.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/item_based_cf.md","mtime":"2016-11-17T11:22:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-17T12:16:14.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -51,6 +51,7 @@
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/webspam.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/webspam_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/webspam_scw.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/binaryclass/titanic_rf.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/multiclass/news20.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/multiclass/news20_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/multiclass/news20_one-vs-the-rest_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>

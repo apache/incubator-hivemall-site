@@ -999,6 +999,21 @@
             
         </li>
     
+        <li class="chapter " data-level="5.6" data-path="../binaryclass/titanic_rf.html">
+            
+                <a href="../binaryclass/titanic_rf.html">
+            
+                    
+                        <b>5.6.</b>
+                    
+                    Kaggle Titanic Tutorial
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1651,8 +1666,7 @@
 -->
 <p><em>Caution: Factorization Machine is supported from Hivemall v0.4 or later.</em></p>
 <h1 id="data-preparation">Data preparation</h1>
-<p>First of all, please create <code>ratings</code> table described in the following page: 
-<a href="https://github.com/myui/hivemall/wiki/MovieLens-Dataset" target="_blank">https://github.com/myui/hivemall/wiki/MovieLens-Dataset</a></p>
+<p>First of all, please create <code>ratings</code> table described in <a href="movielens_dataset.html">this article</a>.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">use</span> movielens;
 
 <span class="hljs-keyword">SET</span> hivevar:<span class="hljs-keyword">seed</span>=<span class="hljs-number">31</span>;
@@ -1819,7 +1833,7 @@ CLUSTER <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</sp
                                               1000]
 </code></pre><h1 id="prediction">Prediction</h1>
 <pre><code class="lang-sql"><span class="hljs-comment">-- workaround for a bug </span>
-<span class="hljs-comment">-- https://github.com/myui/hivemall/wiki/Map-side-Join-causes-ClassCastException-on-Tez:-LazyBinaryArray-cannot-be-cast-to-%5BLjava.lang.Object;</span>
+<span class="hljs-comment">-- https://issues.apache.org/jira/browse/HIVE-11051</span>
 <span class="hljs-keyword">set</span> hive.mapjoin.optimized.hashtable=<span class="hljs-literal">false</span>;
 
 <span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> fm_predict;
@@ -1847,7 +1861,7 @@ CLUSTER <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</sp
 </blockquote>
 <h1 id="fast-factorization-machines-training-using-int-features">Fast Factorization Machines Training using Int Features</h1>
 <p>Training of Factorization Machines (FM) can be done more efficietly, in term of speed, by using INT features.
-In this section, we show how to run FM training by using int features, more specifically by using <a href="https://github.com/myui/hivemall/wiki/Feature-hashing" target="_blank">feature hashing</a>.</p>
+In this section, we show how to run FM training by using int features, more specifically by using <a href="../ft_engineering/hashing.html">feature hashing</a>.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:factor=<span class="hljs-number">10</span>;
 <span class="hljs-keyword">set</span> hivevar:iters=<span class="hljs-number">50</span>;
 
@@ -1887,7 +1901,25 @@ WITH predicted as (
   testing_fm <span class="hljs-keyword">as</span> t
   <span class="hljs-keyword">JOIN</span> predicted <span class="hljs-keyword">as</span> p <span class="hljs-keyword">on</span> (t.<span class="hljs-keyword">rowid</span> = p.<span class="hljs-keyword">rowid</span>);
 </code></pre>
-<p><div id="page-footer"><hr><p><sub><font color="gray">
+<p><div id="page-footer"><hr><!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<p><sub><font color="gray">
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
@@ -1924,7 +1956,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Factorization Machine","level":"8.3.3","depth":2,"next":{"title":"10-fold Cross Validation (Matrix Factorization)","level":"8.3.4","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"previous":{"title":"Matrix Factorization","level":"8.3.2","depth":2,"path":"recommend/movielens_mf.md","ref":"recommend/movielens_mf.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_fm.md","mtime":"2016-11-12T07:18:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-14T10:40:22.987Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Factorization Machine","level":"8.3.3","depth":2,"next":{"title":"10-fold Cross Validation (Matrix Factorization)","level":"8.3.4","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"previous":{"title":"Matrix Factorization","level":"8.3.2","depth":2,"path":"recommend/movielens_mf.md","ref":"recommend/movielens_mf.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_fm.md","mtime":"2016-11-17T11:25:17.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2016-11-17T12:16:14.647Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
