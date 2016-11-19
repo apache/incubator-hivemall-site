@@ -7,7 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Date-Revision-yyyymmdd" content="20161114" />
+    <meta name="Date-Revision-yyyymmdd" content="20161120" />
     <meta http-equiv="Content-Language" content="en" />
     <title>Apache Hivemall &#x2013; How to build</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.5.min.css" />
@@ -152,7 +152,7 @@
       <div id="breadcrumbs">
         <ul class="breadcrumb">
               
-                  <li id="publishDate">Last Published: 2016-11-14
+                  <li id="publishDate">Last Published: 2016-11-20
                       <span class="divider">|</span>
                    </li>
                   <li id="projectVersion">Version: 0.4.2-rc.2
@@ -206,8 +206,148 @@ $ mvn validate -Pxgboost
 $ mvn clean package
 </pre></div></div>
 <h1>Contribution guideline</h1>
-<p>to appear &#x2026;</p>
-<p><a class="externalLink" href="http://www.apache.org/foundation/getinvolved.html">Here</a> is a general guide for contributing to Apache Project.</p></div></div></div>
+<p>This guide documents the best way to make various types of contribution to Apache Hivemall, including what is required before submitting a code change.</p>
+<p>Contributing to Hivemall doesn&#x2019;t just mean writing code. Helping new users on the <a href="/mail-lists.html">mailing list</a>, testing releases, and improving documentation are also welcome. In fact, proposing significant code changes usually requires first gaining experience and credibility within the community by helping in other ways. This is also a guide to becoming an effective contributor. So, this guide organizes contributions in order that they should probably be considered by new contributors who intend to get involved long-term. Build some track record of helping others, rather than just open pull requests.</p></div></div></div>
+<div class="section">
+<h2><a name="Preparing_to_contribute_code_changes"></a>Preparing to contribute code changes</h2>
+<p>Before proceeding, contributors should evaluate if the proposed change is likely to be relevant, new and actionable:</p>
+
+<ul>
+  
+<li>Is it clear that code must change? Proposing a <a class="externalLink" href="https://issues.apache.org/jira/browse/HIVEMALL">JIRA</a> and pull request is appropriate only when a clear problem or change has been identified. If simply having trouble using Hivemall, use the <a href="/mail-lists.html">mailing lists</a> first, rather than consider filing a JIRA or proposing a change. When in doubt, email <a class="externalLink" href="mailto:user@hivemall.incubator.apache.org">user@hivemall.incubator.apache.org</a> first about the possible change</li>
+  
+<li>Search the <a class="externalLink" href="mailto:user@hivemall.incubator.apache.org">user@hivemall.incubator.apache.org</a> and <a class="externalLink" href="mailto:dev@hivemall.incubator.apache.org">dev@hivemall.incubator.apache.org</a> mailing list archives for related discussions. Often, the problem has been discussed before, with a resolution that doesn&#x2019;t require a code change, or recording what kinds of changes will not be accepted as a resolution.</li>
+  
+<li>Search JIRA for existing issues: <a class="externalLink" href="https://issues.apache.org/jira/browse/HIVEMALL">https://issues.apache.org/jira/browse/HIVEMALL</a> . Please search by typing keyword in search box.</li>
+</ul>
+<p><b>When you contribute code, you affirm that the contribution is your original work and that you license the work to the project under the project&#x2019;s open source license. Whether or not you state this explicitly, by submitting any copyrighted material via pull request, email, or other means you agree to license the material under the project&#x2019;s open source license and warrant that you have the legal authority to do so.</b></p>
+<div class="section">
+<h3><a name="JIRA"></a>JIRA</h3>
+<p>Generally, Hivemall uses JIRA to track logical issues, including bugs and improvements, and uses Github pull requests to manage the review and merge of specific code changes. That is, JIRAs are used to describe what should be fixed or changed, and high-level approaches, and pull requests describe how to implement that change in the project&#x2019;s source code. For example, major design decisions are discussed in JIRA.</p>
+
+<ol style="list-style-type: decimal">
+  
+<li>Find the existing <a class="externalLink" href="https://issues.apache.org/jira/browse/HIVEMALL">Hivemall</a> JIRA that the change pertains to.
+  
+<ul>
+    
+<li>Do not create a new JIRA if creating a change to address an existing issue in JIRA; add to the existing discussion and work instead</li>
+    
+<li>Look for existing pull requests that are linked from the JIRA, to understand if someone is already working on the JIRA</li>
+  </ul></li>
+  
+<li>If the change is new, then it usually needs a new JIRA. However, trivial changes, where the what should change is virtually the same as the how it should change do not require a JIRA. Example: &#x201c;Fix typos in Foo scaladoc&#x201d;</li>
+  
+<li>If required, create a new JIRA:
+  
+<ul>
+    
+<li>Provide a descriptive Title. &#x201c;Update web UI&#x201d; or &#x201c;Problem in scheduler&#x201d; is not sufficient. &#x201c;Inject the Hivemall aggregate functionality in RelationalGroupedDataset&#x201d; is good.</li>
+    
+<li>Write a detailed Description. For bug reports, this should ideally include a short reproduction of the problem. For new features, it may include a design document.</li>
+    
+<li>Set required fields:
+    
+<ul>
+      
+<li><i>Issue Type</i>. Generally, Bug, Improvement and Test are the only types used in Hivemall.</li>
+      
+<li><i>Affects Version</i>. For Bugs, assign at least one version that is known to exhibit the problem or need the change</li>
+      
+<li>Do not set the following fields:
+      
+<ul>
+        
+<li><i>Fix Version</i>. This is assigned by committers only when resolved.</li>
+        
+<li><i>Target Version</i>. This is assigned by committers to indicate a PR has been accepted for possible fix by the target version.</li>
+      </ul></li>
+    </ul></li>
+  </ul></li>
+  
+<li>If the change is a large change, consider inviting discussion on the issue at <a class="externalLink" href="mailto:dev@hivemall.incubator.apache.org">dev@hivemall.incubator.apache.org</a> first before proceeding to implement the change.</li>
+</ol></div>
+<div class="section">
+<h3><a name="Pull_Request"></a>Pull Request</h3>
+
+<ol style="list-style-type: decimal">
+  
+<li>Fork the Github repository at <a class="externalLink" href="http://github.com/apache/incubator-hivemall">http://github.com/apache/incubator-hivemall</a> if you haven&#x2019;t already</li>
+  
+<li>Clone your fork, create a new branch, push commits to the branch.</li>
+  
+<li>Consider whether documentation or tests need to be added or updated as part of the change, and add them as needed.</li>
+  
+<li>Run all tests with <tt>mvn test</tt> to verify that the code still compiles, passes tests, and passes style checks.</li>
+  
+<li>Open a pull request against the master branch of <a class="externalLink" href="https://github.com/apache/incubator-hivemall">apache/incubator-hivemall</a>. (Only in special cases would the PR be opened against other branches.)
+  
+<ul>
+    
+<li>The PR title should be of the form [HIVEMALL-xxxx] Title, where HIVEMALL-xxxx is the relevant JIRA number, Title may be the JIRA&#x2019;s title or a more specific title describing the PR itself.</li>
+    
+<li>If the pull request is still a work in progress, and so is not ready to be merged, but needs to be pushed to Github to facilitate review, then add [WIP] head of the title.</li>
+    
+<li>Consider identifying committers or other contributors who have worked on the code being changed. Find the file(s) in Github and click &#x201c;Blame&#x201d; to see a line-by-line annotation of who changed the code last. You can add @username in the PR description to ping them immediately.</li>
+    
+<li>Please state that the contribution is your original work and that you license the work to the project under the project&#x2019;s open source license.</li>
+    
+<li>The related JIRA, if any, will be marked as &#x201c;In Progress&#x201d; and your pull request will automatically be linked to it. There is no need to be the Assignee of the JIRA to work on it, though you are welcome to comment that you have begun work.</li>
+  </ul></li>
+  
+<li>The Jenkins automatic pull request builder will test your changes</li>
+  
+<li>After about some minutes, Jenkins will post the results of the test to the pull request, along with a link to the full results on Jenkins.</li>
+  
+<li>Watch for the results, and investigate and fix failures promptly
+  
+<ul>
+    
+<li>Fixes can simply be pushed to the same branch from which you opened your pull request</li>
+    
+<li>Jenkins will automatically re-test when new commits are pushed</li>
+    
+<li>If the tests failed for reasons unrelated to the change (e.g. Jenkins outage), then a committer can request a re-test with &#x201c;Jenkins, retest this please&#x201d;. Ask if you need a test restarted.</li>
+  </ul></li>
+</ol></div></div>
+<div class="section">
+<h2><a name="The_Review_Process"></a>The Review Process</h2>
+
+<ul>
+  
+<li>Other reviewers, including committers, may comment on the changes and suggest modifications. Changes can be added by simply pushing more commits to the same branch.</li>
+  
+<li>Lively, polite, rapid technical debate is encouraged from everyone in the community. The outcome may be a rejection of the entire change.</li>
+  
+<li>Reviewers can indicate that a change looks suitable for merging with a comment such as: &#x201c;I think this patch looks good&#x201d;. Hivemall uses the LGTM convention for indicating the strongest level of technical sign-off on a patch: simply comment with the word &#x201c;LGTM&#x201d;. It specifically means: &#x201c;I&#x2019;ve looked at this thoroughly and take as much ownership as if I wrote the patch myself&#x201d;. If you comment LGTM you will be expected to help with bugs or follow-up issues on the patch. Consistent, judicious use of LGTMs is a great way to gain credibility as a reviewer with the broader community.</li>
+  
+<li>Sometimes, other changes will be merged which conflict with your pull request&#x2019;s changes. The PR can&#x2019;t be merged until the conflict is resolved. This can be resolved with &#x201c;git fetch origin&#x201d; followed by &#x201c;git merge origin/master&#x201d; and resolving the conflicts by hand, then pushing the result to your branch.</li>
+  
+<li>Try to be responsive to the discussion rather than let days pass between replies</li>
+</ul></div>
+<div class="section">
+<h2><a name="Closing_your_pull_request__JIRA"></a>Closing your pull request / JIRA</h2>
+
+<ul>
+  
+<li>If a change is accepted, it will be merged and the pull request will automatically be closed, along with the associated JIRA if any
+  
+<ul>
+    
+<li>Note that in the rare case you are asked to open a pull request against a branch besides master, that you will actually have to close the pull request manually</li>
+    
+<li>The JIRA will be Assigned to the primary contributor to the change as a way of giving credit. If the JIRA isn&#x2019;t closed and/or Assigned promptly, comment on the JIRA.</li>
+  </ul></li>
+  
+<li>If your pull request is ultimately rejected, please close it promptly</li>
+  
+<li>If a pull request has gotten little or no attention, consider improving the description or the change itself and ping likely reviewers again after a few days. Consider proposing a change that&#x2019;s easier to include, like a smaller and/or less invasive change.</li>
+  
+<li>If it has been reviewed but not taken up after weeks, after soliciting review from the most relevant reviewers, or, has met with neutral reactions, the outcome may be considered a &#x201c;soft no&#x201d;. It is helpful to withdraw and close the PR in this case.</li>
+  
+<li>If a pull request is closed because it is deemed not the right approach to resolve a JIRA, then leave the JIRA open. However if the review makes it clear that the issue identified in the JIRA is not going to be resolved by any pull request (not a problem, won&#x2019;t fix) then also resolve the JIRA.</li>
+</ul>
+<p><a class="externalLink" href="http://www.apache.org/foundation/getinvolved.html">Here</a> is a general guide for contributing to Apache Project.</p></div>
                   </div>
           </div>
 
