@@ -30,6 +30,7 @@
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/ft_trans.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/vectorizer.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/quantify.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/ft_engineering/feature_selection.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/stat_eval.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/datagen.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/lr_datagen.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -83,4 +84,6 @@
 <url> <loc>http://hivemall.incubator.apache.org/recommend/movielens_fm.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/recommend/movielens_cv.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/anomaly/lof.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/spark/misc/misc.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/spark/misc/topk_join.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 </urlset>
