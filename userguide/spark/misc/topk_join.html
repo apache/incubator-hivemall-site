@@ -1577,6 +1577,36 @@
             
         </li>
     
+        <li class="chapter " data-level="9.2" data-path="../../anomaly/sst.html">
+            
+                <a href="../../anomaly/sst.html">
+            
+                    
+                        <b>9.2.</b>
+                    
+                    Change-Point Detection using Singular Spectrum Transformation (SST)
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.3" data-path="../../anomaly/changefinder.html">
+            
+                <a href="../../anomaly/changefinder.html">
+            
+                    
+                        <b>9.3.</b>
+                    
+                    ChangeFinder: Detecting Outlier and Change-Point Simultaneously
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
         
@@ -1584,12 +1614,84 @@
         
         
     
-        <li class="chapter " data-level="10.1" data-path="misc.html">
+        <li class="chapter " data-level="10.1" data-path="../binaryclass/">
+            
+                <a href="../binaryclass/">
+            
+                    
+                        <b>10.1.</b>
+                    
+                    Binary Classification
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="10.1.1" data-path="../binaryclass/a9a_df.html">
+            
+                <a href="../binaryclass/a9a_df.html">
+            
+                    
+                        <b>10.1.1.</b>
+                    
+                    a9a Tutorial for DataFrame
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="10.2" data-path="../binaryclass/">
+            
+                <a href="../binaryclass/">
+            
+                    
+                        <b>10.2.</b>
+                    
+                    Regression
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="10.2.1" data-path="../regression/e2006_df.html">
+            
+                <a href="../regression/e2006_df.html">
+            
+                    
+                        <b>10.2.1.</b>
+                    
+                    E2006-tfidf regression Tutorial for DataFrame
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="10.3" data-path="misc.html">
             
                 <a href="misc.html">
             
                     
-                        <b>10.1.</b>
+                        <b>10.3.</b>
                     
                     Generic features
             
@@ -1600,12 +1702,12 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="10.1.1" data-path="topk_join.html">
+        <li class="chapter active" data-level="10.3.1" data-path="topk_join.html">
             
                 <a href="topk_join.html">
             
                     
-                        <b>10.1.1.</b>
+                        <b>10.3.1.</b>
                     
                     Top-k Join processing
             
@@ -1732,129 +1834,66 @@
 <ul>
 <li>An input table (<code>leftDf</code>)</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">userId</th>
-<th style="text-align:center">group</th>
-<th style="text-align:center">x</th>
-<th style="text-align:center">y</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">b</td>
-<td style="text-align:center">0.3</td>
-<td style="text-align:center">0.3</td>
-</tr>
-<tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">0.5</td>
-<td style="text-align:center">0.4</td>
-</tr>
-<tr>
-<td style="text-align:center">3</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">0.1</td>
-<td style="text-align:center">0.8</td>
-</tr>
-<tr>
-<td style="text-align:center">4</td>
-<td style="text-align:center">c</td>
-<td style="text-align:center">0.2</td>
-<td style="text-align:center">0.2</td>
-</tr>
-<tr>
-<td style="text-align:center">5</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">0.1</td>
-<td style="text-align:center">0.4</td>
-</tr>
-<tr>
-<td style="text-align:center">6</td>
-<td style="text-align:center">b</td>
-<td style="text-align:center">0.8</td>
-<td style="text-align:center">0.3</td>
-</tr>
-</tbody>
-</table>
+<pre><code class="lang-scala">scala&gt; :paste
+<span class="hljs-keyword">val</span> leftDf = <span class="hljs-type">Seq</span>(
+  (<span class="hljs-number">1</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.3</span>),
+  (<span class="hljs-number">2</span>, <span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.4</span>),
+  (<span class="hljs-number">3</span>, <span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">0.1</span>, <span class="hljs-number">0.8</span>),
+  (<span class="hljs-number">4</span>, <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.2</span>),
+  (<span class="hljs-number">5</span>, <span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">0.1</span>, <span class="hljs-number">0.4</span>),
+  (<span class="hljs-number">6</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.8</span>)
+).toDF(<span class="hljs-string">&quot;userId&quot;</span>, <span class="hljs-string">&quot;group&quot;</span>, <span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>)
+
+scala&gt; leftDf.show
++------+-----+---+---+
+|userId|group|  x|  y|
++------+-----+---+---+
+|     <span class="hljs-number">1</span>|    b|<span class="hljs-number">0.3</span>|<span class="hljs-number">0.3</span>|
+|     <span class="hljs-number">2</span>|    a|<span class="hljs-number">0.5</span>|<span class="hljs-number">0.4</span>|
+|     <span class="hljs-number">3</span>|    a|<span class="hljs-number">0.1</span>|<span class="hljs-number">0.8</span>|
+|     <span class="hljs-number">4</span>|    c|<span class="hljs-number">0.2</span>|<span class="hljs-number">0.2</span>|
+|     <span class="hljs-number">5</span>|    a|<span class="hljs-number">0.1</span>|<span class="hljs-number">0.4</span>|
+|     <span class="hljs-number">6</span>|    b|<span class="hljs-number">0.8</span>|<span class="hljs-number">0.8</span>|
++------+-----+---+---+
+</code></pre>
 <ul>
 <li>A reference table (<code>rightDf</code>)</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">group</th>
-<th style="text-align:center">position</th>
-<th style="text-align:center">x</th>
-<th style="text-align:center">y</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">a</td>
-<td style="text-align:center">pos-1</td>
-<td style="text-align:center">0.0</td>
-<td style="text-align:center">0.1</td>
-</tr>
-<tr>
-<td style="text-align:center">a</td>
-<td style="text-align:center">pos-2</td>
-<td style="text-align:center">0.9</td>
-<td style="text-align:center">0.3</td>
-</tr>
-<tr>
-<td style="text-align:center">a</td>
-<td style="text-align:center">pos-3</td>
-<td style="text-align:center">0.3</td>
-<td style="text-align:center">0.2</td>
-</tr>
-<tr>
-<td style="text-align:center">b</td>
-<td style="text-align:center">pos-4</td>
-<td style="text-align:center">0.5</td>
-<td style="text-align:center">0.7</td>
-</tr>
-<tr>
-<td style="text-align:center">b</td>
-<td style="text-align:center">pos-5</td>
-<td style="text-align:center">0.4</td>
-<td style="text-align:center">0.2</td>
-</tr>
-<tr>
-<td style="text-align:center">c</td>
-<td style="text-align:center">pos-6</td>
-<td style="text-align:center">0.8</td>
-<td style="text-align:center">0.7</td>
-</tr>
-<tr>
-<td style="text-align:center">c</td>
-<td style="text-align:center">pos-7</td>
-<td style="text-align:center">0.3</td>
-<td style="text-align:center">0.3</td>
-</tr>
-<tr>
-<td style="text-align:center">c</td>
-<td style="text-align:center">pos-8</td>
-<td style="text-align:center">0.4</td>
-<td style="text-align:center">0.2</td>
-</tr>
-<tr>
-<td style="text-align:center">c</td>
-<td style="text-align:center">pos-9</td>
-<td style="text-align:center">0.3</td>
-<td style="text-align:center">0.8</td>
-</tr>
-</tbody>
-</table>
+<pre><code class="lang-scala">scala&gt; :paste
+<span class="hljs-keyword">val</span> rightDf = <span class="hljs-type">Seq</span>(
+  (<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;pos1&quot;</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.1</span>),
+  (<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;pos2&quot;</span>, <span class="hljs-number">0.9</span>, <span class="hljs-number">0.3</span>),
+  (<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;pos3&quot;</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.2</span>),
+  (<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;pos4&quot;</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.7</span>),
+  (<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;pos5&quot;</span>, <span class="hljs-number">0.4</span>, <span class="hljs-number">0.2</span>),
+  (<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;pos6&quot;</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.7</span>),
+  (<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;pos7&quot;</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.3</span>),
+  (<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;pos8&quot;</span>, <span class="hljs-number">0.4</span>, <span class="hljs-number">0.2</span>),
+  (<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;pos9&quot;</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.8</span>)
+).toDF(<span class="hljs-string">&quot;group&quot;</span>, <span class="hljs-string">&quot;position&quot;</span>, <span class="hljs-string">&quot;x&quot;</span>, <span class="hljs-string">&quot;y&quot;</span>)
+
+scala&gt; rightDf.show
++-----+--------+---+---+
+|group|position|  x|  y|
++-----+--------+---+---+
+|    a|    pos1|<span class="hljs-number">0.0</span>|<span class="hljs-number">0.1</span>|
+|    a|    pos2|<span class="hljs-number">0.9</span>|<span class="hljs-number">0.3</span>|
+|    a|    pos3|<span class="hljs-number">0.3</span>|<span class="hljs-number">0.2</span>|
+|    b|    pos4|<span class="hljs-number">0.5</span>|<span class="hljs-number">0.7</span>|
+|    b|    pos5|<span class="hljs-number">0.4</span>|<span class="hljs-number">0.2</span>|
+|    c|    pos6|<span class="hljs-number">0.8</span>|<span class="hljs-number">0.7</span>|
+|    c|    pos7|<span class="hljs-number">0.3</span>|<span class="hljs-number">0.3</span>|
+|    c|    pos8|<span class="hljs-number">0.4</span>|<span class="hljs-number">0.2</span>|
+|    c|    pos9|<span class="hljs-number">0.3</span>|<span class="hljs-number">0.8</span>|
++-----+--------+---+---+
+</code></pre>
 <p>In the two tables, the example computes the nearest <code>position</code> for <code>userId</code> in each <code>group</code>.
 The standard way using DataFrame window functions would be as follows:</p>
-<pre><code class="lang-scala"><span class="hljs-keyword">val</span> computeDistanceFunc =
+<pre><code class="lang-scala">scala&gt; paste:
+<span class="hljs-keyword">val</span> computeDistanceFunc =
   sqrt(pow(inputDf(<span class="hljs-string">&quot;x&quot;</span>) - masterDf(<span class="hljs-string">&quot;x&quot;</span>), lit(<span class="hljs-number">2.0</span>)) + pow(inputDf(<span class="hljs-string">&quot;y&quot;</span>) - masterDf(<span class="hljs-string">&quot;y&quot;</span>), lit(<span class="hljs-number">2.0</span>)))
 
-leftDf.join(
+<span class="hljs-keyword">val</span> resultDf = leftDf.join(
     right = rightDf,
     joinExpr = leftDf(<span class="hljs-string">&quot;group&quot;</span>) === rightDf(<span class="hljs-string">&quot;group&quot;</span>)
   )
@@ -1863,7 +1902,10 @@ leftDf.join(
   .where($<span class="hljs-string">&quot;rank&quot;</span> &lt;= <span class="hljs-number">1</span>)
 </code></pre>
 <p>You can use <code>top_k_join</code> as follows:</p>
-<pre><code class="lang-scala">leftDf.top_k_join(
+<pre><code class="lang-scala">scala&gt; paste:
+<span class="hljs-keyword">import</span> org.apache.spark.sql.hive.<span class="hljs-type">HivemallOps</span>._
+
+<span class="hljs-keyword">val</span> resultDf = leftDf.top_k_join(
     k = lit(<span class="hljs-number">-1</span>),
     right = rightDf,
     joinExpr = leftDf(<span class="hljs-string">&quot;group&quot;</span>) === rightDf(<span class="hljs-string">&quot;group&quot;</span>),
@@ -1871,96 +1913,94 @@ leftDf.join(
   )
 </code></pre>
 <p>The result is as follows:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">rank</th>
-<th style="text-align:center">score</th>
-<th style="text-align:center">userId</th>
-<th style="text-align:center">group</th>
-<th style="text-align:center">x</th>
-<th style="text-align:center">y</th>
-<th style="text-align:center">group</th>
-<th style="text-align:center">position</th>
-<th style="text-align:center">x</th>
-<th style="text-align:center">y</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">0.100</td>
-<td style="text-align:center">4</td>
-<td style="text-align:center">c</td>
-<td style="text-align:center">0.2</td>
-<td style="text-align:center">0.2</td>
-<td style="text-align:center">c</td>
-<td style="text-align:center">pos9</td>
-<td style="text-align:center">0.3</td>
-<td style="text-align:center">0.8</td>
-</tr>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">0.100</td>
-<td style="text-align:center">1</td>
-<td style="text-align:center">b</td>
-<td style="text-align:center">0.3</td>
-<td style="text-align:center">0.3</td>
-<td style="text-align:center">b</td>
-<td style="text-align:center">pos5</td>
-<td style="text-align:center">0.4</td>
-<td style="text-align:center">0.2</td>
-</tr>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">0.300</td>
-<td style="text-align:center">6</td>
-<td style="text-align:center">b</td>
-<td style="text-align:center">0.8</td>
-<td style="text-align:center">0.8</td>
-<td style="text-align:center">b</td>
-<td style="text-align:center">pos4</td>
-<td style="text-align:center">0.5</td>
-<td style="text-align:center">0.7</td>
-</tr>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">0.200</td>
-<td style="text-align:center">2</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">0.5</td>
-<td style="text-align:center">0.4</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">pos3</td>
-<td style="text-align:center">0.3</td>
-<td style="text-align:center">0.2</td>
-</tr>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">0.100</td>
-<td style="text-align:center">3</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">0.1</td>
-<td style="text-align:center">0.8</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">pos1</td>
-<td style="text-align:center">0.0</td>
-<td style="text-align:center">0.1</td>
-</tr>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">0.100</td>
-<td style="text-align:center">5</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">0.1</td>
-<td style="text-align:center">0.4</td>
-<td style="text-align:center">a</td>
-<td style="text-align:center">pos1</td>
-<td style="text-align:center">0.0</td>
-<td style="text-align:center">0.1</td>
-</tr>
-</tbody>
-</table>
+<pre><code class="lang-scala">scala&gt; resultDf.show
++----+-------------------+------+-----+---+---+-----+--------+---+---+
+|rank|              score|userId|group|  x|  y|group|position|  x|  y|
++----+-------------------+------+-----+---+---+-----+--------+---+---+
+|   <span class="hljs-number">1</span>|<span class="hljs-number">0.09999999999999998</span>|     <span class="hljs-number">4</span>|    c|<span class="hljs-number">0.2</span>|<span class="hljs-number">0.2</span>|    c|    pos9|<span class="hljs-number">0.3</span>|<span class="hljs-number">0.8</span>|
+|   <span class="hljs-number">1</span>|<span class="hljs-number">0.10000000000000003</span>|     <span class="hljs-number">1</span>|    b|<span class="hljs-number">0.3</span>|<span class="hljs-number">0.3</span>|    b|    pos5|<span class="hljs-number">0.4</span>|<span class="hljs-number">0.2</span>|
+|   <span class="hljs-number">1</span>|<span class="hljs-number">0.30000000000000004</span>|     <span class="hljs-number">6</span>|    b|<span class="hljs-number">0.8</span>|<span class="hljs-number">0.8</span>|    b|    pos4|<span class="hljs-number">0.5</span>|<span class="hljs-number">0.7</span>|
+|   <span class="hljs-number">1</span>|                <span class="hljs-number">0.2</span>|     <span class="hljs-number">2</span>|    a|<span class="hljs-number">0.5</span>|<span class="hljs-number">0.4</span>|    a|    pos3|<span class="hljs-number">0.3</span>|<span class="hljs-number">0.2</span>|
+|   <span class="hljs-number">1</span>|                <span class="hljs-number">0.1</span>|     <span class="hljs-number">3</span>|    a|<span class="hljs-number">0.1</span>|<span class="hljs-number">0.8</span>|    a|    pos1|<span class="hljs-number">0.0</span>|<span class="hljs-number">0.1</span>|
+|   <span class="hljs-number">1</span>|                <span class="hljs-number">0.1</span>|     <span class="hljs-number">5</span>|    a|<span class="hljs-number">0.1</span>|<span class="hljs-number">0.4</span>|    a|    pos1|<span class="hljs-number">0.0</span>|<span class="hljs-number">0.1</span>|
++----+-------------------+------+-----+---+---+-----+--------+---+---+
+</code></pre>
+<p><code>top_k_join</code> is also useful for Spark Vector users.
+If you&apos;d like to filter the records having the smallest squared distances between vectors, you can use <code>top_k_join</code> as follows;</p>
+<pre><code class="lang-scala">scala&gt; <span class="hljs-keyword">import</span> org.apache.spark.ml.linalg._
+scala&gt; <span class="hljs-keyword">import</span> org.apache.spark.sql.hive.<span class="hljs-type">HivemallOps</span>._
+scala&gt; paste:
+<span class="hljs-keyword">val</span> leftDf = <span class="hljs-type">Seq</span>(
+  (<span class="hljs-number">1</span>, <span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">1.0</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.6</span>, <span class="hljs-number">0.2</span>))),
+  (<span class="hljs-number">2</span>, <span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.2</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.4</span>, <span class="hljs-number">0.1</span>))),
+  (<span class="hljs-number">3</span>, <span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.8</span>, <span class="hljs-number">0.4</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.6</span>))),
+  (<span class="hljs-number">4</span>, <span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.2</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.4</span>, <span class="hljs-number">0.8</span>))),
+  (<span class="hljs-number">5</span>, <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.4</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.6</span>, <span class="hljs-number">0.2</span>))),
+  (<span class="hljs-number">6</span>, <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.3</span>, <span class="hljs-number">0.9</span>, <span class="hljs-number">1.0</span>, <span class="hljs-number">0.1</span>)))
+).toDF(<span class="hljs-string">&quot;userId&quot;</span>, <span class="hljs-string">&quot;group&quot;</span>, <span class="hljs-string">&quot;vector&quot;</span>)
+
+scala&gt; leftDf.show
++------+-----+-----------------+
+|userId|group|           vector|
++------+-----+-----------------+
+|     <span class="hljs-number">1</span>|    a|[<span class="hljs-number">1.0</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.6</span>,<span class="hljs-number">0.2</span>]|
+|     <span class="hljs-number">2</span>|    b|[<span class="hljs-number">0.2</span>,<span class="hljs-number">0.3</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.1</span>]|
+|     <span class="hljs-number">3</span>|    a|[<span class="hljs-number">0.8</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.2</span>,<span class="hljs-number">0.6</span>]|
+|     <span class="hljs-number">4</span>|    a|[<span class="hljs-number">0.2</span>,<span class="hljs-number">0.7</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.8</span>]|
+|     <span class="hljs-number">5</span>|    c|[<span class="hljs-number">0.4</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.6</span>,<span class="hljs-number">0.2</span>]|
+|     <span class="hljs-number">6</span>|    c|[<span class="hljs-number">0.3</span>,<span class="hljs-number">0.9</span>,<span class="hljs-number">1.0</span>,<span class="hljs-number">0.1</span>]|
++------+-----+-----------------+
+
+scala&gt; paste:
+<span class="hljs-keyword">val</span> rightDf = <span class="hljs-type">Seq</span>(
+  (<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;pos-1&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.3</span>, <span class="hljs-number">0.4</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.5</span>))),
+  (<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;pos-2&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.9</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.3</span>))),
+  (<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;pos-3&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">1.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.1</span>))),
+  (<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;pos-4&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.1</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.7</span>))),
+  (<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;pos-5&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.3</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.8</span>))),
+  (<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;pos-6&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.0</span>, <span class="hljs-number">0.7</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.6</span>))),
+  (<span class="hljs-string">&quot;b&quot;</span>, <span class="hljs-string">&quot;pos-7&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.1</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.4</span>, <span class="hljs-number">0.5</span>))),
+  (<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;pos-8&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.8</span>, <span class="hljs-number">0.3</span>, <span class="hljs-number">0.2</span>, <span class="hljs-number">0.1</span>))),
+  (<span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;pos-9&quot;</span>, <span class="hljs-type">Vectors</span>.dense(<span class="hljs-type">Array</span>(<span class="hljs-number">0.7</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">0.8</span>, <span class="hljs-number">0.3</span>)))
+  ).toDF(<span class="hljs-string">&quot;group&quot;</span>, <span class="hljs-string">&quot;position&quot;</span>, <span class="hljs-string">&quot;vector&quot;</span>)
+
+scala&gt; rightDf.show
++-----+--------+-----------------+
+|group|position|           vector|
++-----+--------+-----------------+
+|    a|   pos<span class="hljs-number">-1</span>|[<span class="hljs-number">0.3</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.3</span>,<span class="hljs-number">0.5</span>]|
+|    a|   pos<span class="hljs-number">-2</span>|[<span class="hljs-number">0.9</span>,<span class="hljs-number">0.2</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.3</span>]|
+|    a|   pos<span class="hljs-number">-3</span>|[<span class="hljs-number">1.0</span>,<span class="hljs-number">0.0</span>,<span class="hljs-number">0.3</span>,<span class="hljs-number">0.1</span>]|
+|    a|   pos<span class="hljs-number">-4</span>|[<span class="hljs-number">0.1</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.7</span>]|
+|    b|   pos<span class="hljs-number">-5</span>|[<span class="hljs-number">0.3</span>,<span class="hljs-number">0.3</span>,<span class="hljs-number">0.3</span>,<span class="hljs-number">0.8</span>]|
+|    b|   pos<span class="hljs-number">-6</span>|[<span class="hljs-number">0.0</span>,<span class="hljs-number">0.7</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.6</span>]|
+|    b|   pos<span class="hljs-number">-7</span>|[<span class="hljs-number">0.1</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.5</span>]|
+|    c|   pos<span class="hljs-number">-8</span>|[<span class="hljs-number">0.8</span>,<span class="hljs-number">0.3</span>,<span class="hljs-number">0.2</span>,<span class="hljs-number">0.1</span>]|
+|    c|   pos<span class="hljs-number">-9</span>|[<span class="hljs-number">0.7</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.3</span>]|
++-----+--------+-----------------+
+
+scala&gt; paste:
+<span class="hljs-keyword">val</span> sqDistFunc = udf { (v1: <span class="hljs-type">Vector</span>, v2: <span class="hljs-type">Vector</span>) =&gt; <span class="hljs-type">Vectors</span>.sqdist(v1, v2) }
+
+<span class="hljs-keyword">val</span> resultDf = leftDf.top_k_join(
+  k = lit(<span class="hljs-number">-1</span>),
+  right = rightDf,
+  joinExpr = leftDf(<span class="hljs-string">&quot;group&quot;</span>) === rightDf(<span class="hljs-string">&quot;group&quot;</span>),
+  score = sqDistFunc(leftDf(<span class="hljs-string">&quot;vector&quot;</span>), rightDf(<span class="hljs-string">&quot;vector&quot;</span>)).as(<span class="hljs-string">&quot;score&quot;</span>)
+)
+
+scala&gt; resultDf.show
++----+-------------------+------+-----+-----------------+-----+--------+-----------------+
+|rank|              score|userId|group|           vector|group|position|           vector|
++----+-------------------+------+-----+-----------------+-----+--------+-----------------+
+|   <span class="hljs-number">1</span>|<span class="hljs-number">0.13999999999999996</span>|     <span class="hljs-number">5</span>|    c|[<span class="hljs-number">0.4</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.6</span>,<span class="hljs-number">0.2</span>]|    c|   pos<span class="hljs-number">-9</span>|[<span class="hljs-number">0.7</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.3</span>]|
+|   <span class="hljs-number">1</span>|<span class="hljs-number">0.39999999999999997</span>|     <span class="hljs-number">6</span>|    c|[<span class="hljs-number">0.3</span>,<span class="hljs-number">0.9</span>,<span class="hljs-number">1.0</span>,<span class="hljs-number">0.1</span>]|    c|   pos<span class="hljs-number">-9</span>|[<span class="hljs-number">0.7</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.3</span>]|
+|   <span class="hljs-number">1</span>|<span class="hljs-number">0.42000000000000004</span>|     <span class="hljs-number">2</span>|    b|[<span class="hljs-number">0.2</span>,<span class="hljs-number">0.3</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.1</span>]|    b|   pos<span class="hljs-number">-7</span>|[<span class="hljs-number">0.1</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.5</span>]|
+|   <span class="hljs-number">1</span>|<span class="hljs-number">0.15000000000000002</span>|     <span class="hljs-number">1</span>|    a|[<span class="hljs-number">1.0</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.6</span>,<span class="hljs-number">0.2</span>]|    a|   pos<span class="hljs-number">-2</span>|[<span class="hljs-number">0.9</span>,<span class="hljs-number">0.2</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.3</span>]|
+|   <span class="hljs-number">1</span>|               <span class="hljs-number">0.27</span>|     <span class="hljs-number">3</span>|    a|[<span class="hljs-number">0.8</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.2</span>,<span class="hljs-number">0.6</span>]|    a|   pos<span class="hljs-number">-1</span>|[<span class="hljs-number">0.3</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.3</span>,<span class="hljs-number">0.5</span>]|
+|   <span class="hljs-number">1</span>|<span class="hljs-number">0.04000000000000003</span>|     <span class="hljs-number">4</span>|    a|[<span class="hljs-number">0.2</span>,<span class="hljs-number">0.7</span>,<span class="hljs-number">0.4</span>,<span class="hljs-number">0.8</span>]|    a|   pos<span class="hljs-number">-4</span>|[<span class="hljs-number">0.1</span>,<span class="hljs-number">0.8</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">0.7</span>]|
++----+-------------------+------+-----+-----------------+-----+--------+-----------------+
+</code></pre>
 <p><div id="page-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2016,7 +2056,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Top-k Join processing","level":"10.1.1","depth":2,"next":{"title":"Hivemall on Apache Spark","level":"11.1","depth":1,"url":"https://github.com/maropu/hivemall-spark","ref":"https://github.com/maropu/hivemall-spark","articles":[]},"previous":{"title":"Generic features","level":"10.1","depth":1,"path":"spark/misc/misc.md","ref":"spark/misc/misc.md","articles":[{"title":"Top-k Join processing","level":"10.1.1","depth":2,"path":"spark/misc/topk_join.md","ref":"spark/misc/topk_join.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"spark/misc/topk_join.md","mtime":"2017-02-02T02:45:26.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-02-02T05:07:49.882Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Top-k Join processing","level":"10.3.1","depth":2,"next":{"title":"Hivemall on Apache Spark","level":"11.1","depth":1,"url":"https://github.com/maropu/hivemall-spark","ref":"https://github.com/maropu/hivemall-spark","articles":[]},"previous":{"title":"Generic features","level":"10.3","depth":1,"path":"spark/misc/misc.md","ref":"spark/misc/misc.md","articles":[{"title":"Top-k Join processing","level":"10.3.1","depth":2,"path":"spark/misc/topk_join.md","ref":"spark/misc/topk_join.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"spark/misc/topk_join.md","mtime":"2017-02-05T01:22:00.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-02-23T13:06:39.809Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>
