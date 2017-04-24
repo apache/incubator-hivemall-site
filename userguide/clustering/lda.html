@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Mixing models for a better prediction convergence (MIX server) · Hivemall User Manual</title>
+        <title>Latent Dirichlet Allocation · Hivemall User Manual</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -97,10 +97,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="emr.html" />
+    <link rel="next" href="../geospatial/latlon.html" />
     
     
-    <link rel="prev" href="ensemble_learning.html" />
+    <link rel="prev" href="../anomaly/changefinder.html" />
     
 
     </head>
@@ -221,9 +221,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="./">
+        <li class="chapter " data-level="1.3" data-path="../tips/">
             
-                <a href="./">
+                <a href="../tips/">
             
                     
                         <b>1.3.</b>
@@ -237,9 +237,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1" data-path="addbias.html">
+        <li class="chapter " data-level="1.3.1" data-path="../tips/addbias.html">
             
-                <a href="addbias.html">
+                <a href="../tips/addbias.html">
             
                     
                         <b>1.3.1.</b>
@@ -252,9 +252,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.2" data-path="rand_amplify.html">
+        <li class="chapter " data-level="1.3.2" data-path="../tips/rand_amplify.html">
             
-                <a href="rand_amplify.html">
+                <a href="../tips/rand_amplify.html">
             
                     
                         <b>1.3.2.</b>
@@ -267,9 +267,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.3" data-path="rt_prediction.html">
+        <li class="chapter " data-level="1.3.3" data-path="../tips/rt_prediction.html">
             
-                <a href="rt_prediction.html">
+                <a href="../tips/rt_prediction.html">
             
                     
                         <b>1.3.3.</b>
@@ -282,9 +282,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4" data-path="ensemble_learning.html">
+        <li class="chapter " data-level="1.3.4" data-path="../tips/ensemble_learning.html">
             
-                <a href="ensemble_learning.html">
+                <a href="../tips/ensemble_learning.html">
             
                     
                         <b>1.3.4.</b>
@@ -297,9 +297,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3.5" data-path="mixserver.html">
+        <li class="chapter " data-level="1.3.5" data-path="../tips/mixserver.html">
             
-                <a href="mixserver.html">
+                <a href="../tips/mixserver.html">
             
                     
                         <b>1.3.5.</b>
@@ -312,9 +312,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.6" data-path="emr.html">
+        <li class="chapter " data-level="1.3.6" data-path="../tips/emr.html">
             
-                <a href="emr.html">
+                <a href="../tips/emr.html">
             
                     
                         <b>1.3.6.</b>
@@ -332,9 +332,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4" data-path="general_tips.html">
+        <li class="chapter " data-level="1.4" data-path="../tips/general_tips.html">
             
-                <a href="general_tips.html">
+                <a href="../tips/general_tips.html">
             
                     
                         <b>1.4.</b>
@@ -348,9 +348,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.4.1" data-path="rowid.html">
+        <li class="chapter " data-level="1.4.1" data-path="../tips/rowid.html">
             
-                <a href="rowid.html">
+                <a href="../tips/rowid.html">
             
                     
                         <b>1.4.1.</b>
@@ -363,9 +363,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.2" data-path="hadoop_tuning.html">
+        <li class="chapter " data-level="1.4.2" data-path="../tips/hadoop_tuning.html">
             
-                <a href="hadoop_tuning.html">
+                <a href="../tips/hadoop_tuning.html">
             
                     
                         <b>1.4.2.</b>
@@ -1652,9 +1652,9 @@
         
         
     
-        <li class="chapter " data-level="10.1" data-path="../clustering/lda.html">
+        <li class="chapter active" data-level="10.1" data-path="lda.html">
             
-                <a href="../clustering/lda.html">
+                <a href="lda.html">
             
                     
                         <b>10.1.</b>
@@ -1922,7 +1922,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Mixing models for a better prediction convergence (MIX server)</a>
+        <a href=".." >Latent Dirichlet Allocation</a>
     </h1>
 </div>
 
@@ -1955,62 +1955,295 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>In this page, we will explain how to use model mixing on Hivemall. The model mixing is useful for a better prediction performance and faster convergence in training classifiers. 
-You can find a brief explanation of the internal design of MIX protocol in <a href="http://www.slideshare.net/myui/hivemall-mix-internal" target="_blank">this slide</a>.</p>
+<p>Topic modeling is a way to analyze massive documents by clustering them into some <strong><em>topics</em></strong>. In particular, <strong>Latent Dirichlet Allocation</strong> (LDA) is one of the most popular topic modeling techniques; papers introduce the method are as follows:</p>
+<ul>
+<li>D. M. Blei, et al. <a href="http://www.jmlr.org/papers/v3/blei03a.html" target="_blank">Latent Dirichlet Allocation</a>. Journal of Machine Learning Research 3, pp. 993-1022, 2003.</li>
+<li>M. D. Hoffman, et al. <a href="https://papers.nips.cc/paper/3902-online-learning-for-latent-dirichlet-allocation" target="_blank">Online Learning for Latent Dirichlet Allocation</a>. NIPS 2010.</li>
+</ul>
+<p>Hivemall enables you to analyze your data such as, but not limited to, documents based on LDA. This page gives usage instructions of the feature.</p>
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
-<li><a href="#prerequisite">Prerequisite</a></li>
-<li><a href="#running-mix-server">Running Mix Server</a></li>
-<li><a href="#using-mix-protocol-through-hivemall">Using Mix Protocol through Hivemall</a></li>
-<li><a href="#the-effect-of-model-mixing">The effect of model mixing</a></li>
+<li><a href="#prepare-document-data">Prepare document data</a></li>
+<li><a href="#building-topic-models-and-finding-topic-words">Building Topic Models and Finding Topic Words</a></li>
+<li><a href="#predicting-topic-assignments-of-documents">Predicting Topic Assignments of Documents</a></li>
 </ul>
 
 </div><!-- tocstop -->
-<h1 id="prerequisite">Prerequisite</h1>
-<ul>
-<li><p>Hivemall v0.3 or later</p>
-<p>  We recommend to use Mixing in a cluster with fast networking. The current standard GbE is enough though.</p>
-</li>
-</ul>
-<h1 id="running-mix-server">Running Mix Server</h1>
-<p>First, put the following files on server(s) that are accessible from Hadoop worker nodes:</p>
-<ul>
-<li><a href="https://github.com/myui/hivemall/releases" target="_blank">target/hivemall-mixserv.jar</a></li>
-<li><a href="https://github.com/myui/hivemall/raw/master/bin/run_mixserv.sh" target="_blank">bin/run_mixserv.sh</a></li>
-</ul>
-<p><em>Caution: hivemall-mixserv.jar is large in size and thus only used for Mix servers.</em></p>
-<pre><code class="lang-sh"><span class="hljs-comment"># run a Mix Server</span>
-./run_mixserv.sh
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>This feature is supported from Hivemall v0.5-rc.1 or later.</p></div></div>
+<h1 id="prepare-document-data">Prepare document data</h1>
+<p>Assume that we already have a table <code>docs</code> which contains many documents as string format:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">docid</th>
+<th style="text-align:left">doc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:left">&quot;Fruits and vegetables are healthy.&quot;</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:left">&quot;I like apples, oranges, and avocados. I do not like the flu or colds.&quot;</td>
+</tr>
+<tr>
+<td style="text-align:center">...</td>
+<td style="text-align:left">...</td>
+</tr>
+</tbody>
+</table>
+<p>Hivemall has several functions which are particularly useful for text processing. More specifically, by using <code>tokenize()</code> and <code>is_stopword()</code>, you can immediately convert the documents to <a href="https://en.wikipedia.org/wiki/Bag-of-words_model" target="_blank">bag-of-words</a>-like format:</p>
+<pre><code class="lang-sql">with word_counts as (
+  <span class="hljs-keyword">select</span>
+    docid,
+    feature(word, <span class="hljs-keyword">count</span>(word)) <span class="hljs-keyword">as</span> word_count
+  <span class="hljs-keyword">from</span> docs t1 LATERAL <span class="hljs-keyword">VIEW</span> explode(tokenize(doc, <span class="hljs-literal">true</span>)) t2 <span class="hljs-keyword">as</span> word
+  <span class="hljs-keyword">where</span>
+    <span class="hljs-keyword">not</span> is_stopword(word)
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    docid, word
+)
+<span class="hljs-keyword">select</span> docid, collect_set(word_count) <span class="hljs-keyword">as</span> feature
+<span class="hljs-keyword">from</span> word_counts
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> docid
+;
 </code></pre>
-<p>We assume in this example that Mix servers are running on host01, host03 and host03.
-The default port used by Mix server is 11212 and the port is configurable through &quot;-port&quot; option of run_mixserv.sh. </p>
-<p>See <a href="https://github.com/myui/hivemall/blob/master/mixserv/src/main/java/hivemall/mix/server/MixServer.java#L90" target="_blank">MixServer.java</a> to get detail of the Mix server options.</p>
-<p>We recommended to use multiple MIX servers to get better MIX throughput (3-5 or so would be enough for normal cluster size). The MIX protocol of Hivemall is <em>horizontally scalable</em> by adding MIX server nodes.</p>
-<h1 id="using-mix-protocol-through-hivemall">Using Mix Protocol through Hivemall</h1>
-<p><a href="../getting_started/installation.html">Install Hivemall</a> on Hive.</p>
-<p><em>Make sure that <a href="https://github.com/myui/hivemall/raw/master/target/hivemall-with-dependencies.jar" target="_blank">hivemall-with-dependencies.jar</a> is used for installation. The jar contains minimum requirement jars (netty,jsr305) for running Hivemall on Hive.</em></p>
-<p>Now, we explain that how to use mixing in <a href="../binaryclass/kdd2010a_dataset.html">an example using KDD2010a dataset</a>.</p>
-<p>Enabling the mixing on Hivemall is simple as follows:</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">use</span> kdd2010;
-
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> kdd10a_pa1_model1 <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> 
- feature,
- <span class="hljs-keyword">cast</span>(voted_avg(weight) <span class="hljs-keyword">as</span> <span class="hljs-built_in">float</span>) <span class="hljs-keyword">as</span> weight
-<span class="hljs-keyword">from</span> 
- (<span class="hljs-keyword">select</span> 
-     train_pa1(addBias(features),label,<span class="hljs-string">&quot;-mix host01,host02,host03&quot;</span>) <span class="hljs-keyword">as</span> (feature,weight)
-  <span class="hljs-keyword">from</span> 
-     kdd10a_train_x3
- ) t 
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> feature;
+<table>
+<thead>
+<tr>
+<th style="text-align:center">docid</th>
+<th style="text-align:left">feature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:left">[&quot;fruits:1&quot;,&quot;healthy:1&quot;,&quot;vegetables:1&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:left">[&quot;apples:1&quot;,&quot;avocados:1&quot;,&quot;colds:1&quot;,&quot;flu:1&quot;,&quot;like:2&quot;,&quot;oranges:1&quot;]</td>
+</tr>
+</tbody>
+</table>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>It should be noted that, as long as your data can be represented as the feature format, LDA can be applied for arbitrary data as a generic clustering technique.</p></div></div>
+<h1 id="building-topic-models-and-finding-topic-words">Building Topic Models and Finding Topic Words</h1>
+<p>Each feature vector is input to the <code>train_lda()</code> function:</p>
+<pre><code class="lang-sql">with word_counts as (
+  <span class="hljs-keyword">select</span>
+    docid,
+    feature(word, <span class="hljs-keyword">count</span>(word)) <span class="hljs-keyword">as</span> word_count
+  <span class="hljs-keyword">from</span> docs t1 LATERAL <span class="hljs-keyword">VIEW</span> explode(tokenize(doc, <span class="hljs-literal">true</span>)) t2 <span class="hljs-keyword">as</span> word
+  <span class="hljs-keyword">where</span>
+    <span class="hljs-keyword">not</span> is_stopword(word)
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    docid, word
+)
+<span class="hljs-keyword">select</span>
+  train_lda(feature, <span class="hljs-string">&quot;-topic 2 -iter 20&quot;</span>) <span class="hljs-keyword">as</span> (label, word, lambda)
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span> docid, collect_set(word_count) <span class="hljs-keyword">as</span> feature
+  <span class="hljs-keyword">from</span> word_counts
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> docid
+  <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> docid
+) t
+;
 </code></pre>
-<p>All you have to do is just adding &quot;<em>-mix</em>&quot; training option as seen in the above query.</p>
-<h1 id="the-effect-of-model-mixing">The effect of model mixing</h1>
-<p>In my experience, the MIX improved the prediction accuracy of the above KDD2010a PA1 training on a 32 nodes cluster from 0.844835019263103 (w/o mix) to 0.8678096499719774 (w/ mix).</p>
-<p>The overhead of using the MIX protocol is <em>almost negligible</em> because the MIX communication is efficiently handled using asynchronous non-blocking I/O. Furthermore, the training time could be improved on certain settings because of the faster convergence due to mixing.
-<div id="page-footer"><hr><!--
+<p>Here, an option <code>-topic 2</code> specifies the number of topics we assume in the set of documents.</p>
+<p>Notice that <code>order by docid</code> ensures building a LDA model precisely in a single node. In case that you like to launch <code>train_lda</code> in parallel, following query hopefully returns similar (but might be slightly approximated) result:</p>
+<pre><code class="lang-sql">with word_counts as (
+  <span class="hljs-comment">-- same as above</span>
+)
+<span class="hljs-keyword">select</span>
+  label, word, <span class="hljs-keyword">avg</span>(lambda) <span class="hljs-keyword">as</span> lambda
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span>
+    train_lda(feature, <span class="hljs-string">&quot;-topic 2 -iter 20&quot;</span>) <span class="hljs-keyword">as</span> (label, word, lambda)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> docid, collect_set(f) <span class="hljs-keyword">as</span> feature
+    <span class="hljs-keyword">from</span> word_counts
+    <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> docid
+  ) t1
+) t2
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> label, word
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> lambda <span class="hljs-keyword">desc</span>
+;
+</code></pre>
+<p>Eventually, a new table <code>lda_model</code> is generated as shown below:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">label</th>
+<th style="text-align:center">word</th>
+<th style="text-align:center">lambda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">fruits</td>
+<td style="text-align:center">0.33372128</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">vegetables</td>
+<td style="text-align:center">0.33272517</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">healthy</td>
+<td style="text-align:center">0.33246377</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">flu</td>
+<td style="text-align:center">2.3617347E-4</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">apples</td>
+<td style="text-align:center">2.1898883E-4</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">oranges</td>
+<td style="text-align:center">1.8161473E-4</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">like</td>
+<td style="text-align:center">1.7666373E-4</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">avocados</td>
+<td style="text-align:center">1.726186E-4</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">colds</td>
+<td style="text-align:center">1.037139E-4</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">colds</td>
+<td style="text-align:center">0.16622013</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">avocados</td>
+<td style="text-align:center">0.16618845</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">oranges</td>
+<td style="text-align:center">0.1661859</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">like</td>
+<td style="text-align:center">0.16618414</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">apples</td>
+<td style="text-align:center">0.16616651</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">flu</td>
+<td style="text-align:center">0.16615893</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">healthy</td>
+<td style="text-align:center">0.0012059759</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">vegetables</td>
+<td style="text-align:center">0.0010818697</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">fruits</td>
+<td style="text-align:center">6.080827E-4</td>
+</tr>
+</tbody>
+</table>
+<p>In the table, <code>label</code> indicates a topic index, and <code>lambda</code> is a value which represents how each word is likely to characterize a topic. That is, we can say that, in terms of <code>lambda</code>, top-N words are the <strong><em>topic words</em></strong> of a topic.</p>
+<p>Obviously, we can observe that topic <code>0</code> corresponds to document <code>1</code>, and topic <code>1</code> represents words in document <code>2</code>.</p>
+<h1 id="predicting-topic-assignments-of-documents">Predicting Topic Assignments of Documents</h1>
+<p>Once you have constructed topic models as described before, a function <code>lda_predict()</code> allows you to predict topic assignments of documents.</p>
+<p>For example, if we consider the <code>docs</code> table, the exactly same set of documents as used for training, probability that a document is assigned to a topic can be computed by:</p>
+<pre><code class="lang-sql">with test as (
+  <span class="hljs-keyword">select</span>
+    docid,
+    word,
+    <span class="hljs-keyword">count</span>(word) <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+  <span class="hljs-keyword">from</span> docs t1 LATERAL <span class="hljs-keyword">VIEW</span> explode(tokenize(doc, <span class="hljs-literal">true</span>)) t2 <span class="hljs-keyword">as</span> word
+  <span class="hljs-keyword">where</span>
+    <span class="hljs-keyword">not</span> is_stopword(word)
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    docid, word
+)
+<span class="hljs-keyword">select</span>
+  t.docid,
+  lda_predict(t.word, t.<span class="hljs-keyword">value</span>, m.label, m.lambda, <span class="hljs-string">&quot;-topic 2&quot;</span>) <span class="hljs-keyword">as</span> probabilities
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">test</span> t
+  <span class="hljs-keyword">JOIN</span> lda_model m <span class="hljs-keyword">ON</span> (t.word = m.word)
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  t.docid
+;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">docid</th>
+<th style="text-align:left">probabilities (sorted by probabilities)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:left">[{&quot;label&quot;:0,&quot;probability&quot;:0.875},{&quot;label&quot;:1,&quot;probability&quot;:0.125}]</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:left">[{&quot;label&quot;:1,&quot;probability&quot;:0.9375},{&quot;label&quot;:0,&quot;probability&quot;:0.0625}]</td>
+</tr>
+</tbody>
+</table>
+<p>Importantly, an option <code>-topic</code> should be set to the same value as you set for training.</p>
+<p>Since the probabilities are sorted in descending order, a label of the most promising topic is easily obtained as:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> docid, probabilities[<span class="hljs-number">0</span>].label
+<span class="hljs-keyword">from</span> topic
+;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">docid</th>
+<th style="text-align:center">label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<p>Of course, using the different set of documents for prediction is possible. Predicting topic assignments of newly observed documents should be more realistic scenario.</p>
+<p><div id="page-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -2065,7 +2298,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.3.5","depth":2,"next":{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.3.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]},"previous":{"title":"Ensemble learning for stable prediction","level":"1.3.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"tips/mixserver.md","mtime":"2016-12-02T08:02:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-04-24T10:44:53.699Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Latent Dirichlet Allocation","level":"10.1","depth":1,"next":{"title":"Lat/Lon functions","level":"11.1","depth":1,"path":"geospatial/latlon.md","ref":"geospatial/latlon.md","articles":[]},"previous":{"title":"ChangeFinder: Detecting Outlier and Change-Point Simultaneously","level":"9.3","depth":1,"path":"anomaly/changefinder.md","ref":"anomaly/changefinder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"clustering/lda.md","mtime":"2017-04-20T07:32:10.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-04-24T10:44:53.699Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

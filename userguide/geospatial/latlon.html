@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Mixing models for a better prediction convergence (MIX server) · Hivemall User Manual</title>
+        <title>Lat/Lon functions · Hivemall User Manual</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -97,10 +97,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="emr.html" />
+    <link rel="next" href="../spark/getting_started/" />
     
     
-    <link rel="prev" href="ensemble_learning.html" />
+    <link rel="prev" href="../clustering/lda.html" />
     
 
     </head>
@@ -221,9 +221,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="./">
+        <li class="chapter " data-level="1.3" data-path="../tips/">
             
-                <a href="./">
+                <a href="../tips/">
             
                     
                         <b>1.3.</b>
@@ -237,9 +237,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1" data-path="addbias.html">
+        <li class="chapter " data-level="1.3.1" data-path="../tips/addbias.html">
             
-                <a href="addbias.html">
+                <a href="../tips/addbias.html">
             
                     
                         <b>1.3.1.</b>
@@ -252,9 +252,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.2" data-path="rand_amplify.html">
+        <li class="chapter " data-level="1.3.2" data-path="../tips/rand_amplify.html">
             
-                <a href="rand_amplify.html">
+                <a href="../tips/rand_amplify.html">
             
                     
                         <b>1.3.2.</b>
@@ -267,9 +267,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.3" data-path="rt_prediction.html">
+        <li class="chapter " data-level="1.3.3" data-path="../tips/rt_prediction.html">
             
-                <a href="rt_prediction.html">
+                <a href="../tips/rt_prediction.html">
             
                     
                         <b>1.3.3.</b>
@@ -282,9 +282,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.4" data-path="ensemble_learning.html">
+        <li class="chapter " data-level="1.3.4" data-path="../tips/ensemble_learning.html">
             
-                <a href="ensemble_learning.html">
+                <a href="../tips/ensemble_learning.html">
             
                     
                         <b>1.3.4.</b>
@@ -297,9 +297,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3.5" data-path="mixserver.html">
+        <li class="chapter " data-level="1.3.5" data-path="../tips/mixserver.html">
             
-                <a href="mixserver.html">
+                <a href="../tips/mixserver.html">
             
                     
                         <b>1.3.5.</b>
@@ -312,9 +312,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.6" data-path="emr.html">
+        <li class="chapter " data-level="1.3.6" data-path="../tips/emr.html">
             
-                <a href="emr.html">
+                <a href="../tips/emr.html">
             
                     
                         <b>1.3.6.</b>
@@ -332,9 +332,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4" data-path="general_tips.html">
+        <li class="chapter " data-level="1.4" data-path="../tips/general_tips.html">
             
-                <a href="general_tips.html">
+                <a href="../tips/general_tips.html">
             
                     
                         <b>1.4.</b>
@@ -348,9 +348,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.4.1" data-path="rowid.html">
+        <li class="chapter " data-level="1.4.1" data-path="../tips/rowid.html">
             
-                <a href="rowid.html">
+                <a href="../tips/rowid.html">
             
                     
                         <b>1.4.1.</b>
@@ -363,9 +363,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4.2" data-path="hadoop_tuning.html">
+        <li class="chapter " data-level="1.4.2" data-path="../tips/hadoop_tuning.html">
             
-                <a href="hadoop_tuning.html">
+                <a href="../tips/hadoop_tuning.html">
             
                     
                         <b>1.4.2.</b>
@@ -1674,9 +1674,9 @@
         
         
     
-        <li class="chapter " data-level="11.1" data-path="../geospatial/latlon.html">
+        <li class="chapter active" data-level="11.1" data-path="latlon.html">
             
-                <a href="../geospatial/latlon.html">
+                <a href="latlon.html">
             
                     
                         <b>11.1.</b>
@@ -1922,7 +1922,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Mixing models for a better prediction convergence (MIX server)</a>
+        <a href=".." >Lat/Lon functions</a>
     </h1>
 </div>
 
@@ -1955,61 +1955,122 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>In this page, we will explain how to use model mixing on Hivemall. The model mixing is useful for a better prediction performance and faster convergence in training classifiers. 
-You can find a brief explanation of the internal design of MIX protocol in <a href="http://www.slideshare.net/myui/hivemall-mix-internal" target="_blank">this slide</a>.</p>
+<p>This page introduces Geo-spatial functions that treats latitude and longitude.</p>
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
-<li><a href="#prerequisite">Prerequisite</a></li>
-<li><a href="#running-mix-server">Running Mix Server</a></li>
-<li><a href="#using-mix-protocol-through-hivemall">Using Mix Protocol through Hivemall</a></li>
-<li><a href="#the-effect-of-model-mixing">The effect of model mixing</a></li>
+<li><a href="#tile-number-function">Tile number function</a><ul>
+<li><a href="#usage">Usage</a></li>
+</ul>
+</li>
+<li><a href="#map-url-function">Map URL function</a><ul>
+<li><a href="#usage-1">Usage</a></li>
+</ul>
+</li>
 </ul>
 
 </div><!-- tocstop -->
-<h1 id="prerequisite">Prerequisite</h1>
-<ul>
-<li><p>Hivemall v0.3 or later</p>
-<p>  We recommend to use Mixing in a cluster with fast networking. The current standard GbE is enough though.</p>
-</li>
-</ul>
-<h1 id="running-mix-server">Running Mix Server</h1>
-<p>First, put the following files on server(s) that are accessible from Hadoop worker nodes:</p>
-<ul>
-<li><a href="https://github.com/myui/hivemall/releases" target="_blank">target/hivemall-mixserv.jar</a></li>
-<li><a href="https://github.com/myui/hivemall/raw/master/bin/run_mixserv.sh" target="_blank">bin/run_mixserv.sh</a></li>
-</ul>
-<p><em>Caution: hivemall-mixserv.jar is large in size and thus only used for Mix servers.</em></p>
-<pre><code class="lang-sh"><span class="hljs-comment"># run a Mix Server</span>
-./run_mixserv.sh
-</code></pre>
-<p>We assume in this example that Mix servers are running on host01, host03 and host03.
-The default port used by Mix server is 11212 and the port is configurable through &quot;-port&quot; option of run_mixserv.sh. </p>
-<p>See <a href="https://github.com/myui/hivemall/blob/master/mixserv/src/main/java/hivemall/mix/server/MixServer.java#L90" target="_blank">MixServer.java</a> to get detail of the Mix server options.</p>
-<p>We recommended to use multiple MIX servers to get better MIX throughput (3-5 or so would be enough for normal cluster size). The MIX protocol of Hivemall is <em>horizontally scalable</em> by adding MIX server nodes.</p>
-<h1 id="using-mix-protocol-through-hivemall">Using Mix Protocol through Hivemall</h1>
-<p><a href="../getting_started/installation.html">Install Hivemall</a> on Hive.</p>
-<p><em>Make sure that <a href="https://github.com/myui/hivemall/raw/master/target/hivemall-with-dependencies.jar" target="_blank">hivemall-with-dependencies.jar</a> is used for installation. The jar contains minimum requirement jars (netty,jsr305) for running Hivemall on Hive.</em></p>
-<p>Now, we explain that how to use mixing in <a href="../binaryclass/kdd2010a_dataset.html">an example using KDD2010a dataset</a>.</p>
-<p>Enabling the mixing on Hivemall is simple as follows:</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">use</span> kdd2010;
-
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> kdd10a_pa1_model1 <span class="hljs-keyword">as</span>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>This feature is supported from Hivemall v0.5-rc.1 or later.</p></div></div>
+<h1 id="tile-number-function">Tile number function</h1>
+<p><code>tile(double lat, double lon, int zoom)</code> returns a tile number in <code>xtile(lon,zoom) + ytile(lat,zoom) * 2^n</code>. The tile number is in range <code>[0,2^2z]</code>.</p>
+<p>Formulas to convert latitude and longitude into tile x,y coordinates are as follows:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mtable><mtr><mtd><mrow><mi>x</mi></mrow></mtd><mtd><mrow><mrow></mrow><mo>=</mo><mrow><mo fence="true">&#x230A;</mo><mfrac><mrow><mi>l</mi><mi>o</mi><mi>n</mi><mo>+</mo><mn>1</mn><mn>8</mn><mn>0</mn></mrow><mrow><mn>3</mn><mn>6</mn><mn>0</mn></mrow></mfrac><mo>&#x22C5;</mo><msup><mn>2</mn><mi>z</mi></msup><mo fence="true">&#x230B;</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>y</mi></mrow></mtd><mtd><mrow><mrow></mrow><mo>=</mo><mrow><mo fence="true">&#x230A;</mo><mrow><mo fence="true">(</mo><mn>1</mn><mo>&#x2212;</mo><mfrac><mrow><mi>ln</mi><mrow><mo fence="true">(</mo><mi>tan</mi><mrow><mo fence="true">(</mo><mi>l</mi><mi>a</mi><mi>t</mi><mo>&#x22C5;</mo><mfrac><mrow><mi>&#x3C0;</mi></mrow><mrow><mn>1</mn><mn>8</mn><mn>0</mn></mrow></mfrac><mo fence="true">)</mo></mrow><mo>+</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>cos</mi><mrow><mo fence="true">(</mo><mi>l</mi><mi>a</mi><mi>t</mi><mo>&#x22C5;</mo><mfrac><mrow><mi>&#x3C0;</mi></mrow><mrow><mn>1</mn><mn>8</mn><mn>0</mn></mrow></mfrac><mo fence="true">)</mo></mrow></mrow></mfrac><mo fence="true">)</mo></mrow></mrow><mrow><mi>&#x3C0;</mi></mrow></mfrac><mo fence="true">)</mo></mrow><mo>&#x22C5;</mo><msup><mn>2</mn><mrow><mi>z</mi><mo>&#x2212;</mo><mn>1</mn></mrow></msup><mo fence="true">&#x230B;</mo></mrow></mrow></mtd></mtr></mtable></mrow><annotation encoding="application/x-tex">
+\begin{aligned}
+x &amp;= \left\lfloor \frac{lon + 180}{360} \cdot 2^z \right\rfloor \\ \\
+y &amp;=
+    \left\lfloor
+        \left(
+            1 - \frac{
+                \ln \left(
+                    \tan \left(
+                        lat \cdot \frac{\pi}{180}
+                    \right) + \frac{1}{\cos \left( lat \cdot \frac{\pi}{180} \right)}
+                \right)
+            }{\pi}
+        \right) \cdot 2^{z - 1}
+    \right\rfloor
+\end{aligned}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:4.5200475em;"></span><span class="strut bottom" style="height:8.540095em;vertical-align:-4.0200475em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist"><span style="top:-3.0700475000000003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathit">x</span></span></span><span style="top:-1.2800175000000003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span style="top:1.8700124999999996em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">y</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="col-align-l"><span class="vlist"><span style="top:-3.0700475000000003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mrel">=</span><span class="minner displaystyle textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">&#x230A;</span></span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathrm">3</span><span class="mord mathrm">6</span><span class="mord mathrm">0</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.677em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">n</span><span class="mbin">+</span><span class="mord mathrm">1</span><span class="mord mathrm">8</span><span class="mord mathrm">0</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mbin">&#x22C5;</span><span class="mord"><span class="mord mathrm">2</span><span class="vlist"><span style="top:-0.413em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord mathit" style="margin-right:0.04398em;">z</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">&#x230B;</span></span></span></span></span><span style="top:1.8700125000000005em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mrel">=</span><span class="minner displaystyle textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:1.5050149999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A3;</span></span></span><span style="top:0.35001499999999997em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span style="top:-0.250985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span style="top:-0.851985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span style="top:-1.452985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span style="top:-2.053985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="minner displaystyle textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:1.50501em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239D;</span></span></span><span style="top:0.35000000000000014em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239C;</span></span></span><span style="top:-0.2500099999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239C;</span></span></span><span style="top:-1.4950299999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239B;</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mord mathrm">1</span><span class="mbin">&#x2212;</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathit" style="margin-right:0.03588em;">&#x3C0;</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-1.34003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mop">ln</span><span class="minner textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">(</span></span><span class="mop">tan</span><span class="minner textstyle uncramped"><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mbin">&#x22C5;</span><span class="mord reset-textstyle textstyle uncramped"><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.345em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mord mathrm">1</span><span class="mord mathrm">8</span><span class="mord mathrm">0</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.394em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord scriptstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">&#x3C0;</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size1">)</span></span></span><span class="mbin">+</span><span class="mord reset-textstyle textstyle uncramped"><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.5075000000000001em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped"><span class="mord scriptstyle cramped"><span class="mop">cos</span><span class="minner scriptstyle cramped"><span class="style-wrap reset-scriptstyle textstyle uncramped" style="top:0.07500000000000001em;">(</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mbin">&#x22C5;</span><span class="mord reset-scriptstyle scriptstyle cramped"><span class="sizing reset-size5 size5 reset-scriptstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.345em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle scriptscriptstyle cramped"><span class="mord scriptscriptstyle cramped"><span class="mord mathrm">1</span><span class="mord mathrm">8</span><span class="mord mathrm">0</span></span></span></span><span style="top:-0.22142857142857142em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle textstyle uncramped frac-line"></span></span><span style="top:-0.394em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle scriptscriptstyle cramped"><span class="mord scriptscriptstyle cramped"><span class="mord mathit" style="margin-right:0.03588em;">&#x3C0;</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="sizing reset-size5 size5 reset-scriptstyle textstyle uncramped nulldelimiter"></span></span><span class="style-wrap reset-scriptstyle textstyle uncramped" style="top:0.07500000000000001em;">)</span></span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.394em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord scriptstyle uncramped"><span class="mord mathrm">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">)</span></span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:1.50501em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A0;</span></span></span><span style="top:0.35000000000000014em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239F;</span></span></span><span style="top:-0.2500099999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239F;</span></span></span><span style="top:-1.4950299999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239E;</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span><span class="mbin">&#x22C5;</span><span class="mord"><span class="mord mathrm">2</span><span class="vlist"><span style="top:-0.41300000000000003em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped"><span class="mord scriptstyle uncramped"><span class="mord mathit" style="margin-right:0.04398em;">z</span><span class="mbin">&#x2212;</span><span class="mord mathrm">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:1.5050149999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A6;</span></span></span><span style="top:0.35001499999999997em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span style="top:-0.250985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span style="top:-0.851985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span style="top:-1.452985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span style="top:-2.053985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span></span></span></p>
+<p>Refer <a href="http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames" target="_blank">this page</a> for detail. Zoom level is well described in <a href="http://wiki.openstreetmap.org/wiki/Zoom_levels" target="_blank">this page</a>.</p>
+<h3 id="usage">Usage</h3>
+<pre><code class="lang-sql">WITH data as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">51.51202</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">17</span> <span class="hljs-keyword">as</span> zoom
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">51.51202</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">4</span> <span class="hljs-keyword">as</span> zoom
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">17</span> <span class="hljs-keyword">as</span> zoom
+)
 <span class="hljs-keyword">select</span> 
- feature,
- <span class="hljs-keyword">cast</span>(voted_avg(weight) <span class="hljs-keyword">as</span> <span class="hljs-built_in">float</span>) <span class="hljs-keyword">as</span> weight
+   tile(lat, lon, zoom) <span class="hljs-keyword">as</span> tile
 <span class="hljs-keyword">from</span> 
- (<span class="hljs-keyword">select</span> 
-     train_pa1(addBias(features),label,<span class="hljs-string">&quot;-mix host01,host02,host03&quot;</span>) <span class="hljs-keyword">as</span> (feature,weight)
-  <span class="hljs-keyword">from</span> 
-     kdd10a_train_x3
- ) t 
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> feature;
+   <span class="hljs-keyword">data</span>;
 </code></pre>
-<p>All you have to do is just adding &quot;<em>-mix</em>&quot; training option as seen in the above query.</p>
-<h1 id="the-effect-of-model-mixing">The effect of model mixing</h1>
-<p>In my experience, the MIX improved the prediction accuracy of the above KDD2010a PA1 training on a 32 nodes cluster from 0.844835019263103 (w/o mix) to 0.8678096499719774 (w/ mix).</p>
-<p>The overhead of using the MIX protocol is <em>almost negligible</em> because the MIX communication is efficiently handled using asynchronous non-blocking I/O. Furthermore, the training time could be improved on certain settings because of the faster convergence due to mixing.
+<table>
+<thead>
+<tr>
+<th style="text-align:center">tile</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1417478152</td>
+</tr>
+<tr>
+<td style="text-align:center">88</td>
+</tr>
+<tr>
+<td style="text-align:center">NULL</td>
+</tr>
+</tbody>
+</table>
+<h1 id="map-url-function">Map URL function</h1>
+<p><code>map_url(double lat, double lon, int zoom [, const string option])</code> function returns a tile URL of openstreetmap.com or maps.google.com.</p>
+<p>The 4th argument takes the following optional arguments:</p>
+<pre><code class="lang-sql">hive&gt; select map_url(1,1,1,&apos;-help&apos;);
+
+usage: map_url(double lat, double lon, int zoom [, const string option]) -
+       Returns a URL string [-help] [-t &lt;arg&gt;]
+ -help             Show function help
+ -t,--type &lt;arg&gt;   Map type [default: openstreetmap|osm,
+                   googlemaps|google]
+</code></pre>
+<h3 id="usage">Usage</h3>
+<pre><code class="lang-sql">WITH data as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">51.51202</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">17</span> <span class="hljs-keyword">as</span> zoom
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">51.51202</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">4</span> <span class="hljs-keyword">as</span> zoom
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-literal">null</span>, <span class="hljs-number">0.02435</span>, <span class="hljs-number">17</span>
+)
+<span class="hljs-keyword">select</span> 
+   map_url(lat,lon,zoom) <span class="hljs-keyword">as</span> osm_url,
+   map_url(lat,lon,zoom,<span class="hljs-string">&apos;-type googlemaps&apos;</span>) <span class="hljs-keyword">as</span> gmap_url
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">data</span>;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">osm_url</th>
+<th style="text-align:center">gmap_url</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><a href="http://tile.openstreetmap.org/17/65544/43582.png" target="_blank">http://tile.openstreetmap.org/17/65544/43582.png</a></td>
+<td style="text-align:center"><a href="https://www.google.com/maps/@51.51202,0.02435,17z" target="_blank">https://www.google.com/maps/@51.51202,0.02435,17z</a></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="http://tile.openstreetmap.org/4/8/5.png" target="_blank">http://tile.openstreetmap.org/4/8/5.png</a></td>
+<td style="text-align:center"><a href="https://www.google.com/maps/@51.51202,0.02435,4z" target="_blank">https://www.google.com/maps/@51.51202,0.02435,4z</a></td>
+</tr>
+<tr>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">NULL</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://tile.openstreetmap.org/17/65544/43582.png" alt="http://tile.openstreetmap.org/17/65544/43582.png" title="http://tile.openstreetmap.org/17/65544/43582.png">
 <div id="page-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2065,7 +2126,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.3.5","depth":2,"next":{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.3.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]},"previous":{"title":"Ensemble learning for stable prediction","level":"1.3.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"tips/mixserver.md","mtime":"2016-12-02T08:02:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-04-24T10:44:53.699Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Lat/Lon functions","level":"11.1","depth":1,"next":{"title":"Getting Started","level":"12.1","depth":1,"path":"spark/getting_started/README.md","ref":"spark/getting_started/README.md","articles":[{"title":"Installation","level":"12.1.1","depth":2,"path":"spark/getting_started/installation.md","ref":"spark/getting_started/installation.md","articles":[]}]},"previous":{"title":"Latent Dirichlet Allocation","level":"10.1","depth":1,"path":"clustering/lda.md","ref":"clustering/lda.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"geospatial/latlon.md","mtime":"2017-04-24T10:16:31.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-04-24T10:44:53.699Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
