@@ -2095,7 +2095,7 @@
     docid, word
 )
 <span class="hljs-keyword">select</span>
-  train_lda(feature, <span class="hljs-string">&quot;-topic 2 -iter 20&quot;</span>) <span class="hljs-keyword">as</span> (label, word, lambda)
+  train_lda(feature, <span class="hljs-string">&quot;-topics 2 -iter 20&quot;</span>) <span class="hljs-keyword">as</span> (label, word, lambda)
 <span class="hljs-keyword">from</span> (
   <span class="hljs-keyword">select</span> docid, collect_set(word_count) <span class="hljs-keyword">as</span> feature
   <span class="hljs-keyword">from</span> word_counts
@@ -2104,7 +2104,7 @@
 ) t
 ;
 </code></pre>
-<p>Here, an option <code>-topic 2</code> specifies the number of topics we assume in the set of documents.</p>
+<p>Here, an option <code>-topics 2</code> specifies the number of topics we assume in the set of documents.</p>
 <p>Notice that <code>order by docid</code> ensures building a LDA model precisely in a single node. In case that you like to launch <code>train_lda</code> in parallel, following query hopefully returns similar (but might be slightly approximated) result:</p>
 <pre><code class="lang-sql">with word_counts as (
   <span class="hljs-comment">-- same as above</span>
@@ -2113,7 +2113,7 @@
   label, word, <span class="hljs-keyword">avg</span>(lambda) <span class="hljs-keyword">as</span> lambda
 <span class="hljs-keyword">from</span> (
   <span class="hljs-keyword">select</span>
-    train_lda(feature, <span class="hljs-string">&quot;-topic 2 -iter 20&quot;</span>) <span class="hljs-keyword">as</span> (label, word, lambda)
+    train_lda(feature, <span class="hljs-string">&quot;-topics 2 -iter 20&quot;</span>) <span class="hljs-keyword">as</span> (label, word, lambda)
   <span class="hljs-keyword">from</span> (
     <span class="hljs-keyword">select</span> docid, collect_set(f) <span class="hljs-keyword">as</span> feature
     <span class="hljs-keyword">from</span> word_counts
@@ -2244,7 +2244,7 @@
 )
 <span class="hljs-keyword">select</span>
   t.docid,
-  lda_predict(t.word, t.<span class="hljs-keyword">value</span>, m.label, m.lambda, <span class="hljs-string">&quot;-topic 2&quot;</span>) <span class="hljs-keyword">as</span> probabilities
+  lda_predict(t.word, t.<span class="hljs-keyword">value</span>, m.label, m.lambda, <span class="hljs-string">&quot;-topics 2&quot;</span>) <span class="hljs-keyword">as</span> probabilities
 <span class="hljs-keyword">from</span>
   <span class="hljs-keyword">test</span> t
   <span class="hljs-keyword">JOIN</span> lda_model m <span class="hljs-keyword">ON</span> (t.word = m.word)
@@ -2270,7 +2270,7 @@
 </tr>
 </tbody>
 </table>
-<p>Importantly, an option <code>-topic</code> should be set to the same value as you set for training.</p>
+<p>Importantly, an option <code>-topics</code> is expected to be the same value as you set for training.</p>
 <p>Since the probabilities are sorted in descending order, a label of the most promising topic is easily obtained as:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">select</span> docid, probabilities[<span class="hljs-number">0</span>].label
 <span class="hljs-keyword">from</span> topic
@@ -2350,7 +2350,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Latent Dirichlet Allocation","level":"10.1","depth":1,"next":{"title":"Probabilistic Latent Semantic Analysis","level":"10.2","depth":1,"path":"clustering/plsa.md","ref":"clustering/plsa.md","articles":[]},"previous":{"title":"ChangeFinder: Detecting Outlier and Change-Point Simultaneously","level":"9.3","depth":1,"path":"anomaly/changefinder.md","ref":"anomaly/changefinder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"clustering/lda.md","mtime":"2017-04-20T07:32:10.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-05-08T08:42:42.226Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Latent Dirichlet Allocation","level":"10.1","depth":1,"next":{"title":"Probabilistic Latent Semantic Analysis","level":"10.2","depth":1,"path":"clustering/plsa.md","ref":"clustering/plsa.md","articles":[]},"previous":{"title":"ChangeFinder: Detecting Outlier and Change-Point Simultaneously","level":"9.3","depth":1,"path":"anomaly/changefinder.md","ref":"anomaly/changefinder.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"clustering/lda.md","mtime":"2017-05-09T08:04:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-05-09T08:21:43.808Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
