@@ -2007,10 +2007,56 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>This document describe how to do Item-based Collaborative Filtering using Hivemall.</p>
-<p><em>Caution: naive similarity computation is <code>O(n^2)</code> to compute all item-item pair similarity. <a href="https://en.wikipedia.org/wiki/MinHash#Jaccard_similarity_and_minimum_hash_values" target="_blank">MinHash</a> is an efficient scheme for computing jaccard similarity. Section 6 show how to use MinHash in Hivemall.</em></p>
-<h2 id="1-prepare-transaction-table">1. Prepare transaction table</h2>
-<p>Prepare following transaction table. We are generating <code>feature_vector</code> for each <code>item_id</code> based on cooccurrence of purchased items, a sort of bucket analysis.</p>
+<p>This document describes how to do Item-based Collaborative Filtering using Hivemall.</p>
+<!-- toc --><div id="toc" class="toc">
+
+<ul>
+<li><a href="#prepare-transaction-table">Prepare <code>transaction</code> table</a></li>
+<li><a href="#create-itemfeatures-table">Create <code>item_features</code> table</a><ul>
+<li><a href="#step-1-creating-userpurchased-table">Step 1: Creating <code>user_purchased</code> table</a></li>
+<li><a href="#step-2-creating-cooccurrence-table">Step 2: Creating <code>cooccurrence</code> table</a><ul>
+<li><a href="#step-2-1-create-cooccurrence-table-directly">Step 2-1: Create <code>cooccurrence</code> table directly</a></li>
+<li><a href="#step-2-2-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">Step 2-2: Create <code>cooccurrence</code> table from Upper Triangular Matrix of cooccurrence</a></li>
+<li><a href="#computing-cooccurrence-ratio-optional-step">Computing cooccurrence ratio (optional step)</a></li>
+</ul>
+</li>
+<li><a href="#step-3-creating-a-feature-vector-for-each-item">Step 3: Creating a feature vector for each item</a></li>
+</ul>
+</li>
+<li><a href="#compute-item-similarity-scores">Compute item similarity scores</a><ul>
+<li><a href="#option-1-parallel-computation-with-computationally-heavy-shuffling">Option 1: Parallel computation with computationally heavy shuffling</a><ul>
+<li><a href="#taking-advantage-of-the-symmetric-property-of-item-similarity-matrix">Taking advantage of the symmetric property of item similarity matrix</a></li>
+</ul>
+</li>
+<li><a href="#option-2-sequential-computation">Option 2: Sequential computation</a></li>
+</ul>
+</li>
+<li><a href="#item-based-recommendation">Item-based recommendation</a><ul>
+<li><a href="#step-1-computes-top-k-recently-purchased-items-for-each-user">Step 1: Computes top-k recently purchased items for each user</a></li>
+<li><a href="#step-2-recommend-top-k-items-based-on-users-recently-purchased-items">Step 2: Recommend top-k items based on users&apos; recently purchased items</a><ul>
+<li><a href="#cooccurrence-based">Cooccurrence-based</a></li>
+<li><a href="#similarity-based">Similarity-based</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#efficient-similarity-computation">Efficient similarity computation</a><ul>
+<li><a href="#minhash-compute-pseudo-jaccard-similarity">MinHash: Compute &quot;pseudo&quot; Jaccard similarity</a><ul>
+<li><a href="#compute-approximated-cosine-similarity-by-using-the-minhash-based-jaccard-similarity">Compute approximated cosine similarity by using the MinHash-based Jaccard similarity</a></li>
+</ul>
+</li>
+<li><a href="#dimsum-approximated-all-pairs-cosine-similarity-computation">DIMSUM: Approximated all-pairs &quot;Cosine&quot; similarity computation</a><ul>
+<li><a href="#create-itemsimilarity-from-upper-triangular-matrix">Create <code>item_similarity</code> from Upper Triangular Matrix</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div><!-- tocstop -->
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>Naive similarity computation is <code>O(n^2)</code> to compute all item-item pair similarity. In order to accelerate the procedure, Hivemall has an efficient scheme for computing Jaccard and/or cosine similarity <a href="#efficient-similarity-computation">as mentioned later</a>.</p></div></div>
+<h1 id="prepare-transaction-table">Prepare <code>transaction</code> table</h1>
+<p>Prepare following <code>transaction</code> table. We will generate <code>feature_vector</code> for each <code>itemid</code> based on cooccurrence of purchased items, a sort of bucket analysis.</p>
 <table>
 <thead>
 <tr>
@@ -2047,7 +2093,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="2-create-itemfeatures-table">2. Create item_features table</h2>
+<h1 id="create-itemfeatures-table">Create <code>item_features</code> table</h1>
 <p>What we want for creating a feature vector for each item is the following <code>cooccurrence</code> relation.</p>
 <table>
 <thead>
@@ -2095,21 +2141,21 @@
 <thead>
 <tr>
 <th style="text-align:center">itemid</th>
-<th style="text-align:center">feature_vector <code>array&lt;string&gt;</code></th>
+<th style="text-align:left">feature_vector <code>array&lt;string&gt;</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:center">583266</td>
-<td style="text-align:center">621056:9999, 583266:18</td>
+<td style="text-align:left">621056:9999, 583266:18</td>
 </tr>
 <tr>
 <td style="text-align:center">31231</td>
-<td style="text-align:center">13212:129, 31231:3, 9833:953</td>
+<td style="text-align:left">13212:129, 31231:3, 9833:953</td>
 </tr>
 <tr>
 <td style="text-align:center">...</td>
-<td style="text-align:center">...</td>
+<td style="text-align:left">...</td>
 </tr>
 </tbody>
 </table>
@@ -2118,27 +2164,27 @@
 <thead>
 <tr>
 <th style="text-align:center">itemid</th>
-<th style="text-align:center">feature_vector <code>array&lt;string&gt;</code></th>
+<th style="text-align:left">feature_vector <code>array&lt;string&gt;</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:center">583266</td>
-<td style="text-align:center">621056:<code>ln(9999+1)</code>, 583266:<code>ln(18+1)</code></td>
+<td style="text-align:left">621056:<code>ln(9999+1)</code>, 583266:<code>ln(18+1)</code></td>
 </tr>
 <tr>
 <td style="text-align:center">31231</td>
-<td style="text-align:center">13212:<code>ln(129+1)</code>, 31231:<code>ln(3+1)</code>, 9833:<code>ln(953+1)</code></td>
+<td style="text-align:left">13212:<code>ln(129+1)</code>, 31231:<code>ln(3+1)</code>, 9833:<code>ln(953+1)</code></td>
 </tr>
 <tr>
 <td style="text-align:center">...</td>
-<td style="text-align:center">...</td>
+<td style="text-align:left">...</td>
 </tr>
 </tbody>
 </table>
 <p>The following queries results in creating the above table.</p>
-<h3 id="21-creating-item-purchased-table">2.1. Creating Item purchased table</h3>
-<p>The following query creates a table that contains userid, itemid, and purchased_at. The table represents the last user-item contact (purchase) while the <code>transaction</code> table holds all contacts.</p>
+<h2 id="step-1-creating-userpurchased-table">Step 1: Creating <code>user_purchased</code> table</h2>
+<p>The following query creates a table that contains <code>userid</code>, <code>itemid</code>, and <code>purchased_at</code>. The table represents the last user-item contact (purchase) while the <code>transaction</code> table holds all contacts.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> user_purchased <span class="hljs-keyword">as</span>
 <span class="hljs-comment">-- INSERT OVERWRITE TABLE user_purchased</span>
 <span class="hljs-keyword">select</span> 
@@ -2153,11 +2199,10 @@
   userid, itemid
 ;
 </code></pre>
-<p><strong>Note:</strong> <em>Better to avoid too old transactions because those information would be outdated though an enough number of transactions is required for recommendation.</em></p>
-<h3 id="22-creating-cooccurrence-table">2.2. Creating cooccurrence table</h3>
-<p><strong>Caution:</strong> <em>Item-Item cooccurrence matrix is a symmetric matrix that has the number of total occurrence for each diagonal element . If the size of items are <code>k</code>, then the size of expected matrix is <code>k * (k - 1) / 2</code>, usually a very large one.</em></p>
-<p><em>Better to use <a href="#222-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">2.2.2.</a> instead of <a href="#221-create-cooccurrence-table-directly">2.2.1.</a> for creating a <code>cooccurrence</code> table where dataset is large.</em></p>
-<h3 id="221-create-cooccurrence-table-directly">2.2.1. Create cooccurrence table directly</h3>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>Better to avoid too old transactions because those information would be outdated though an enough number of transactions is required for recommendation.</p></div></div>
+<h2 id="step-2-creating-cooccurrence-table">Step 2: Creating <code>cooccurrence</code> table</h2>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>Item-item cooccurrence matrix is a symmetric matrix that has the number of total occurrence for each diagonal element. If the size of items is <code>k</code>, then the size of expected matrix is <code>k * (k - 1) / 2</code>, usually a very large one. Hence, it is better to use <a href="#step-2-2-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">step 2-2</a> instead of <a href="#step-2-1-create-cooccurrence-table-directly">step 2-1</a> for creating a <code>cooccurrence</code> table where dataset is large.</p></div></div>
+<h3 id="step-2-1-create-cooccurrence-table-directly">Step 2-1: Create <code>cooccurrence</code> table directly</h3>
 <pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence <span class="hljs-keyword">as</span> 
 <span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence</span>
 <span class="hljs-keyword">select</span>
@@ -2176,9 +2221,10 @@
 <span class="hljs-comment">--  cnt &gt;= 2 -- count(1) &gt;= 2</span>
 ;
 </code></pre>
-<p><strong>Caution:</strong> Note that specifying <code>having cnt &gt;= 2</code> has a drawback that item cooccurrence is not calculated where <code>cnt</code> is less than 2. It could result no recommended items for certain items. Please ignore <code>having cnt &gt;= 2</code> if the following computations finish in an acceptable/reasonable time.</p>
-<p><strong>Caution:</strong> <em>We ignore a purchase order in the following example. It means that the occurrence counts of <code>ItemA -&gt; ItemB</code> and <code>ItemB -&gt; ItemA</code> are assumed to be same. It is sometimes not a good idea e.g., for <code>Camera -&gt; SD card</code> and <code>SD card -&gt; Camera</code>.</em></p>
-<h3 id="222-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">2.2.2. Create cooccurrence table from Upper Triangular Matrix of cooccurrence</h3>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>Note that specifying <code>having cnt &gt;= 2</code> has a drawback that item cooccurrence is not calculated where <code>cnt</code> is less than 2. It could result no recommended items for certain items. Please ignore <code>having cnt &gt;= 2</code> if the following computations finish in an acceptable/reasonable time.</p></div></div>
+<p><br></p>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>We ignore a purchase order in the following example. It means that the occurrence counts of <code>ItemA -&gt; ItemB</code> and <code>ItemB -&gt; ItemA</code> are assumed to be same. It is sometimes not a good idea in terms of reasoning; for example, <code>Camera -&gt; SD card</code> and <code>SD card -&gt; Camera</code> need to be considered separately.</p></div></div>
+<h3 id="step-2-2-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">Step 2-2: Create <code>cooccurrence</code> table from Upper Triangular Matrix of cooccurrence</h3>
 <p>Better to create <a href="https://en.wikipedia.org/wiki/Triangular_matrix#Description" target="_blank">Upper Triangular Matrix</a> that has <code>itemid &gt; other</code> if resulting table is very large. No need to create Upper Triangular Matrix if your Hadoop cluster can handle the following instructions without considering it.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence_upper_triangular <span class="hljs-keyword">as</span> 
 <span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence_upper_triangular</span>
@@ -2203,8 +2249,9 @@
   <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
 ) t;
 </code></pre>
-<p><em>Note: <code>UNION ALL</code> <a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Union#LanguageManualUnion-UNIONwithinaFROMClause" target="_blank">required to be embedded</a> in Hive.</em></p>
-<h3 id="limiting-size-of-elements-in-cooccurrenceuppertriangular">Limiting size of elements in cooccurrence_upper_triangular</h3>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p><code>UNION ALL</code> <a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Union#LanguageManualUnion-UNIONwithinaFROMClause" target="_blank">required to be embedded</a> in Hive.</p></div></div>
+<h4 id="limiting-size-of-elements-in-cooccurrenceuppertriangular">Limiting size of elements in <code>cooccurrence_upper_triangular</code></h4>
+<p>Using only top-N frequently co-occurred item pairs allows you to reduce the size of <code>cooccurrence</code> table:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence_upper_triangular <span class="hljs-keyword">as</span>
 <span class="hljs-keyword">WITH</span> t1 <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
@@ -2255,7 +2302,7 @@ t2 <span class="hljs-keyword">as</span> (
 <span class="hljs-keyword">select</span> itemid, other, cnt
 <span class="hljs-keyword">from</span> t2;
 </code></pre>
-<h3 id="223-computing-cooccurrence-ratio-optional-step">2.2.3. Computing cooccurrence ratio (optional step)</h3>
+<h3 id="computing-cooccurrence-ratio-optional-step">Computing cooccurrence ratio (optional step)</h3>
 <p>You can optionally compute cooccurrence ratio as follows:</p>
 <pre><code class="lang-sql">WITH stats as (
   <span class="hljs-keyword">select</span> 
@@ -2279,7 +2326,7 @@ t2 <span class="hljs-keyword">as</span> (
 ;
 </code></pre>
 <p><code>l.cnt / r.totalcnt</code> represents a cooccurrence ratio of range <code>[0,1]</code>.</p>
-<h3 id="23-creating-a-feature-vector-for-each-item">2.3. creating a feature vector for each item</h3>
+<h2 id="step-3-creating-a-feature-vector-for-each-item">Step 3: Creating a feature vector for each item</h2>
 <pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_features
 <span class="hljs-keyword">SELECT</span>
   itemid,
@@ -2292,11 +2339,10 @@ t2 <span class="hljs-keyword">as</span> (
   itemid
 ;
 </code></pre>
-<h2 id="3-computing-item-similarity-scores">3. Computing Item similarity scores</h2>
-<p>Item-Item similarity computation is known to be computation complexity <code>O(n^2)</code> where <code>n</code> is the number of items.
-Depending on your cluster size and your dataset, the optimal solution differs.</p>
-<p><strong>Note:</strong> <em>Better to use <a href="#311-similarity-computation-using-the-symmetric-property-of-item-similarity-matrix">3.1.1.</a> scheme where dataset is large.</em></p>
-<h3 id="31-shuffle-heavy-similarity-computation">3.1. Shuffle heavy similarity computation</h3>
+<h1 id="compute-item-similarity-scores">Compute item similarity scores</h1>
+<p>Item-item similarity computation is known to be computational complexity <code>O(n^2)</code> where <code>n</code> is the number of items. We have two options to compute the similarities, and, depending on your cluster size and your dataset, the optimal solution differs. </p>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>If your dataset is large enough, better to choose <a href="#taking-advantage-of-the-symmetric-property-of-item-similarity-matrix">modified version of option 1</a>, which utilizes the symmetric property of similarity matrix.</p></div></div>
+<h2 id="option-1-parallel-computation-with-computationally-heavy-shuffling">Option 1: Parallel computation with computationally heavy shuffling</h2>
 <p>This version involves 3-way joins w/ large data shuffle; However, this version works in parallel where a cluster has enough task slots.</p>
 <pre><code class="lang-sql">WITH similarity as (
   <span class="hljs-keyword">select</span>
@@ -2326,8 +2372,8 @@ topk <span class="hljs-keyword">as</span> (
 <span class="hljs-keyword">from</span> 
   topk;
 </code></pre>
-<h3 id="311-similarity-computation-using-the-symmetric-property-of-item-similarity-matrix">3.1.1. Similarity computation using the symmetric property of Item similarity matrix</h3>
-<p>Note <code>item_similarity</code> is a similarity matrix. So, you can compute it from an upper triangular matrix as follows.</p>
+<h3 id="taking-advantage-of-the-symmetric-property-of-item-similarity-matrix">Taking advantage of the symmetric property of item similarity matrix</h3>
+<p>Notice that <code>item_similarity</code> is a symmetric matrix. So, you can compute it from an upper triangular matrix as follows.</p>
 <pre><code class="lang-sql">WITH cooccurrence_top100 as (
   <span class="hljs-keyword">select</span>
     each_top_k(
@@ -2375,8 +2421,8 @@ topk <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, similarity <span class="hljs-keyword">from</span> item_similarity_upper_triangler
 ) t;
 </code></pre>
-<h3 id="32-computation-heavy-similarity-computation">3.2. Computation heavy similarity computation</h3>
-<p>Alternatively, you can compute cosine similarity as follows. This version involves cross join and thus runs sequentially in a single task. However, it involves less shuffle when compared to 3.1.</p>
+<h2 id="option-2-sequential-computation">Option 2: Sequential computation</h2>
+<p>Alternatively, you can compute cosine similarity as follows. This version involves cross join and thus runs sequentially in a single task. However, it involves less shuffle compared to option 1.</p>
 <pre><code class="lang-sql">WITH similarity as (
   <span class="hljs-keyword">select</span>
    t1.itemid,
@@ -2448,10 +2494,10 @@ topk <span class="hljs-keyword">as</span> (
 </tr>
 </tbody>
 </table>
-<h2 id="4-item-based-recommendation">4. Item-based Recommendation</h2>
+<h1 id="item-based-recommendation">Item-based recommendation</h1>
 <p>This section introduces item-based recommendation based on recently purchased items by each user.</p>
-<p><strong>Caution:</strong> <em>It would better to ignore recommending some of items that user already purchased (only 1 time) while items that are purchased twice or more would be okey to be included in the recommendation list (e.g., repeatedly purchased daily necessities). So, you would need an item property table showing that each item is repeatedly purchased items or not.</em></p>
-<h3 id="41-computes-top-k-recently-purchaed-items-for-each-user">4.1. Computes top-k recently purchaed items for each user</h3>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>It would better to ignore recommending some of items that user already purchased (only 1 time) while items that are purchased twice or more would be okey to be included in the recommendation list (e.g., repeatedly purchased daily necessities). So, you would need an item property table showing that each item is repeatedly purchased items or not.</p></div></div>
+<h2 id="step-1-computes-top-k-recently-purchased-items-for-each-user">Step 1: Computes top-k recently purchased items for each user</h2>
 <p>First, prepare <code>recently_purchased_items</code> table as follows:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> recently_purchased_items
 <span class="hljs-keyword">select</span>
@@ -2470,7 +2516,9 @@ topk <span class="hljs-keyword">as</span> (
     user_id <span class="hljs-comment">-- Note CLUSTER BY is mandatory when using each_top_k</span>
 ) t;
 </code></pre>
-<h3 id="42-recommend-top-k-items-based-on-the-cooccurrence-for-each-users-recently-purchased-item">4.2. Recommend top-k items based on the cooccurrence for each user&apos;s recently purchased item</h3>
+<h2 id="step-2-recommend-top-k-items-based-on-users-recently-purchased-items">Step 2: Recommend top-k items based on users&apos; recently purchased items</h2>
+<p>In order to generate a list of recommended items, you can use either cooccurrence count or similarity as a relevance score.</p>
+<h3 id="cooccurrence-based">Cooccurrence-based</h3>
 <pre><code class="lang-sql">WITH topk as (
   <span class="hljs-keyword">select</span>
     each_top_k(
@@ -2506,7 +2554,7 @@ topk <span class="hljs-keyword">as</span> (
   userid
 ;
 </code></pre>
-<h3 id="43-recommend-top-k-items-based-on-the-cooccurrence-similarity-for-each-users-recently-purchased-item">4.3. Recommend top-k items based on the (cooccurrence) similarity for each user&apos;s recently purchased item</h3>
+<h3 id="similarity-based">Similarity-based</h3>
 <pre><code class="lang-sql">WITH topk as (
   <span class="hljs-keyword">select</span>
     each_top_k(
@@ -2542,7 +2590,9 @@ topk <span class="hljs-keyword">as</span> (
   userid
 ;
 </code></pre>
-<h2 id="5-pseudo-jaccard-similarity-computation-using-minhash">5. Pseudo Jaccard Similarity computation using MinHash</h2>
+<h1 id="efficient-similarity-computation">Efficient similarity computation</h1>
+<p>Since naive similarity computation takes <code>O(n^2)</code> computational complexity, utilizing a certain approximation scheme is practically important to improve efficiency and feasibility. In particular, Hivemall enables you to use one of two sophisticated approximation schemes, <a href="##minhash-compute-pseudo-jaccard-similarity">MinHash</a> and <a href="#dimsum-approximated-all-pairs-cosine-similarity-computation">DIMSUM</a>.</p>
+<h2 id="minhash-compute-pseudo-jaccard-similarity">MinHash: Compute &quot;pseudo&quot; Jaccard similarity</h2>
 <p>Refer <a href="https://en.wikipedia.org/wiki/MinHash#Jaccard_similarity_and_minimum_hash_values" target="_blank">this article</a> to get details about MinHash and Jarccard similarity. <a href="https://blog.treasuredata.com/blog/2016/02/16/minhash-in-hivemall/" target="_blank">This blog article</a> also explains about Hivemall&apos;s minhash.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> minhash <span class="hljs-comment">-- results in 30x records of item_features</span>
 <span class="hljs-keyword">select</span>  
@@ -2585,9 +2635,9 @@ top100 <span class="hljs-keyword">as</span> (
   top100
 ;
 </code></pre>
-<p><em>Caution: Note that there might be no similar item for certain items.</em></p>
-<h3 id="51-cosine-similarity-computation-following-minhash-based-similarity-items-filtering">5.1. Cosine similarity computation following minhash-based similarity items filtering</h3>
-<p>You can compute <code>top-k</code> similar items based on cosine similarity, following rough <code>top-N</code> similar items listing using minhash, where <code>k &lt;&lt; N</code> (e.g., k=10 and N=100).</p>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>There might be no similar item for certain items.</p></div></div>
+<h3 id="compute-approximated-cosine-similarity-by-using-the-minhash-based-jaccard-similarity">Compute approximated cosine similarity by using the MinHash-based Jaccard similarity</h3>
+<p>Once the MinHash-based approach found rough <code>top-N</code> similar items, you can efficiently find <code>top-k</code> similar items in terms of cosine similarity, where <code>k &lt;&lt; N</code> (e.g., k=10 and N=100).</p>
 <pre><code class="lang-sql">WITH similarity as (
   <span class="hljs-keyword">select</span>
     o.itemid,
@@ -2615,6 +2665,105 @@ topk <span class="hljs-keyword">as</span> (
   itemid, other, similarity
 <span class="hljs-keyword">from</span> 
   topk;
+</code></pre>
+<h2 id="dimsum-approximated-all-pairs-cosine-similarity-computation">DIMSUM: Approximated all-pairs &quot;Cosine&quot; similarity computation</h2>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>This feature is supported from Hivemall v0.5-rc.1 or later.</p></div></div>
+<p>DIMSUM is a technique to efficiently and approximately compute <a href="https://en.wikipedia.org/wiki/Cosine_similarity" target="_blank">Cosine similarities</a> for all-pairs of items. You can refer to <a href="https://blog.twitter.com/engineering/en_us/a/2014/all-pairs-similarity-via-dimsum.html" target="_blank">an article in Twitter&apos;s Engineering blog</a> to learn how DIMSUM reduces running time.</p>
+<p>Here, let us begin with the <code>user_purchased</code> table. <code>item_similarity</code> table can be obtained as follows:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> item_similarity <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">with</span> item_magnitude <span class="hljs-keyword">as</span> ( <span class="hljs-comment">-- compute magnitude of each item vector</span>
+  <span class="hljs-keyword">select</span>
+    to_map(j, mag) <span class="hljs-keyword">as</span> mags
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> 
+      itemid <span class="hljs-keyword">as</span> j,
+      l2_norm(<span class="hljs-keyword">ln</span>(purchase_count+<span class="hljs-number">1</span>)) <span class="hljs-keyword">as</span> mag <span class="hljs-comment">-- use scaled value</span>
+    <span class="hljs-keyword">from</span> 
+      user_purchased
+    <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+      itemid
+  ) t0
+),
+item_features <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    userid <span class="hljs-keyword">as</span> i,
+    collect_list(
+      feature(itemid, <span class="hljs-keyword">ln</span>(purchase_count+<span class="hljs-number">1</span>)) <span class="hljs-comment">-- use scaled value</span>
+    ) <span class="hljs-keyword">as</span> feature_vector
+  <span class="hljs-keyword">from</span>
+    user_purchased
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    userid
+),
+partial_result <span class="hljs-keyword">as</span> ( <span class="hljs-comment">-- launch DIMSUM in a MapReduce fashion</span>
+  <span class="hljs-keyword">select</span>
+    dimsum_mapper(f.feature_vector, m.mags, <span class="hljs-string">&apos;-threshold 0.5&apos;</span>)
+      <span class="hljs-keyword">as</span> (itemid, other, s)
+  <span class="hljs-keyword">from</span>
+    item_features f
+  <span class="hljs-keyword">left</span> <span class="hljs-keyword">outer</span> <span class="hljs-keyword">join</span> item_magnitude m
+),
+similarity <span class="hljs-keyword">as</span> ( <span class="hljs-comment">-- reduce (i.e., sum up) mappers&apos; partial results</span>
+  <span class="hljs-keyword">select</span>
+    itemid, 
+    other,
+    <span class="hljs-keyword">sum</span>(s) <span class="hljs-keyword">as</span> similarity
+  <span class="hljs-keyword">from</span> 
+    partial_result
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    itemid, other
+),
+topk <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
+      <span class="hljs-number">10</span>, itemid, similarity,
+      itemid, other <span class="hljs-comment">-- output items</span>
+    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
+    CLUSTER <span class="hljs-keyword">BY</span> itemid
+  ) t
+)
+<span class="hljs-comment">-- insert overwrite table item_similarity</span>
+<span class="hljs-keyword">select</span> 
+  itemid, other, similarity
+<span class="hljs-keyword">from</span> 
+  topk
+;
+</code></pre>
+<p>Ultimately, using <code>item_similarity</code> for <a href="#item-based-recommendation">item-based recommendation</a> is straightforward in a similar way to what we explained above.</p>
+<p>In the above query, an important part is obviously <code>dimsum_mapper(f.feature_vector, m.mags, &apos;-threshold 0.5&apos;)</code>. An option <code>-threshold</code> is a real value in <code>[0, 1)</code> range, and intuitively it illustrates <em>&quot;similarities above this threshold are approximated by the DIMSUM algorithm&quot;</em>.</p>
+<h3 id="create-itemsimilarity-from-upper-triangular-matrix">Create <code>item_similarity</code> from Upper Triangular Matrix</h3>
+<p>Thanks to the symmetric property of similarity matrix, DIMSUM enables you to utilize space-efficient Upper-Triangular-Matrix-style output by just adding an option <code>-disable_symmetric_output</code>:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> item_similarity <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">with</span> item_magnitude <span class="hljs-keyword">as</span> (
+  ...
+),
+partial_result <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    dimsum_mapper(f.feature_vector, m.mags, <span class="hljs-string">&apos;-threshold 0.5 -disable_symmetric_output&apos;</span>)
+      <span class="hljs-keyword">as</span> (itemid, other, s)
+  <span class="hljs-keyword">from</span>
+    item_features f
+  <span class="hljs-keyword">left</span> <span class="hljs-keyword">outer</span> <span class="hljs-keyword">join</span> item_magnitude m
+),
+similarity_upper_triangular <span class="hljs-keyword">as</span> ( <span class="hljs-comment">-- if similarity of (i1, i2) pair is in this table, (i2, i1)&apos;s similarity is omitted</span>
+  <span class="hljs-keyword">select</span>
+    itemid, 
+    other,
+    <span class="hljs-keyword">sum</span>(s) <span class="hljs-keyword">as</span> similarity
+  <span class="hljs-keyword">from</span> 
+    partial_result
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    itemid, other
+),
+similarity <span class="hljs-keyword">as</span> ( <span class="hljs-comment">-- copy (i1, i2)&apos;s similarity as (i2, i1)&apos;s one</span>
+  <span class="hljs-keyword">select</span> itemid, other, similarity <span class="hljs-keyword">from</span> similarity_upper_triangular
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, similarity <span class="hljs-keyword">from</span> similarity_upper_triangular
+),
+topk <span class="hljs-keyword">as</span> (
+  ...
 </code></pre>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
@@ -2671,7 +2820,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"next":{"title":"News20 related article recommendation Tutorial","level":"8.2","depth":1,"path":"recommend/news20.md","ref":"recommend/news20.md","articles":[{"title":"Data preparation","level":"8.2.1","depth":2,"path":"multiclass/news20_dataset.md","ref":"multiclass/news20_dataset.md","articles":[]},{"title":"LSH/Minhash and Jaccard Similarity","level":"8.2.2","depth":2,"path":"recommend/news20_jaccard.md","ref":"recommend/news20_jaccard.md","articles":[]},{"title":"LSH/Minhash and Brute-Force Search","level":"8.2.3","depth":2,"path":"recommend/news20_knn.md","ref":"recommend/news20_knn.md","articles":[]},{"title":"kNN search using b-Bits Minhash","level":"8.2.4","depth":2,"path":"recommend/news20_bbit_minhash.md","ref":"recommend/news20_bbit_minhash.md","articles":[]}]},"previous":{"title":"Collaborative Filtering","level":"8.1","depth":1,"path":"recommend/cf.md","ref":"recommend/cf.md","articles":[{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"path":"recommend/item_based_cf.md","ref":"recommend/item_based_cf.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/item_based_cf.md","mtime":"2016-12-02T08:02:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-06T07:26:41.211Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"next":{"title":"News20 related article recommendation Tutorial","level":"8.2","depth":1,"path":"recommend/news20.md","ref":"recommend/news20.md","articles":[{"title":"Data preparation","level":"8.2.1","depth":2,"path":"multiclass/news20_dataset.md","ref":"multiclass/news20_dataset.md","articles":[]},{"title":"LSH/Minhash and Jaccard Similarity","level":"8.2.2","depth":2,"path":"recommend/news20_jaccard.md","ref":"recommend/news20_jaccard.md","articles":[]},{"title":"LSH/Minhash and Brute-Force Search","level":"8.2.3","depth":2,"path":"recommend/news20_knn.md","ref":"recommend/news20_knn.md","articles":[]},{"title":"kNN search using b-Bits Minhash","level":"8.2.4","depth":2,"path":"recommend/news20_bbit_minhash.md","ref":"recommend/news20_bbit_minhash.md","articles":[]}]},"previous":{"title":"Collaborative Filtering","level":"8.1","depth":1,"path":"recommend/cf.md","ref":"recommend/cf.md","articles":[{"title":"Item-based Collaborative Filtering","level":"8.1.1","depth":2,"path":"recommend/item_based_cf.md","ref":"recommend/item_based_cf.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/item_based_cf.md","mtime":"2017-06-07T07:59:33.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-07T08:12:00.420Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
