@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Lat/Lon functions · Hivemall User Manual</title>
+        <title>How Prediction Works · Hivemall User Manual</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -97,10 +97,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../spark/getting_started/" />
+    <link rel="next" href="../regression/general.html" />
     
     
-    <link rel="prev" href="../clustering/plsa.html" />
+    <link rel="prev" href="../eval/lr_datagen.html" />
     
 
     </head>
@@ -486,9 +486,9 @@
         
         
     
-        <li class="chapter " data-level="2.1" data-path="../misc/generic_funcs.html">
+        <li class="chapter " data-level="2.1" data-path="generic_funcs.html">
             
-                <a href="../misc/generic_funcs.html">
+                <a href="generic_funcs.html">
             
                     
                         <b>2.1.</b>
@@ -501,9 +501,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2" data-path="../misc/topk.html">
+        <li class="chapter " data-level="2.2" data-path="topk.html">
             
-                <a href="../misc/topk.html">
+                <a href="topk.html">
             
                     
                         <b>2.2.</b>
@@ -516,9 +516,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.3" data-path="../misc/tokenizer.html">
+        <li class="chapter " data-level="2.3" data-path="tokenizer.html">
             
-                <a href="../misc/tokenizer.html">
+                <a href="tokenizer.html">
             
                     
                         <b>2.3.</b>
@@ -765,9 +765,9 @@
         
         
     
-        <li class="chapter " data-level="5.1" data-path="../misc/prediction.html">
+        <li class="chapter active" data-level="5.1" data-path="prediction.html">
             
-                <a href="../misc/prediction.html">
+                <a href="prediction.html">
             
                     
                         <b>5.1.</b>
@@ -1771,9 +1771,9 @@
         
         
     
-        <li class="chapter active" data-level="12.1" data-path="latlon.html">
+        <li class="chapter " data-level="12.1" data-path="../geospatial/latlon.html">
             
-                <a href="latlon.html">
+                <a href="../geospatial/latlon.html">
             
                     
                         <b>12.1.</b>
@@ -2041,7 +2041,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Lat/Lon functions</a>
+        <a href=".." >How Prediction Works</a>
     </h1>
 </div>
 
@@ -2074,122 +2074,172 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>This page introduces Geo-spatial functions that treats latitude and longitude.</p>
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
-<li><a href="#tile-number-function">Tile number function</a><ul>
-<li><a href="#usage">Usage</a></li>
-</ul>
-</li>
-<li><a href="#map-url-function">Map URL function</a><ul>
-<li><a href="#usage-1">Usage</a></li>
-</ul>
-</li>
+<li><a href="#what-is-prediction-problem">What is &quot;prediction problem&quot;?</a></li>
+<li><a href="#regression">Regression</a></li>
+<li><a href="#classification">Classification</a></li>
+<li><a href="#mathematical-formulation-of-generic-prediction-model">Mathematical formulation of generic prediction model</a></li>
 </ul>
 
 </div><!-- tocstop -->
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>This feature is supported from Hivemall v0.5-rc.1 or later.</p></div></div>
-<h1 id="tile-number-function">Tile number function</h1>
-<p><code>tile(double lat, double lon, int zoom)</code> returns a tile number in <code>xtile(lon,zoom) + ytile(lat,zoom) * 2^n</code>. The tile number is in range <code>[0,2^2z]</code>.</p>
-<p>Formulas to convert latitude and longitude into tile x,y coordinates are as follows:</p>
-<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mtable><mtr><mtd><mrow><mi>x</mi></mrow></mtd><mtd><mrow><mrow></mrow><mo>=</mo><mrow><mo fence="true">&#x230A;</mo><mfrac><mrow><mi>l</mi><mi>o</mi><mi>n</mi><mo>+</mo><mn>1</mn><mn>8</mn><mn>0</mn></mrow><mrow><mn>3</mn><mn>6</mn><mn>0</mn></mrow></mfrac><mo>&#x22C5;</mo><msup><mn>2</mn><mi>z</mi></msup><mo fence="true">&#x230B;</mo></mrow></mrow></mtd></mtr><mtr><mtd><mrow></mrow></mtd></mtr><mtr><mtd><mrow><mi>y</mi></mrow></mtd><mtd><mrow><mrow></mrow><mo>=</mo><mrow><mo fence="true">&#x230A;</mo><mrow><mo fence="true">(</mo><mn>1</mn><mo>&#x2212;</mo><mfrac><mrow><mi>ln</mi><mrow><mo fence="true">(</mo><mi>tan</mi><mrow><mo fence="true">(</mo><mi>l</mi><mi>a</mi><mi>t</mi><mo>&#x22C5;</mo><mfrac><mrow><mi>&#x3C0;</mi></mrow><mrow><mn>1</mn><mn>8</mn><mn>0</mn></mrow></mfrac><mo fence="true">)</mo></mrow><mo>+</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>cos</mi><mrow><mo fence="true">(</mo><mi>l</mi><mi>a</mi><mi>t</mi><mo>&#x22C5;</mo><mfrac><mrow><mi>&#x3C0;</mi></mrow><mrow><mn>1</mn><mn>8</mn><mn>0</mn></mrow></mfrac><mo fence="true">)</mo></mrow></mrow></mfrac><mo fence="true">)</mo></mrow></mrow><mrow><mi>&#x3C0;</mi></mrow></mfrac><mo fence="true">)</mo></mrow><mo>&#x22C5;</mo><msup><mn>2</mn><mrow><mi>z</mi><mo>&#x2212;</mo><mn>1</mn></mrow></msup><mo fence="true">&#x230B;</mo></mrow></mrow></mtd></mtr></mtable></mrow><annotation encoding="application/x-tex">
-\begin{aligned}
-x &amp;= \left\lfloor \frac{lon + 180}{360} \cdot 2^z \right\rfloor \\ \\
-y &amp;=
-    \left\lfloor
-        \left(
-            1 - \frac{
-                \ln \left(
-                    \tan \left(
-                        lat \cdot \frac{\pi}{180}
-                    \right) + \frac{1}{\cos \left( lat \cdot \frac{\pi}{180} \right)}
-                \right)
-            }{\pi}
-        \right) \cdot 2^{z - 1}
-    \right\rfloor
-\end{aligned}
-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:4.5200475em;"></span><span class="strut bottom" style="height:8.540095em;vertical-align:-4.0200475em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist"><span style="top:-3.0700475000000003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathit">x</span></span></span><span style="top:-1.2800175000000003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span style="top:1.8700124999999996em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">y</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="col-align-l"><span class="vlist"><span style="top:-3.0700475000000003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mrel">=</span><span class="minner displaystyle textstyle uncramped"><span class="mopen style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">&#x230A;</span></span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mopen sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathrm">3</span><span class="mord mathrm">6</span><span class="mord mathrm">0</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.677em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">o</span><span class="mord mathit">n</span><span class="mbin">+</span><span class="mord mathrm">1</span><span class="mord mathrm">8</span><span class="mord mathrm">0</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mbin">&#x22C5;</span><span class="mord"><span class="mord mathrm">2</span><span class="msupsub"><span class="vlist"><span style="top:-0.413em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord mathit mtight" style="margin-right:0.04398em;">z</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">&#x230B;</span></span></span></span></span><span style="top:1.8700125000000005em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mrel">=</span><span class="minner displaystyle textstyle uncramped"><span class="mopen style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:1.5050149999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A3;</span></span></span><span style="top:0.35001499999999997em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span style="top:-0.250985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span style="top:-0.851985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span style="top:-1.452985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span style="top:-2.053985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A2;</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="minner displaystyle textstyle uncramped"><span class="mopen style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:1.50501em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239D;</span></span></span><span style="top:0.35000000000000014em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239C;</span></span></span><span style="top:-0.2500099999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239C;</span></span></span><span style="top:-1.4950299999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239B;</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mord mathrm">1</span><span class="mbin">&#x2212;</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mopen sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathit" style="margin-right:0.03588em;">&#x3C0;</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-1.34003em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mop">ln</span><span class="minner textstyle uncramped"><span class="mopen style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">(</span></span><span class="mop">tan</span><span class="minner textstyle uncramped"><span class="mopen style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">a</span><span class="mord mathit">t</span><span class="mbin">&#x22C5;</span><span class="mord reset-textstyle textstyle uncramped"><span class="mopen sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.345em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathrm mtight">1</span><span class="mord mathrm mtight">8</span><span class="mord mathrm mtight">0</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.394em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord scriptstyle uncramped mtight"><span class="mord mathit mtight" style="margin-right:0.03588em;">&#x3C0;</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mclose style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size1">)</span></span></span><span class="mbin">+</span><span class="mord reset-textstyle textstyle uncramped"><span class="mopen sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.5075000000000001em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mop mtight">cos</span><span class="minner scriptstyle cramped mtight"><span class="mopen style-wrap reset-scriptstyle textstyle uncramped mtight" style="top:0.07500000000000001em;"><span class="mtight">(</span></span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">a</span><span class="mord mathit mtight">t</span><span class="mbin mtight">&#x22C5;</span><span class="mord reset-scriptstyle scriptstyle cramped mtight"><span class="mopen sizing reset-size5 size5 reset-scriptstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.344em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle scriptscriptstyle cramped mtight"><span class="mord scriptscriptstyle cramped mtight"><span class="mord mathrm mtight">1</span><span class="mord mathrm mtight">8</span><span class="mord mathrm mtight">0</span></span></span></span><span style="top:-0.22142857142857142em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle textstyle uncramped frac-line"></span></span><span style="top:-0.384em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle scriptscriptstyle cramped mtight"><span class="mord scriptscriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.03588em;">&#x3C0;</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-scriptstyle textstyle uncramped nulldelimiter"></span></span><span class="mclose style-wrap reset-scriptstyle textstyle uncramped mtight" style="top:0.07500000000000001em;"><span class="mtight">)</span></span></span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.394em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord scriptstyle uncramped mtight"><span class="mord mathrm mtight">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mclose style-wrap reset-textstyle textstyle uncramped" style="top:0em;"><span class="delimsizing size3">)</span></span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mclose style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:1.50501em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A0;</span></span></span><span style="top:0.35000000000000014em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239F;</span></span></span><span style="top:-0.2500099999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239F;</span></span></span><span style="top:-1.4950299999999999em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x239E;</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span><span class="mbin">&#x22C5;</span><span class="mord"><span class="mord mathrm">2</span><span class="msupsub"><span class="vlist"><span style="top:-0.41300000000000003em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord scriptstyle uncramped mtight"><span class="mord mathit mtight" style="margin-right:0.04398em;">z</span><span class="mbin mtight">&#x2212;</span><span class="mord mathrm mtight">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose style-wrap reset-textstyle textstyle uncramped"><span class="delimsizing mult"><span class="vlist"><span style="top:1.5050149999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A6;</span></span></span><span style="top:0.35001499999999997em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span style="top:-0.250985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span style="top:-0.851985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span style="top:-1.452985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span style="top:-2.053985em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="delimsizinginner delim-size4"><span>&#x23A5;</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:1em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span></span></span></p>
-<p>Refer <a href="http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames" target="_blank">this page</a> for detail. Zoom level is well described in <a href="http://wiki.openstreetmap.org/wiki/Zoom_levels" target="_blank">this page</a>.</p>
-<h3 id="usage">Usage</h3>
-<pre><code class="lang-sql">WITH data as (
-  <span class="hljs-keyword">select</span> <span class="hljs-number">51.51202</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">17</span> <span class="hljs-keyword">as</span> zoom
-  <span class="hljs-keyword">union</span> all
-  <span class="hljs-keyword">select</span> <span class="hljs-number">51.51202</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">4</span> <span class="hljs-keyword">as</span> zoom
-  <span class="hljs-keyword">union</span> all
-  <span class="hljs-keyword">select</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">17</span> <span class="hljs-keyword">as</span> zoom
-)
-<span class="hljs-keyword">select</span> 
-   tile(lat, lon, zoom) <span class="hljs-keyword">as</span> tile
-<span class="hljs-keyword">from</span> 
-   <span class="hljs-keyword">data</span>;
-</code></pre>
+<h1 id="what-is-prediction-problem">What is &quot;prediction problem&quot;?</h1>
+<p>In a context of machine learning, numerous tasks can be seen as <strong>prediction problem</strong>. For example, this user guide provides solutions for:</p>
+<ul>
+<li><a href="../binaryclass/webspam.html">spam detection</a></li>
+<li><a href="../multiclass/news20.html">news article classification</a></li>
+<li><a href="../regression/kddcup12tr2.html">click-through-rate estimation</a></li>
+</ul>
+<p>For any kinds of prediction problems, we generally provide a set of input-output pairs as:</p>
+<ul>
+<li><strong>Input:</strong> Set of features<ul>
+<li>e.g., <code>[&quot;1:0.001&quot;,&quot;4:0.23&quot;,&quot;35:0.0035&quot;,...]</code></li>
+</ul>
+</li>
+<li><strong>Output:</strong> Target value<ul>
+<li>e.g., 1, 0, 0.54, 42.195, ...</li>
+</ul>
+</li>
+</ul>
+<p>Once a prediction model has been constructed based on the samples, the model can make prediction for unforeseen inputs. </p>
+<p>In order to train prediction models, an algorithm so-called <strong><em>stochastic gradient descent</em></strong> (SGD) is normally applied. You can learn more about this from the following external resources:</p>
+<ul>
+<li><a href="http://scikit-learn.org/stable/modules/sgd.html" target="_blank">scikit-learn documentation</a></li>
+<li><a href="http://spark.apache.org/docs/latest/mllib-optimization.html" target="_blank">Spark MLlib documentation</a></li>
+</ul>
+<p>Importantly, depending on types of output value, prediction problem can be categorized into <strong>regression</strong> and <strong>classification</strong> problem.</p>
+<h1 id="regression">Regression</h1>
+<p>The goal of regression is to predict <strong>real values</strong> as shown below:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">tile</th>
+<th style="text-align:left">features (input)</th>
+<th style="text-align:center">target real value (output)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">1417478152</td>
+<td style="text-align:left">[&quot;1:0.001&quot;,&quot;4:0.23&quot;,&quot;35:0.0035&quot;,...]</td>
+<td style="text-align:center">21.3</td>
 </tr>
 <tr>
-<td style="text-align:center">88</td>
+<td style="text-align:left">[&quot;1:0.2&quot;,&quot;3:0.1&quot;,&quot;13:0.005&quot;,...]</td>
+<td style="text-align:center">6.2</td>
 </tr>
 <tr>
-<td style="text-align:center">NULL</td>
+<td style="text-align:left">[&quot;5:1.3&quot;,&quot;22:0.0.089&quot;,&quot;77:0.0001&quot;,...]</td>
+<td style="text-align:center">17.1</td>
+</tr>
+<tr>
+<td style="text-align:left">...</td>
+<td style="text-align:center">...</td>
 </tr>
 </tbody>
 </table>
-<h1 id="map-url-function">Map URL function</h1>
-<p><code>map_url(double lat, double lon, int zoom [, const string option])</code> function returns a tile URL of openstreetmap.com or maps.google.com.</p>
-<p>The 4th argument takes the following optional arguments:</p>
-<pre><code class="lang-sql">hive&gt; select map_url(1,1,1,&apos;-help&apos;);
-
-usage: map_url(double lat, double lon, int zoom [, const string option]) -
-       Returns a URL string [-help] [-t &lt;arg&gt;]
- -help             Show function help
- -t,--type &lt;arg&gt;   Map type [default: openstreetmap|osm,
-                   googlemaps|google]
-</code></pre>
-<h3 id="usage">Usage</h3>
-<pre><code class="lang-sql">WITH data as (
-  <span class="hljs-keyword">select</span> <span class="hljs-number">51.51202</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">17</span> <span class="hljs-keyword">as</span> zoom
-  <span class="hljs-keyword">union</span> all
-  <span class="hljs-keyword">select</span> <span class="hljs-number">51.51202</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">4</span> <span class="hljs-keyword">as</span> zoom
-  <span class="hljs-keyword">union</span> all
-  <span class="hljs-keyword">select</span> <span class="hljs-literal">null</span>, <span class="hljs-number">0.02435</span>, <span class="hljs-number">17</span>
-)
-<span class="hljs-keyword">select</span> 
-   map_url(lat,lon,zoom) <span class="hljs-keyword">as</span> osm_url,
-   map_url(lat,lon,zoom,<span class="hljs-string">&apos;-type googlemaps&apos;</span>) <span class="hljs-keyword">as</span> gmap_url
-<span class="hljs-keyword">from</span>
-  <span class="hljs-keyword">data</span>;
-</code></pre>
+<p>In practice, target values could be any of small/large float/int negative/positive values. <a href="../regression/kddcup12tr2.html">Our CTR prediction tutorial</a> solves regression problem with small floating point target values in a 0-1 range, for example.</p>
+<p>While there are several ways to realize regression by using Hivemall, <code>train_regression()</code> is one of the most flexible functions. This feature is explained in: <a href="../regression/general.html">Regression</a>.</p>
+<h1 id="classification">Classification</h1>
+<p>In contrast to regression, output for classification problems should be (integer) <strong>labels</strong>:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">osm_url</th>
-<th style="text-align:center">gmap_url</th>
+<th style="text-align:left">features (input)</th>
+<th style="text-align:center">label (output)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center"><a href="http://tile.openstreetmap.org/17/65544/43582.png" target="_blank">http://tile.openstreetmap.org/17/65544/43582.png</a></td>
-<td style="text-align:center"><a href="https://www.google.com/maps/@51.51202,0.02435,17z" target="_blank">https://www.google.com/maps/@51.51202,0.02435,17z</a></td>
+<td style="text-align:left">[&quot;1:0.001&quot;,&quot;4:0.23&quot;,&quot;35:0.0035&quot;,...]</td>
+<td style="text-align:center">0</td>
 </tr>
 <tr>
-<td style="text-align:center"><a href="http://tile.openstreetmap.org/4/8/5.png" target="_blank">http://tile.openstreetmap.org/4/8/5.png</a></td>
-<td style="text-align:center"><a href="https://www.google.com/maps/@51.51202,0.02435,4z" target="_blank">https://www.google.com/maps/@51.51202,0.02435,4z</a></td>
+<td style="text-align:left">[&quot;1:0.2&quot;,&quot;3:0.1&quot;,&quot;13:0.005&quot;,...]</td>
+<td style="text-align:center">1</td>
 </tr>
 <tr>
-<td style="text-align:center">NULL</td>
-<td style="text-align:center">NULL</td>
+<td style="text-align:left">[&quot;5:1.3&quot;,&quot;22:0.0.089&quot;,&quot;77:0.0001&quot;,...]</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:left">...</td>
+<td style="text-align:center">...</td>
 </tr>
 </tbody>
 </table>
-<p><img src="http://tile.openstreetmap.org/17/65544/43582.png" alt="http://tile.openstreetmap.org/17/65544/43582.png" title="http://tile.openstreetmap.org/17/65544/43582.png">
+<p>In case the number of possible labels is 2 (0/1 or -1/1), the problem is <strong>binary classification</strong>, and Hivemall&apos;s <code>train_classifier()</code> function enables you to build binary classifiers. <a href="../binaryclass/general.html">Binary Classification</a> demonstrates how to use the function.</p>
+<p>Another type of classification problems is <strong>multi-class classification</strong>. This task assumes that the number of possible labels is more than 2. We need to use different functions for the multi-class problems, and our <a href="../multiclass/news20.html">news20</a> and <a href="../multiclass/iris.html">iris</a> tutorials would be helpful.</p>
+<h1 id="mathematical-formulation-of-generic-prediction-model">Mathematical formulation of generic prediction model</h1>
+<p>Here, we briefly explain about how prediction model is constructed.</p>
+<p>First and foremost, we represent <strong>input</strong> and <strong>output</strong> for prediction models as follows:</p>
+<ul>
+<li><strong>Input:</strong> a vector <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mi mathvariant="bold">x</mi></mrow></mrow><annotation encoding="application/x-tex">\mathbf{x}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.44444em;"></span><span class="strut bottom" style="height:0.44444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathbf">x</span></span></span></span></span></li>
+<li><strong>Output:</strong> a value <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.43056em;"></span><span class="strut bottom" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">y</span></span></span></span></li>
+</ul>
+<p>For a set of samples <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><msub><mrow><mi mathvariant="bold">x</mi></mrow><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>y</mi><mn>1</mn></msub><mo>)</mo><mo separator="true">,</mo><mo>(</mo><msub><mrow><mi mathvariant="bold">x</mi></mrow><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>y</mi><mn>2</mn></msub><mo>)</mo><mo separator="true">,</mo><mo>&#x22EF;</mo><mo separator="true">,</mo><mo>(</mo><msub><mrow><mi mathvariant="bold">x</mi></mrow><mi>n</mi></msub><mo separator="true">,</mo><msub><mi>y</mi><mi>n</mi></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">(\mathbf{x}_1, y_1), (\mathbf{x}_2, y_2), \cdots, (\mathbf{x}_n, y_n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mopen">(</span><span class="mord"><span class="mord textstyle uncramped"><span class="mord mathbf">x</span></span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathrm mtight">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mpunct">,</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathrm mtight">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="mopen">(</span><span class="mord"><span class="mord textstyle uncramped"><span class="mord mathbf">x</span></span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathrm mtight">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mpunct">,</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathrm mtight">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose">)</span><span class="mpunct">,</span><span class="minner">&#x22EF;</span><span class="mpunct">,</span><span class="mopen">(</span><span class="mord"><span class="mord textstyle uncramped"><span class="mord mathbf">x</span></span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathit mtight">n</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mpunct">,</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathit mtight">n</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose">)</span></span></span></span>, the goal of prediction algorithms is to find a weight vector (i.e., parameters) <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mi mathvariant="bold">w</mi></mrow></mrow><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.44444em;"></span><span class="strut bottom" style="height:0.44444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span></span></span></span> by minimizing the following error:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>E</mi><mo>(</mo><mrow><mi mathvariant="bold">w</mi></mrow><mo>)</mo><mo>:</mo><mo>=</mo><mfrac><mrow><mn>1</mn></mrow><mrow><mi>n</mi></mrow></mfrac><msubsup><mo>&#x2211;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>n</mi></mrow></msubsup><mi>L</mi><mo>(</mo><mrow><mi mathvariant="bold">w</mi></mrow><mo separator="true">;</mo><msub><mrow><mi mathvariant="bold">x</mi></mrow><mi>i</mi></msub><mo separator="true">,</mo><msub><mi>y</mi><mi>i</mi></msub><mo>)</mo><mo>+</mo><mi>&#x3BB;</mi><mi>R</mi><mo>(</mo><mrow><mi mathvariant="bold">w</mi></mrow><mo>)</mo></mrow><annotation encoding="application/x-tex">
+E(\mathbf{w}) := \frac{1}{n} \sum_{i=1}^{n} L(\mathbf{w}; \mathbf{x}_i, y_i) + \lambda R(\mathbf{w})
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.6513970000000002em;"></span><span class="strut bottom" style="height:2.929066em;vertical-align:-1.277669em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.05764em;">E</span><span class="mopen">(</span><span class="mord displaystyle textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span><span class="mclose">)</span><span class="mrel">:</span><span class="mrel">=</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mopen sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathit">n</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.677em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathrm">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mop op-limits"><span class="vlist"><span style="top:1.1776689999999999em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight">i</span><span class="mrel mtight">=</span><span class="mord mathrm mtight">1</span></span></span></span><span style="top:-0.000005000000000143778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span><span class="mop op-symbol large-op">&#x2211;</span></span></span><span style="top:-1.2500050000000003em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord scriptstyle uncramped mtight"><span class="mord mathit mtight">n</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mord mathit">L</span><span class="mopen">(</span><span class="mord displaystyle textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span><span class="mpunct">;</span><span class="mord"><span class="mord displaystyle textstyle uncramped"><span class="mord mathbf">x</span></span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathit mtight">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mpunct">,</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathit mtight">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose">)</span><span class="mbin">+</span><span class="mord mathit">&#x3BB;</span><span class="mord mathit" style="margin-right:0.00773em;">R</span><span class="mopen">(</span><span class="mord displaystyle textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>In the above formulation, there are two auxiliary functions we have to know: </p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>L</mi><mo>(</mo><mrow><mi mathvariant="bold">w</mi></mrow><mo separator="true">;</mo><msub><mrow><mi mathvariant="bold">x</mi></mrow><mi>i</mi></msub><mo separator="true">,</mo><msub><mi>y</mi><mi>i</mi></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">L(\mathbf{w}; \mathbf{x}_i, y_i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mord mathit">L</span><span class="mopen">(</span><span class="mord textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span><span class="mpunct">;</span><span class="mord"><span class="mord textstyle uncramped"><span class="mord mathbf">x</span></span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathit mtight">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mpunct">,</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathit mtight">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose">)</span></span></span></span><ul>
+<li><strong>Loss function</strong> for a single sample <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>(</mo><msub><mrow><mi mathvariant="bold">x</mi></mrow><mi>i</mi></msub><mo separator="true">,</mo><msub><mi>y</mi><mi>i</mi></msub><mo>)</mo></mrow><annotation encoding="application/x-tex">(\mathbf{x}_i, y_i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mopen">(</span><span class="mord"><span class="mord textstyle uncramped"><span class="mord mathbf">x</span></span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathit mtight">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mpunct">,</span><span class="mord"><span class="mord mathit" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.03588em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathit mtight">i</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose">)</span></span></span></span> and given <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mi mathvariant="bold">w</mi></mrow></mrow><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.44444em;"></span><span class="strut bottom" style="height:0.44444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span></span></span></span>.</li>
+<li>If this function produces small values, it means the parameter <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mi mathvariant="bold">w</mi></mrow></mrow><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.44444em;"></span><span class="strut bottom" style="height:0.44444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span></span></span></span> is successfully learnt. </li>
+</ul>
+</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>R</mi><mo>(</mo><mrow><mi mathvariant="bold">w</mi></mrow><mo>)</mo></mrow><annotation encoding="application/x-tex">R(\mathbf{w})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.00773em;">R</span><span class="mopen">(</span><span class="mord textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span><span class="mclose">)</span></span></span></span><ul>
+<li><strong>Regularization function</strong> for the current parameter <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mi mathvariant="bold">w</mi></mrow></mrow><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.44444em;"></span><span class="strut bottom" style="height:0.44444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span></span></span></span>.</li>
+<li>It prevents failing to a negative condition so-called <strong>over-fitting</strong>.</li>
+</ul>
+</li>
+</ul>
+<p>(<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>&#x3BB;</mi></mrow><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">&#x3BB;</span></span></span></span> is a small value which controls the effect of regularization function.)</p>
+<p>Eventually, minimizing the function <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>E</mi><mo>(</mo><mrow><mi mathvariant="bold">w</mi></mrow><mo>)</mo></mrow><annotation encoding="application/x-tex">E(\mathbf{w})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1em;vertical-align:-0.25em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.05764em;">E</span><span class="mopen">(</span><span class="mord textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span><span class="mclose">)</span></span></span></span> can be implemented by the SGD technique as described before, and <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mi mathvariant="bold">w</mi></mrow></mrow><annotation encoding="application/x-tex">\mathbf{w}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.44444em;"></span><span class="strut bottom" style="height:0.44444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathbf" style="margin-right:0.01597em;">w</span></span></span></span></span> itself is used as a &quot;model&quot; for future prediction.</p>
+<p>Interestingly, depending on a choice of loss and regularization function, prediction model you obtained will behave differently; even if one combination could work as a classifier, another choice might be appropriate for regression.</p>
+<p>Below we list possible options for <code>train_regression</code> and <code>train_classifier</code>, and this is the reason why these two functions are the most flexible in Hivemall:</p>
+<ul>
+<li>Loss function: <code>-loss</code>, <code>-loss_function</code><ul>
+<li>For <code>train_regression</code><ul>
+<li>SquaredLoss</li>
+<li>QuantileLoss</li>
+<li>EpsilonInsensitiveLoss</li>
+<li>SquaredEpsilonInsensitiveLoss</li>
+<li>HuberLoss</li>
+</ul>
+</li>
+<li>For <code>train_classifier</code><ul>
+<li>HingeLoss</li>
+<li>LogLoss</li>
+<li>SquaredHingeLoss</li>
+<li>ModifiedHuberLoss</li>
+<li>SquaredLoss</li>
+<li>QuantileLoss</li>
+<li>EpsilonInsensitiveLoss</li>
+<li>SquaredEpsilonInsensitiveLoss</li>
+<li>HuberLoss</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Regularization function: <code>-reg</code>, <code>-regularization</code><ul>
+<li>L1</li>
+<li>L2</li>
+<li>ElasticNet</li>
+<li>RDA</li>
+</ul>
+</li>
+</ul>
+<p>Additionally, there are several variants of the SGD technique, and it is also configureable as:</p>
+<ul>
+<li>Optimizer <code>-opt</code>, <code>-optimizer</code><ul>
+<li>SGD</li>
+<li>AdaGrad</li>
+<li>AdaDelta</li>
+<li>Adam</li>
+</ul>
+</li>
+</ul>
+<p>In practice, you can try different combinations of the options in order to achieve higher prediction accuracy.
 <div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2245,7 +2295,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Lat/Lon functions","level":"12.1","depth":1,"next":{"title":"Getting Started","level":"13.1","depth":1,"path":"spark/getting_started/README.md","ref":"spark/getting_started/README.md","articles":[{"title":"Installation","level":"13.1.1","depth":2,"path":"spark/getting_started/installation.md","ref":"spark/getting_started/installation.md","articles":[]}]},"previous":{"title":"Probabilistic Latent Semantic Analysis","level":"11.2","depth":1,"path":"clustering/plsa.md","ref":"clustering/plsa.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"geospatial/latlon.md","mtime":"2017-05-30T05:51:52.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-15T10:33:21.138Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"How Prediction Works","level":"5.1","depth":1,"next":{"title":"Regression","level":"5.2","depth":1,"path":"regression/general.md","ref":"regression/general.md","articles":[]},"previous":{"title":"Logistic Regression data generation","level":"4.3.1","depth":2,"path":"eval/lr_datagen.md","ref":"eval/lr_datagen.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/prediction.md","mtime":"2017-06-15T10:18:54.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-15T10:33:21.138Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

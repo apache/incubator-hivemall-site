@@ -37,6 +37,9 @@
 <url> <loc>http://hivemall.incubator.apache.org/eval/rank.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/datagen.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/lr_datagen.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/misc/prediction.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/regression/general.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/binaryclass/general.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/a9a.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/a9a_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/a9a_lr.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -83,6 +86,7 @@
 <url> <loc>http://hivemall.incubator.apache.org/recommend/news20_bbit_minhash.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/recommend/movielens.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/recommend/movielens_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/recommend/movielens_cf.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/recommend/movielens_mf.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/recommend/movielens_fm.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/recommend/movielens_cv.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
