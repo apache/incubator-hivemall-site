@@ -2118,6 +2118,7 @@
 <li><a href="#usage">Usage</a></li>
 </ul>
 </li>
+<li><a href="#distance-function">Distance function</a></li>
 <li><a href="#map-url-function">Map URL function</a><ul>
 <li><a href="#usage-1">Usage</a></li>
 </ul>
@@ -2156,25 +2157,85 @@ y &amp;=
   <span class="hljs-keyword">select</span> <span class="hljs-literal">null</span> <span class="hljs-keyword">as</span> lat, <span class="hljs-number">0.02435</span> <span class="hljs-keyword">as</span> lon, <span class="hljs-number">17</span> <span class="hljs-keyword">as</span> zoom
 )
 <span class="hljs-keyword">select</span> 
-   tile(lat, lon, zoom) <span class="hljs-keyword">as</span> tile
+   lat, lon, zoom,
+   tile(lat, lon, zoom) <span class="hljs-keyword">as</span> tile,
+   (lon2tilex(lon,zoom) + lat2tiley(lat,zoom) * <span class="hljs-keyword">cast</span>(<span class="hljs-keyword">pow</span>(<span class="hljs-number">2</span>, zoom) <span class="hljs-keyword">as</span> <span class="hljs-built_in">bigint</span>)) <span class="hljs-keyword">as</span> tile2, 
+   lon2tilex(lon, zoom) <span class="hljs-keyword">as</span> xtile,
+   lat2tiley(lat, zoom) <span class="hljs-keyword">as</span> ytile,
+   tiley2lat(lat2tiley(lat, zoom), zoom) <span class="hljs-keyword">as</span> lat2,  <span class="hljs-comment">-- tiley2lat returns center of the tile</span>
+   tilex2lon(lon2tilex(lon, zoom), zoom) <span class="hljs-keyword">as</span> lon2 <span class="hljs-comment">-- tilex2lon returns center of the tile</span>
 <span class="hljs-keyword">from</span> 
    <span class="hljs-keyword">data</span>;
 </code></pre>
 <table>
 <thead>
 <tr>
+<th style="text-align:center">lat</th>
+<th style="text-align:center">lon</th>
+<th style="text-align:center">zoom</th>
 <th style="text-align:center">tile</th>
+<th style="text-align:center">tile2</th>
+<th style="text-align:center">xtile</th>
+<th style="text-align:center">ytile</th>
+<th style="text-align:center">lat2</th>
+<th>lon2</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">1417478152</td>
+<td style="text-align:center">51.51202</td>
+<td style="text-align:center">0.02435</td>
+<td style="text-align:center">17</td>
+<td style="text-align:center">5712445448</td>
+<td style="text-align:center">5712445448</td>
+<td style="text-align:center">65544</td>
+<td style="text-align:center">43582</td>
+<td style="text-align:center">51.512161249555156</td>
+<td>0.02197265625</td>
 </tr>
 <tr>
+<td style="text-align:center">51.51202</td>
+<td style="text-align:center">0.02435</td>
+<td style="text-align:center">4</td>
 <td style="text-align:center">88</td>
+<td style="text-align:center">88</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">55.77657301866768</td>
+<td>0.0</td>
 </tr>
 <tr>
 <td style="text-align:center">NULL</td>
+<td style="text-align:center">0.02435</td>
+<td style="text-align:center">17</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">65544</td>
+<td style="text-align:center">NULL</td>
+<td style="text-align:center">NULL</td>
+<td>0.02197265625</td>
+</tr>
+</tbody>
+</table>
+<h1 id="distance-function">Distance function</h1>
+<p><code>haversine_distance(double lat1, double lon1, double lat2, double lon2, [const boolean mile=false])</code> returns <a href="http://www.movable-type.co.uk/scripts/latlong.html" target="_blank">Haversine distance</a> between given two Geo locations.</p>
+<pre><code class="lang-sql"><span class="hljs-comment">-- Tokyo (lat: 35.6833, lon: 139.7667)</span>
+<span class="hljs-comment">-- Osaka (lat: 34.6603, lon: 135.5232)</span>
+<span class="hljs-keyword">select</span> 
+  haversine_distance(<span class="hljs-number">35.6833</span>, <span class="hljs-number">139.7667</span>, <span class="hljs-number">34.6603</span>, <span class="hljs-number">135.5232</span>) <span class="hljs-keyword">as</span> km,
+  haversine_distance(<span class="hljs-number">35.6833</span>, <span class="hljs-number">139.7667</span>, <span class="hljs-number">34.6603</span>, <span class="hljs-number">135.5232</span>, <span class="hljs-literal">true</span>) <span class="hljs-keyword">as</span> mile;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">km</th>
+<th style="text-align:center">mile</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">402.09212137829684</td>
+<td style="text-align:center">249.8484608500711</td>
 </tr>
 </tbody>
 </table>
@@ -2281,7 +2342,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Lat/Lon functions","level":"12.1","depth":1,"next":{"title":"Getting Started","level":"13.1","depth":1,"path":"spark/getting_started/README.md","ref":"spark/getting_started/README.md","articles":[{"title":"Installation","level":"13.1.1","depth":2,"path":"spark/getting_started/installation.md","ref":"spark/getting_started/installation.md","articles":[]}]},"previous":{"title":"Probabilistic Latent Semantic Analysis","level":"11.2","depth":1,"path":"clustering/plsa.md","ref":"clustering/plsa.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"geospatial/latlon.md","mtime":"2017-05-11T07:09:12.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-23T09:59:20.878Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Lat/Lon functions","level":"12.1","depth":1,"next":{"title":"Getting Started","level":"13.1","depth":1,"path":"spark/getting_started/README.md","ref":"spark/getting_started/README.md","articles":[{"title":"Installation","level":"13.1.1","depth":2,"path":"spark/getting_started/installation.md","ref":"spark/getting_started/installation.md","articles":[]}]},"previous":{"title":"Probabilistic Latent Semantic Analysis","level":"11.2","depth":1,"path":"clustering/plsa.md","ref":"clustering/plsa.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"geospatial/latlon.md","mtime":"2017-06-26T11:56:46.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-26T12:00:02.478Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
