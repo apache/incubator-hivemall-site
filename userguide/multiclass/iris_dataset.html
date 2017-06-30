@@ -980,6 +980,21 @@
             
         </li>
     
+        <li class="chapter " data-level="6.3.5" data-path="../binaryclass/news20_rf.html">
+            
+                <a href="../binaryclass/news20_rf.html">
+            
+                    
+                        <b>6.3.5.</b>
+                    
+                    Random Forest
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1324,7 +1339,7 @@
                     
                         <b>7.2.3.</b>
                     
-                    RandomForest
+                    Random Forest
             
                 </a>
             
@@ -2195,13 +2210,13 @@ from
 
 <span class="hljs-comment">-- 80% for training</span>
 <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> train80p <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span>  iris_shuffled 
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> iris_shuffled 
 <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> rnd <span class="hljs-keyword">DESC</span>
 <span class="hljs-keyword">limit</span> <span class="hljs-number">120</span>;
 
 <span class="hljs-comment">-- 20% for testing</span>
 <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> test20p <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span>  iris_shuffled 
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> iris_shuffled 
 <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> rnd <span class="hljs-keyword">ASC</span>
 <span class="hljs-keyword">limit</span> <span class="hljs-number">30</span>;
 
@@ -2226,60 +2241,6 @@ from
 <span class="hljs-keyword">from</span>  
    train80p;
 </code></pre>
-<h1 id="training-multiclass-classification">Training (multiclass classification)</h1>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> model_scw1 <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> 
- label, 
- feature,
- argmin_kld(weight, covar) <span class="hljs-keyword">as</span> weight
-<span class="hljs-keyword">from</span> 
- (<span class="hljs-keyword">select</span> 
-     train_multiclass_scw(features, label) <span class="hljs-keyword">as</span> (label, feature, weight, covar)
-  <span class="hljs-keyword">from</span> 
-     training_x10
- ) t 
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> label, feature;
-</code></pre>
-<h1 id="predict">Predict</h1>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> predict_scw1
-<span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> 
-  <span class="hljs-keyword">rowid</span>, 
-  m.col0 <span class="hljs-keyword">as</span> score, 
-  m.col1 <span class="hljs-keyword">as</span> label
-<span class="hljs-keyword">from</span> (
-<span class="hljs-keyword">select</span>
-   <span class="hljs-keyword">rowid</span>, 
-   maxrow(score, label) <span class="hljs-keyword">as</span> m
-<span class="hljs-keyword">from</span> (
-  <span class="hljs-keyword">select</span>
-    t.<span class="hljs-keyword">rowid</span>,
-    m.label,
-    <span class="hljs-keyword">sum</span>(m.weight * t.<span class="hljs-keyword">value</span>) <span class="hljs-keyword">as</span> score
-  <span class="hljs-keyword">from</span> 
-    test20p_exploded t <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span>
-    model_scw1 m <span class="hljs-keyword">ON</span> (t.feature = m.feature)
-  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-    t.<span class="hljs-keyword">rowid</span>, m.label
-) t1
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">rowid</span>
-) t2;
-</code></pre>
-<h1 id="evaluation">Evaluation</h1>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> eval_scw1 <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> 
-  t.label <span class="hljs-keyword">as</span> actual, 
-  p.label <span class="hljs-keyword">as</span> predicted
-<span class="hljs-keyword">from</span> 
-  test20p t <span class="hljs-keyword">JOIN</span> predict_scw1 p 
-    <span class="hljs-keyword">on</span> (t.<span class="hljs-keyword">rowid</span> = p.<span class="hljs-keyword">rowid</span>);
-
-<span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>)/<span class="hljs-number">30</span> <span class="hljs-keyword">from</span> eval_scw1 
-<span class="hljs-keyword">where</span> actual = predicted;
-</code></pre>
-<blockquote>
-<p>0.9666666666666667</p>
-</blockquote>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2335,7 +2296,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Data preparation","level":"7.2.1","depth":2,"next":{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},"previous":{"title":"Iris tutorial","level":"7.2","depth":1,"path":"multiclass/iris.md","ref":"multiclass/iris.md","articles":[{"title":"Data preparation","level":"7.2.1","depth":2,"path":"multiclass/iris_dataset.md","ref":"multiclass/iris_dataset.md","articles":[]},{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},{"title":"RandomForest","level":"7.2.3","depth":2,"path":"multiclass/iris_randomforest.md","ref":"multiclass/iris_randomforest.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_dataset.md","mtime":"2016-12-02T08:02:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-23T09:59:20.878Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Data preparation","level":"7.2.1","depth":2,"next":{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},"previous":{"title":"Iris tutorial","level":"7.2","depth":1,"path":"multiclass/iris.md","ref":"multiclass/iris.md","articles":[{"title":"Data preparation","level":"7.2.1","depth":2,"path":"multiclass/iris_dataset.md","ref":"multiclass/iris_dataset.md","articles":[]},{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},{"title":"Random Forest","level":"7.2.3","depth":2,"path":"multiclass/iris_randomforest.md","ref":"multiclass/iris_randomforest.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_dataset.md","mtime":"2017-06-30T12:15:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-30T12:18:33.308Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

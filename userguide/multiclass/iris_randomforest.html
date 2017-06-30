@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>RandomForest · Hivemall User Manual</title>
+        <title>Random Forest · Hivemall User Manual</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -980,6 +980,21 @@
             
         </li>
     
+        <li class="chapter " data-level="6.3.5" data-path="../binaryclass/news20_rf.html">
+            
+                <a href="../binaryclass/news20_rf.html">
+            
+                    
+                        <b>6.3.5.</b>
+                    
+                    Random Forest
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1324,7 +1339,7 @@
                     
                         <b>7.2.3.</b>
                     
-                    RandomForest
+                    Random Forest
             
                 </a>
             
@@ -2077,7 +2092,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >RandomForest</a>
+        <a href=".." >Random Forest</a>
     </h1>
 </div>
 
@@ -2169,7 +2184,7 @@ $ sed &apos;/^$/d&apos; iris.data | hadoop fs -put - /dataset/iris/raw/iris.data
 <h1 id="training">Training</h1>
 <p><code>train_randomforest_classifier</code> takes a dense <code>features</code> in double[] and a <code>label</code> starting from 0.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">model</span> 
-<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> SEQUENCEFILE 
+  <span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> SEQUENCEFILE 
 <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">select</span> 
   train_randomforest_classifier(features, label) 
@@ -2180,56 +2195,91 @@ $ sed &apos;/^$/d&apos; iris.data | hadoop fs -put - /dataset/iris/raw/iris.data
 <span class="hljs-keyword">from</span>
   training;
 </code></pre>
-<p><em>Note: The default TEXTFILE should not be used for model table when using Javascript output through &quot;-output javascript&quot; option.</em></p>
-<pre><code>hive&gt; desc model;
-model_id                int                                         
-model_type              int                                         
-pred_model              string                                      
-var_importance          array&lt;double&gt;                               
-oob_errors              int                                         
-oob_tests               int
-</code></pre><h2 id="training-options">Training options</h2>
-<p>&quot;-help&quot; option shows usage of the function.</p>
-<pre><code>select train_randomforest_classifier(features, label, &quot;-help&quot;) from training;
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>The default <code>TEXTFILE</code> should not be used for model table when using Javascript output through <code>-output javascript</code> option.</p></div></div>
+<pre><code class="lang-sql">hive&gt; desc extended model;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">col_name</th>
+<th style="text-align:center">data_type </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">model_id</td>
+<td style="text-align:center">string</td>
+</tr>
+<tr>
+<td style="text-align:center">model_weight</td>
+<td style="text-align:center">double</td>
+</tr>
+<tr>
+<td style="text-align:center">model</td>
+<td style="text-align:center">string</td>
+</tr>
+<tr>
+<td style="text-align:center">var_importance</td>
+<td style="text-align:center">array<double></double></td>
+</tr>
+<tr>
+<td style="text-align:center">oob_errors</td>
+<td style="text-align:center">int</td>
+</tr>
+<tr>
+<td style="text-align:center">oob_tests</td>
+<td style="text-align:center">int</td>
+</tr>
+</tbody>
+</table>
+<h2 id="training-options">Training options</h2>
+<p><code>-help</code> option shows usage of the function.</p>
+<pre><code class="lang-sql">select train_randomforest_classifier(features, label, &quot;-help&quot;) from training;
 
 &gt; FAILED: UDFArgumentException 
-usage: train_randomforest_classifier(double[] features, int label [,
-       string options]) - Returns a relation consists of &lt;int model_id,
-       int model_type, string pred_model, array&lt;double&gt; var_importance,
-       int oob_errors, int oob_tests&gt; [-attrs &lt;arg&gt;] [-depth &lt;arg&gt;]
-       [-disable_compression] [-help] [-leafs &lt;arg&gt;] [-output &lt;arg&gt;]
-       [-rule &lt;arg&gt;] [-seed &lt;arg&gt;] [-splits &lt;arg&gt;] [-trees &lt;arg&gt;] [-vars
-       &lt;arg&gt;]
- -attrs,--attribute_types &lt;arg&gt;   Comma separated attribute types (Q for
-                                  quantitative variable and C for
-                                  categorical variable. e.g., [Q,C,Q,C])
- -depth,--max_depth &lt;arg&gt;         The maximum number of the tree depth
-                                  [default: Integer.MAX_VALUE]
- -disable_compression             Whether to disable compression of the
-                                  output script [default: false]
- -help                            Show function help
- -leafs,--max_leaf_nodes &lt;arg&gt;    The maximum number of leaf nodes
-                                  [default: Integer.MAX_VALUE]
- -output,--output_type &lt;arg&gt;      The output type (serialization/ser or
-                                  opscode/vm or javascript/js) [default:
-                                  serialization]
- -rule,--split_rule &lt;arg&gt;         Split algorithm [default: GINI, ENTROPY]
- -seed &lt;arg&gt;                      seed value in long [default: -1
-                                  (random)]
- -splits,--min_split &lt;arg&gt;        A node that has greater than or equals
-                                  to `min_split` examples will split
-                                  [default: 2]
- -trees,--num_trees &lt;arg&gt;         The number of trees for each task
-                                  [default: 50]
- -vars,--num_variables &lt;arg&gt;      The number of random selected features
-                                  [default: ceil(sqrt(x[0].length))].
-                                  int(num_variables * x[0].length) is
-                                  considered if num_variable is (0,1]
-</code></pre><p><em>Caution: &quot;-num_trees&quot; controls the number of trees for each task, not the total number of trees.</em></p>
+usage: train_randomforest_classifier(array&lt;double|string&gt; features, int
+       label [, const array&lt;double&gt; classWeights, const string options]) -
+       Returns a relation consists of &lt;int model_id, int model_type,
+       string pred_model, array&lt;double&gt; var_importance, int oob_errors,
+       int oob_tests, double weight&gt; [-attrs &lt;arg&gt;] [-depth &lt;arg&gt;] [-help]
+       [-leafs &lt;arg&gt;] [-min_samples_leaf &lt;arg&gt;] [-rule &lt;arg&gt;] [-seed
+       &lt;arg&gt;] [-splits &lt;arg&gt;] [-stratified] [-subsample &lt;arg&gt;] [-trees
+       &lt;arg&gt;] [-vars &lt;arg&gt;]
+ -attrs,--attribute_types &lt;arg&gt;      Comma separated attribute types (Q
+                                     for quantitative variable and C for
+                                     categorical variable. e.g.,
+                                     [Q,C,Q,C])
+ -depth,--max_depth &lt;arg&gt;            The maximum number of the tree depth
+                                     [default: Integer.MAX_VALUE]
+ -help                               Show function help
+ -leafs,--max_leaf_nodes &lt;arg&gt;       The maximum number of leaf nodes
+                                     [default: Integer.MAX_VALUE]
+ -min_samples_leaf &lt;arg&gt;             The minimum number of samples in a
+                                     leaf node [default: 1]
+ -rule,--split_rule &lt;arg&gt;            Split algorithm [default: GINI,
+                                     ENTROPY]
+ -seed &lt;arg&gt;                         seed value in long [default: -1
+                                     (random)]
+ -splits,--min_split &lt;arg&gt;           A node that has greater than or
+                                     equals to `min_split` examples will
+                                     split [default: 2]
+ -stratified,--stratified_sampling   Enable Stratified sampling for
+                                     unbalanced data
+ -subsample &lt;arg&gt;                    Sampling rate in range (0.0,1.0]
+ -trees,--num_trees &lt;arg&gt;            The number of trees for each task
+                                     [default: 50]
+ -vars,--num_variables &lt;arg&gt;         The number of random selected
+                                     features [default:
+                                     ceil(sqrt(x[0].length))].
+                                     int(num_variables * x[0].length) is
+                                     considered if num_variable is (0,1
+</code></pre>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p><code>-num_trees</code> controls the number of trees for each task, not the total number of trees.</p></div></div>
 <h3 id="parallelize-training">Parallelize Training</h3>
 <p>To parallelize RandomForest training, you can use UNION ALL as follows:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">model</span> 
-<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> SEQUENCEFILE 
+  <span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> ORC tblproperties(<span class="hljs-string">&quot;orc.compress&quot;</span>=<span class="hljs-string">&quot;SNAPPY&quot;</span>)
+  <span class="hljs-comment">-- STORED AS SEQUENCEFILE </span>
 <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">select</span> 
   train_randomforest_classifier(features, label, <span class="hljs-string">&apos;-trees 25&apos;</span>) 
@@ -2251,64 +2301,31 @@ usage: train_randomforest_classifier(double[] features, int label [,
   <span class="hljs-keyword">model</span>;
 </code></pre>
 <blockquote>
-<p>[2.81010338879605,0.4970357753626371,23.790369091407698,14.315316390235273]     0.05333333333333334</p>
+<p>[6.837674865013268,4.1317115752776665,24.331571871930226,25.677497925673062]    0.056666666666666664</p>
 </blockquote>
-<h3 id="output-prediction-model-by-javascipt">Output prediction model by Javascipt</h3>
-<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> model_javascript
-<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> SEQUENCEFILE 
-<span class="hljs-keyword">AS</span>
-<span class="hljs-keyword">select</span> train_randomforest_classifier(features, label, <span class="hljs-string">&quot;-output_type js -disable_compression&quot;</span>)
-<span class="hljs-keyword">from</span> training;
-
-<span class="hljs-keyword">select</span> <span class="hljs-keyword">model</span> <span class="hljs-keyword">from</span> model_javascript <span class="hljs-keyword">limit</span> <span class="hljs-number">1</span>;
-</code></pre>
-<pre><code class="lang-js"><span class="hljs-keyword">if</span>(x[<span class="hljs-number">3</span>] &lt;= <span class="hljs-number">0.5</span>) {
-  <span class="hljs-number">0</span>;
-} <span class="hljs-keyword">else</span>  {
-  <span class="hljs-keyword">if</span>(x[<span class="hljs-number">2</span>] &lt;= <span class="hljs-number">4.5</span>) {
-    <span class="hljs-keyword">if</span>(x[<span class="hljs-number">3</span>] &lt;= <span class="hljs-number">1.5</span>) {
-      <span class="hljs-keyword">if</span>(x[<span class="hljs-number">0</span>] &lt;= <span class="hljs-number">4.5</span>) {
-        <span class="hljs-number">1</span>;
-      } <span class="hljs-keyword">else</span>  {
-        <span class="hljs-keyword">if</span>(x[<span class="hljs-number">0</span>] &lt;= <span class="hljs-number">5.5</span>) {
-          <span class="hljs-number">1</span>;
-        } <span class="hljs-keyword">else</span>  {
-          <span class="hljs-keyword">if</span>(x[<span class="hljs-number">1</span>] &lt;= <span class="hljs-number">2.5</span>) {
-            <span class="hljs-number">1</span>;
-          } <span class="hljs-keyword">else</span>  {
-            <span class="hljs-number">1</span>;
-          }
-        }
-      }
-    } <span class="hljs-keyword">else</span>  {
-      <span class="hljs-number">2</span>;
-    }
-  } <span class="hljs-keyword">else</span>  {
-    <span class="hljs-keyword">if</span>(x[<span class="hljs-number">3</span>] &lt;= <span class="hljs-number">1.5</span>) {
-      <span class="hljs-number">2</span>;
-    } <span class="hljs-keyword">else</span>  {
-      <span class="hljs-number">2</span>;
-    }
-  }
-}
-</code></pre>
 <h1 id="prediction">Prediction</h1>
 <pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:classification=<span class="hljs-literal">true</span>;
 <span class="hljs-keyword">set</span> hive.<span class="hljs-keyword">auto</span>.<span class="hljs-keyword">convert</span>.<span class="hljs-keyword">join</span>=<span class="hljs-literal">true</span>;
 <span class="hljs-keyword">set</span> hive.mapjoin.optimized.hashtable=<span class="hljs-literal">false</span>;
 
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> predicted_vm
+<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> predicted
 <span class="hljs-keyword">as</span>
 <span class="hljs-keyword">SELECT</span>
   <span class="hljs-keyword">rowid</span>,
-  rf_ensemble(predicted) <span class="hljs-keyword">as</span> predicted
+  <span class="hljs-comment">-- rf_ensemble(predicted) as predicted</span>
+  <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+  rf_ensemble(predicted.<span class="hljs-keyword">value</span>, predicted.posteriori, model_weight) <span class="hljs-keyword">as</span> predicted
+  <span class="hljs-comment">-- rf_ensemble(predicted.value, predicted.posteriori) as predicted -- avoid OOB accuracy (i.e., model_weight)</span>
 <span class="hljs-keyword">FROM</span> (
   <span class="hljs-keyword">SELECT</span>
     <span class="hljs-keyword">rowid</span>, 
     <span class="hljs-comment">-- hivemall v0.4.1-alpha.2 and before</span>
     <span class="hljs-comment">-- tree_predict(p.model, t.features, ${classification}) as predicted</span>
     <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
-    tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
+    <span class="hljs-comment">-- tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted</span>
+    <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+    p.model_weight,
+    tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
   <span class="hljs-keyword">FROM</span>
     <span class="hljs-keyword">model</span> p
     <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-comment">-- CROSS JOIN</span>
@@ -2318,7 +2335,6 @@ usage: train_randomforest_classifier(double[] features, int label [,
   <span class="hljs-keyword">rowid</span>
 ;
 </code></pre>
-<p><em>Note: Javascript outputs can be evaluated by <code>js_tree_predict</code>.</em></p>
 <h3 id="parallelize-prediction">Parallelize Prediction</h3>
 <p>The following query runs predictions in N-parallel. It would reduce elapsed time for prediction almost by N.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">SET</span> hivevar:classification=<span class="hljs-literal">true</span>;
@@ -2326,20 +2342,29 @@ usage: train_randomforest_classifier(double[] features, int label [,
 <span class="hljs-keyword">SET</span> hive.mapjoin.optimized.hashtable=<span class="hljs-literal">false</span>;
 <span class="hljs-keyword">SET</span> mapred.reduce.tasks=<span class="hljs-number">8</span>;
 
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> predicted_vm
+<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> predicted
 <span class="hljs-keyword">as</span>
 <span class="hljs-keyword">SELECT</span>
   <span class="hljs-keyword">rowid</span>,
-  rf_ensemble(predicted) <span class="hljs-keyword">as</span> predicted
+  <span class="hljs-comment">-- rf_ensemble(predicted) as predicted</span>
+  <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+  rf_ensemble(predicted.<span class="hljs-keyword">value</span>, predicted.posteriori, model_weight) <span class="hljs-keyword">as</span> predicted
+  <span class="hljs-comment">-- rf_ensemble(predicted.value, predicted.posteriori) as predicted -- avoid OOB accuracy (i.e., model_weight)</span>
 <span class="hljs-keyword">FROM</span> (
   <span class="hljs-keyword">SELECT</span>
     t.<span class="hljs-keyword">rowid</span>, 
     <span class="hljs-comment">-- hivemall v0.4.1-alpha.2 and before</span>
     <span class="hljs-comment">-- tree_predict(p.pred_model, t.features, ${classification}) as predicted</span>
     <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
-    tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
+    <span class="hljs-comment">-- tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted</span>
+    <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+    p.model_weight,
+    tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
   <span class="hljs-keyword">FROM</span> (
-    <span class="hljs-keyword">SELECT</span> model_id, model_type, pred_model
+    <span class="hljs-keyword">SELECT</span> 
+      <span class="hljs-comment">-- model_id, model_type, pred_model</span>
+      <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+      model_id, model_weight, <span class="hljs-keyword">model</span>
     <span class="hljs-keyword">FROM</span> <span class="hljs-keyword">model</span>
     <span class="hljs-keyword">DISTRIBUTE</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</span>(<span class="hljs-number">1</span>)
   ) p 
@@ -2350,32 +2375,92 @@ usage: train_randomforest_classifier(double[] features, int label [,
 ;
 </code></pre>
 <h1 id="evaluation">Evaluation</h1>
-<pre><code class="lang-sql">select count(1) from training;
-&gt; 150
-
-set hivevar:total_cnt=150;
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">from</span> training;
+</code></pre>
+<blockquote>
+<p>150</p>
+</blockquote>
+<pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:total_cnt=<span class="hljs-number">150</span>;
 
 WITH t1 as (
-SELECT
-  t.rowid,
-  t.label as actual,
-  p.predicted.label as predicted
-FROM
-  predicted_vm p
-  LEFT OUTER JOIN training t ON (t.rowid = p.rowid)
+<span class="hljs-keyword">SELECT</span>
+  t.<span class="hljs-keyword">rowid</span>,
+  t.label <span class="hljs-keyword">as</span> actual,
+  p.predicted.label <span class="hljs-keyword">as</span> predicted
+<span class="hljs-keyword">FROM</span>
+  predicted p
+  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> training t <span class="hljs-keyword">ON</span> (t.<span class="hljs-keyword">rowid</span> = p.<span class="hljs-keyword">rowid</span>)
 )
-SELECT
-  count(1) / ${total_cnt}
-FROM
+<span class="hljs-keyword">SELECT</span>
+  <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) / ${total_cnt}
+<span class="hljs-keyword">FROM</span>
   t1
-WHERE
+<span class="hljs-keyword">WHERE</span>
   actual = predicted
 ;
 </code></pre>
 <blockquote>
-<p>0.9533333333333334</p>
+<p>0.98</p>
 </blockquote>
-<p><div id="page-footer" class="localized-footer"><hr><!--
+<h1 id="graphvis-export">Graphvis export</h1>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p><code>tree_export</code> feature is supported from Hivemall v0.5-rc.1 or later.
+Better to limit tree depth on training by <code>-depth</code> option to plot a Decision Tree.</p></div></div>
+<p>Hivemall provide <code>tree_export</code> to export a decision tree into <a href="http://www.graphviz.org/" target="_blank">Graphviz</a> or human-readable Javascript format. You can find the usage by issuing the following query:</p>
+<pre><code>&gt; select tree_export(&quot;&quot;,&quot;-help&quot;);
+
+usage: tree_export(string model, const string options, optional
+       array&lt;string&gt; featureNames=null, optional array&lt;string&gt;
+       classNames=null) - exports a Decision Tree model as javascript/dot]
+       [-help] [-output_name &lt;arg&gt;] [-r] [-t &lt;arg&gt;]
+ -help                             Show function help
+ -output_name,--outputName &lt;arg&gt;   output name [default: predicted]
+ -r,--regression                   Is regression tree or not
+ -t,--type &lt;arg&gt;                   Type of output [default: js,
+                                   javascript/js, graphvis/dot
+</code></pre><pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> model_exported 
+  <span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> ORC tblproperties(<span class="hljs-string">&quot;orc.compress&quot;</span>=<span class="hljs-string">&quot;SNAPPY&quot;</span>)
+<span class="hljs-keyword">AS</span>
+<span class="hljs-keyword">select</span>
+  model_id,
+  tree_export(<span class="hljs-keyword">model</span>, <span class="hljs-string">&quot;-type javascript&quot;</span>, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;sepal_length&apos;</span>,<span class="hljs-string">&apos;sepal_width&apos;</span>,<span class="hljs-string">&apos;petal_length&apos;</span>,<span class="hljs-string">&apos;petak_width&apos;</span>), <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;Setosa&apos;</span>,<span class="hljs-string">&apos;Versicolour&apos;</span>,<span class="hljs-string">&apos;Virginica&apos;</span>)) <span class="hljs-keyword">as</span> js,
+  tree_export(<span class="hljs-keyword">model</span>, <span class="hljs-string">&quot;-type graphvis&quot;</span>, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;sepal_length&apos;</span>,<span class="hljs-string">&apos;sepal_width&apos;</span>,<span class="hljs-string">&apos;petal_length&apos;</span>,<span class="hljs-string">&apos;petak_width&apos;</span>), <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;Setosa&apos;</span>,<span class="hljs-string">&apos;Versicolour&apos;</span>,<span class="hljs-string">&apos;Virginica&apos;</span>)) <span class="hljs-keyword">as</span> dot
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">model</span>
+<span class="hljs-comment">-- limit 1</span>
+;
+</code></pre>
+<pre><code>digraph Tree {
+ node [shape=box, style=&quot;filled, rounded&quot;, color=&quot;black&quot;, fontname=helvetica];
+ edge [fontname=helvetica];
+ 0 [label=&lt;petal_length &amp;le; 2.599999964237213&gt;, fillcolor=&quot;#00000000&quot;];
+ 1 [label=&lt;predicted = Setosa&gt;, fillcolor=&quot;0.0000,1.000,1.000&quot;, shape=ellipse];
+ 0 -&gt; 1 [labeldistance=2.5, labelangle=45, headlabel=&quot;True&quot;];
+ 2 [label=&lt;petal_length &amp;le; 4.950000047683716&gt;, fillcolor=&quot;#00000000&quot;];
+ 0 -&gt; 2 [labeldistance=2.5, labelangle=-45, headlabel=&quot;False&quot;];
+ 3 [label=&lt;petak_width &amp;le; 1.6500000357627869&gt;, fillcolor=&quot;#00000000&quot;];
+ 2 -&gt; 3;
+ 4 [label=&lt;predicted = Versicolour&gt;, fillcolor=&quot;0.3333,1.000,1.000&quot;, shape=ellipse];
+ 3 -&gt; 4;
+ 5 [label=&lt;sepal_width &amp;le; 3.100000023841858&gt;, fillcolor=&quot;#00000000&quot;];
+ 3 -&gt; 5;
+ 6 [label=&lt;predicted = Virginica&gt;, fillcolor=&quot;0.6667,1.000,1.000&quot;, shape=ellipse];
+ 5 -&gt; 6;
+ 7 [label=&lt;predicted = Versicolour&gt;, fillcolor=&quot;0.3333,1.000,1.000&quot;, shape=ellipse];
+ 5 -&gt; 7;
+ 8 [label=&lt;petak_width &amp;le; 1.75&gt;, fillcolor=&quot;#00000000&quot;];
+ 2 -&gt; 8;
+ 9 [label=&lt;petal_length &amp;le; 5.299999952316284&gt;, fillcolor=&quot;#00000000&quot;];
+ 8 -&gt; 9;
+ 10 [label=&lt;predicted = Versicolour&gt;, fillcolor=&quot;0.3333,1.000,1.000&quot;, shape=ellipse];
+ 9 -&gt; 10;
+ 11 [label=&lt;predicted = Virginica&gt;, fillcolor=&quot;0.6667,1.000,1.000&quot;, shape=ellipse];
+ 9 -&gt; 11;
+ 12 [label=&lt;predicted = Virginica&gt;, fillcolor=&quot;0.6667,1.000,1.000&quot;, shape=ellipse];
+ 8 -&gt; 12;
+}
+</code></pre><p><img src="../resources/images/iris.png" alt="Iris Graphvis output"></p>
+<p>You can draw a graph by <code>dot -Tpng iris.dot -o iris.png</code> or using <a href="http://viz-js.com/" target="_blank">Viz.js</a>.
+<div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -2430,7 +2515,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"RandomForest","level":"7.2.3","depth":2,"next":{"title":"Regression","level":"8.1","depth":1,"path":"regression/general.md","ref":"regression/general.md","articles":[]},"previous":{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_randomforest.md","mtime":"2016-12-02T08:02:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-23T09:59:20.878Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Random Forest","level":"7.2.3","depth":2,"next":{"title":"Regression","level":"8.1","depth":1,"path":"regression/general.md","ref":"regression/general.md","articles":[]},"previous":{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_randomforest.md","mtime":"2017-06-30T12:15:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-30T12:18:33.308Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

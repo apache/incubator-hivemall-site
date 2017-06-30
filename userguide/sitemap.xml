@@ -50,6 +50,7 @@
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/news20_pa.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/news20_scw.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/news20_adagrad.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/binaryclass/news20_rf.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/kdd2010a.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/kdd2010a_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/binaryclass/kdd2010a_scw.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>

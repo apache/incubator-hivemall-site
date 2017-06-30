@@ -980,6 +980,21 @@
             
         </li>
     
+        <li class="chapter " data-level="6.3.5" data-path="../binaryclass/news20_rf.html">
+            
+                <a href="../binaryclass/news20_rf.html">
+            
+                    
+                        <b>6.3.5.</b>
+                    
+                    Random Forest
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1324,7 +1339,7 @@
                     
                         <b>7.2.3.</b>
                     
-                    RandomForest
+                    Random Forest
             
                 </a>
             
@@ -2110,271 +2125,59 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p><em>NOTE: RandomForest is being supported from Hivemall v0.4 or later.</em></p>
-<h1 id="dataset">Dataset</h1>
-<ul>
-<li><a href="https://archive.ics.uci.edu/ml/datasets/Iris" target="_blank">https://archive.ics.uci.edu/ml/datasets/Iris</a></li>
-</ul>
-<pre><code>Attribute Information:
-   1. sepal length in cm
-   2. sepal width in cm
-   3. petal length in cm
-   4. petal width in cm
-   5. class: 
-      -- Iris Setosa
-      -- Iris Versicolour
-      -- Iris Virginica
-</code></pre><h1 id="table-preparation">Table preparation</h1>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">database</span> iris;
-<span class="hljs-keyword">use</span> iris;
-
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">external</span> <span class="hljs-keyword">table</span> <span class="hljs-keyword">raw</span> (
-  sepal_length <span class="hljs-built_in">int</span>,
-  sepal_width <span class="hljs-built_in">int</span>,
-  petal_length <span class="hljs-built_in">int</span>,
-  petak_width <span class="hljs-built_in">int</span>,
-  <span class="hljs-keyword">class</span> <span class="hljs-keyword">string</span>
-)
-<span class="hljs-keyword">ROW</span> <span class="hljs-keyword">FORMAT</span> <span class="hljs-keyword">DELIMITED</span>
-  <span class="hljs-keyword">FIELDS</span> <span class="hljs-keyword">TERMINATED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">&apos;,&apos;</span>
-  <span class="hljs-keyword">LINES</span> <span class="hljs-keyword">TERMINATED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">&apos;\n&apos;</span>
-<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> TEXTFILE LOCATION <span class="hljs-string">&apos;/dataset/iris/raw&apos;</span>;
-
-$ sed &apos;/^$/d&apos; iris.data | hadoop fs -put - /dataset/iris/raw/iris.data
+<h1 id="training-multiclass-classification">Training (multiclass classification)</h1>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> model_scw1 <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span> 
+ label, 
+ feature,
+ argmin_kld(weight, covar) <span class="hljs-keyword">as</span> weight
+<span class="hljs-keyword">from</span> 
+ (<span class="hljs-keyword">select</span> 
+     train_multiclass_scw(features, label) <span class="hljs-keyword">as</span> (label, feature, weight, covar)
+  <span class="hljs-keyword">from</span> 
+     training_x10
+ ) t 
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> label, feature;
 </code></pre>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> label_mapping 
+<h1 id="predict">Predict</h1>
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> predict_scw1
 <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span>
-  <span class="hljs-keyword">class</span>,
-  <span class="hljs-keyword">rank</span> - <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> label
+<span class="hljs-keyword">select</span> 
+  <span class="hljs-keyword">rowid</span>, 
+  m.col0 <span class="hljs-keyword">as</span> score, 
+  m.col1 <span class="hljs-keyword">as</span> label
 <span class="hljs-keyword">from</span> (
 <span class="hljs-keyword">select</span>
-  <span class="hljs-keyword">distinct</span> <span class="hljs-keyword">class</span>,
-  <span class="hljs-keyword">dense_rank</span>() <span class="hljs-keyword">over</span> (<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">class</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">rank</span>
-<span class="hljs-keyword">from</span> 
-  <span class="hljs-keyword">raw</span>
-) t
-;
-</code></pre>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> training
-<span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span>
-  <span class="hljs-keyword">rowid</span>() <span class="hljs-keyword">as</span> <span class="hljs-keyword">rowid</span>,
-  <span class="hljs-built_in">array</span>(t1.sepal_length, t1.sepal_width, t1.petal_length, t1.petak_width) <span class="hljs-keyword">as</span> features,
-  t2.label
-<span class="hljs-keyword">from</span>
-  <span class="hljs-keyword">raw</span> t1
-  <span class="hljs-keyword">JOIN</span> label_mapping t2 <span class="hljs-keyword">ON</span> (t1.<span class="hljs-keyword">class</span> = t2.<span class="hljs-keyword">class</span>)
-;
-</code></pre>
-<h1 id="training">Training</h1>
-<p><code>train_randomforest_classifier</code> takes a dense <code>features</code> in double[] and a <code>label</code> starting from 0.</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">model</span> 
-<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> SEQUENCEFILE 
-<span class="hljs-keyword">AS</span>
-<span class="hljs-keyword">select</span> 
-  train_randomforest_classifier(features, label) 
-  <span class="hljs-comment">-- hivemall v0.4.1-alpha.2 and before</span>
-  <span class="hljs-comment">-- train_randomforest_classifier(features, label) as (pred_model, var_importance, oob_errors, oob_tests)</span>
-  <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
-  <span class="hljs-comment">-- train_randomforest_classifier(features, label) as (model_id, model_type, pred_model, var_importance, oob_errors, oob_tests)</span>
-<span class="hljs-keyword">from</span>
-  training;
-</code></pre>
-<p><em>Note: The default TEXTFILE should not be used for model table when using Javascript output through &quot;-output javascript&quot; option.</em></p>
-<pre><code>hive&gt; desc model;
-model_id                int                                         
-model_type              int                                         
-pred_model              string                                      
-var_importance          array&lt;double&gt;                               
-oob_errors              int                                         
-oob_tests               int
-</code></pre><h2 id="training-options">Training options</h2>
-<p>&quot;-help&quot; option shows usage of the function.</p>
-<pre><code>select train_randomforest_classifier(features, label, &quot;-help&quot;) from training;
-
-&gt; FAILED: UDFArgumentException 
-usage: train_randomforest_classifier(double[] features, int label [,
-       string options]) - Returns a relation consists of &lt;int model_id,
-       int model_type, string pred_model, array&lt;double&gt; var_importance,
-       int oob_errors, int oob_tests&gt; [-attrs &lt;arg&gt;] [-depth &lt;arg&gt;]
-       [-disable_compression] [-help] [-leafs &lt;arg&gt;] [-output &lt;arg&gt;]
-       [-rule &lt;arg&gt;] [-seed &lt;arg&gt;] [-splits &lt;arg&gt;] [-trees &lt;arg&gt;] [-vars
-       &lt;arg&gt;]
- -attrs,--attribute_types &lt;arg&gt;   Comma separated attribute types (Q for
-                                  quantitative variable and C for
-                                  categorical variable. e.g., [Q,C,Q,C])
- -depth,--max_depth &lt;arg&gt;         The maximum number of the tree depth
-                                  [default: Integer.MAX_VALUE]
- -disable_compression             Whether to disable compression of the
-                                  output script [default: false]
- -help                            Show function help
- -leafs,--max_leaf_nodes &lt;arg&gt;    The maximum number of leaf nodes
-                                  [default: Integer.MAX_VALUE]
- -output,--output_type &lt;arg&gt;      The output type (serialization/ser or
-                                  opscode/vm or javascript/js) [default:
-                                  serialization]
- -rule,--split_rule &lt;arg&gt;         Split algorithm [default: GINI, ENTROPY]
- -seed &lt;arg&gt;                      seed value in long [default: -1
-                                  (random)]
- -splits,--min_split &lt;arg&gt;        A node that has greater than or equals
-                                  to `min_split` examples will split
-                                  [default: 2]
- -trees,--num_trees &lt;arg&gt;         The number of trees for each task
-                                  [default: 50]
- -vars,--num_variables &lt;arg&gt;      The number of random selected features
-                                  [default: ceil(sqrt(x[0].length))].
-                                  int(num_variables * x[0].length) is
-                                  considered if num_variable is (0,1]
-</code></pre><p><em>Caution: &quot;-num_trees&quot; controls the number of trees for each task, not the total number of trees.</em></p>
-<h3 id="parallelize-training">Parallelize Training</h3>
-<p>To parallelize RandomForest training, you can use UNION ALL as follows:</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">model</span> 
-<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> SEQUENCEFILE 
-<span class="hljs-keyword">AS</span>
-<span class="hljs-keyword">select</span> 
-  train_randomforest_classifier(features, label, <span class="hljs-string">&apos;-trees 25&apos;</span>) 
-<span class="hljs-keyword">from</span>
-  training
-<span class="hljs-keyword">UNION</span> ALL
-<span class="hljs-keyword">select</span> 
-  train_randomforest_classifier(features, label, <span class="hljs-string">&apos;-trees 25&apos;</span>)
-<span class="hljs-keyword">from</span>
-  training
-;
-</code></pre>
-<h3 id="learning-stats">Learning stats</h3>
-<p><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#varimp" target="_blank"><code>Variable importance</code></a> and <a href="https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#ooberr" target="_blank"><code>Out Of Bag (OOB) error rate</code></a> of RandomForest can be shown as follows:</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span>
-  array_sum(var_importance) <span class="hljs-keyword">as</span> var_importance,
-  <span class="hljs-keyword">sum</span>(oob_errors) / <span class="hljs-keyword">sum</span>(oob_tests) <span class="hljs-keyword">as</span> oob_err_rate
-<span class="hljs-keyword">from</span>
-  <span class="hljs-keyword">model</span>;
-</code></pre>
-<blockquote>
-<p>[2.81010338879605,0.4970357753626371,23.790369091407698,14.315316390235273]     0.05333333333333334</p>
-</blockquote>
-<h3 id="output-prediction-model-by-javascipt">Output prediction model by Javascipt</h3>
-<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> model_javascript
-<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> SEQUENCEFILE 
-<span class="hljs-keyword">AS</span>
-<span class="hljs-keyword">select</span> train_randomforest_classifier(features, label, <span class="hljs-string">&quot;-output_type js -disable_compression&quot;</span>)
-<span class="hljs-keyword">from</span> training;
-
-<span class="hljs-keyword">select</span> <span class="hljs-keyword">model</span> <span class="hljs-keyword">from</span> model_javascript <span class="hljs-keyword">limit</span> <span class="hljs-number">1</span>;
-</code></pre>
-<pre><code class="lang-js"><span class="hljs-keyword">if</span>(x[<span class="hljs-number">3</span>] &lt;= <span class="hljs-number">0.5</span>) {
-  <span class="hljs-number">0</span>;
-} <span class="hljs-keyword">else</span>  {
-  <span class="hljs-keyword">if</span>(x[<span class="hljs-number">2</span>] &lt;= <span class="hljs-number">4.5</span>) {
-    <span class="hljs-keyword">if</span>(x[<span class="hljs-number">3</span>] &lt;= <span class="hljs-number">1.5</span>) {
-      <span class="hljs-keyword">if</span>(x[<span class="hljs-number">0</span>] &lt;= <span class="hljs-number">4.5</span>) {
-        <span class="hljs-number">1</span>;
-      } <span class="hljs-keyword">else</span>  {
-        <span class="hljs-keyword">if</span>(x[<span class="hljs-number">0</span>] &lt;= <span class="hljs-number">5.5</span>) {
-          <span class="hljs-number">1</span>;
-        } <span class="hljs-keyword">else</span>  {
-          <span class="hljs-keyword">if</span>(x[<span class="hljs-number">1</span>] &lt;= <span class="hljs-number">2.5</span>) {
-            <span class="hljs-number">1</span>;
-          } <span class="hljs-keyword">else</span>  {
-            <span class="hljs-number">1</span>;
-          }
-        }
-      }
-    } <span class="hljs-keyword">else</span>  {
-      <span class="hljs-number">2</span>;
-    }
-  } <span class="hljs-keyword">else</span>  {
-    <span class="hljs-keyword">if</span>(x[<span class="hljs-number">3</span>] &lt;= <span class="hljs-number">1.5</span>) {
-      <span class="hljs-number">2</span>;
-    } <span class="hljs-keyword">else</span>  {
-      <span class="hljs-number">2</span>;
-    }
-  }
-}
-</code></pre>
-<h1 id="prediction">Prediction</h1>
-<pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:classification=<span class="hljs-literal">true</span>;
-<span class="hljs-keyword">set</span> hive.<span class="hljs-keyword">auto</span>.<span class="hljs-keyword">convert</span>.<span class="hljs-keyword">join</span>=<span class="hljs-literal">true</span>;
-<span class="hljs-keyword">set</span> hive.mapjoin.optimized.hashtable=<span class="hljs-literal">false</span>;
-
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> predicted_vm
-<span class="hljs-keyword">as</span>
-<span class="hljs-keyword">SELECT</span>
-  <span class="hljs-keyword">rowid</span>,
-  rf_ensemble(predicted) <span class="hljs-keyword">as</span> predicted
-<span class="hljs-keyword">FROM</span> (
-  <span class="hljs-keyword">SELECT</span>
-    <span class="hljs-keyword">rowid</span>, 
-    <span class="hljs-comment">-- hivemall v0.4.1-alpha.2 and before</span>
-    <span class="hljs-comment">-- tree_predict(p.model, t.features, ${classification}) as predicted</span>
-    <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
-    tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
-  <span class="hljs-keyword">FROM</span>
-    <span class="hljs-keyword">model</span> p
-    <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-comment">-- CROSS JOIN</span>
-    training t
+   <span class="hljs-keyword">rowid</span>, 
+   maxrow(score, label) <span class="hljs-keyword">as</span> m
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span>
+    t.<span class="hljs-keyword">rowid</span>,
+    m.label,
+    <span class="hljs-keyword">sum</span>(m.weight * t.<span class="hljs-keyword">value</span>) <span class="hljs-keyword">as</span> score
+  <span class="hljs-keyword">from</span> 
+    test20p_exploded t <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span>
+    model_scw1 m <span class="hljs-keyword">ON</span> (t.feature = m.feature)
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    t.<span class="hljs-keyword">rowid</span>, m.label
 ) t1
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  <span class="hljs-keyword">rowid</span>
-;
-</code></pre>
-<p><em>Note: Javascript outputs can be evaluated by <code>js_tree_predict</code>.</em></p>
-<h3 id="parallelize-prediction">Parallelize Prediction</h3>
-<p>The following query runs predictions in N-parallel. It would reduce elapsed time for prediction almost by N.</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">SET</span> hivevar:classification=<span class="hljs-literal">true</span>;
-<span class="hljs-keyword">set</span> hive.<span class="hljs-keyword">auto</span>.<span class="hljs-keyword">convert</span>.<span class="hljs-keyword">join</span>=<span class="hljs-literal">true</span>;
-<span class="hljs-keyword">SET</span> hive.mapjoin.optimized.hashtable=<span class="hljs-literal">false</span>;
-<span class="hljs-keyword">SET</span> mapred.reduce.tasks=<span class="hljs-number">8</span>;
-
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> predicted_vm
-<span class="hljs-keyword">as</span>
-<span class="hljs-keyword">SELECT</span>
-  <span class="hljs-keyword">rowid</span>,
-  rf_ensemble(predicted) <span class="hljs-keyword">as</span> predicted
-<span class="hljs-keyword">FROM</span> (
-  <span class="hljs-keyword">SELECT</span>
-    t.<span class="hljs-keyword">rowid</span>, 
-    <span class="hljs-comment">-- hivemall v0.4.1-alpha.2 and before</span>
-    <span class="hljs-comment">-- tree_predict(p.pred_model, t.features, ${classification}) as predicted</span>
-    <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
-    tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
-  <span class="hljs-keyword">FROM</span> (
-    <span class="hljs-keyword">SELECT</span> model_id, model_type, pred_model
-    <span class="hljs-keyword">FROM</span> <span class="hljs-keyword">model</span>
-    <span class="hljs-keyword">DISTRIBUTE</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</span>(<span class="hljs-number">1</span>)
-  ) p 
-  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> training t
-) t1
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  <span class="hljs-keyword">rowid</span>
-;
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">rowid</span>
+) t2;
 </code></pre>
 <h1 id="evaluation">Evaluation</h1>
-<pre><code class="lang-sql">select count(1) from training;
-&gt; 150
+<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> eval_scw1 <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span> 
+  t.label <span class="hljs-keyword">as</span> actual, 
+  p.label <span class="hljs-keyword">as</span> predicted
+<span class="hljs-keyword">from</span> 
+  test20p t <span class="hljs-keyword">JOIN</span> predict_scw1 p 
+    <span class="hljs-keyword">on</span> (t.<span class="hljs-keyword">rowid</span> = p.<span class="hljs-keyword">rowid</span>);
 
-set hivevar:total_cnt=150;
-
-WITH t1 as (
-SELECT
-  t.rowid,
-  t.label as actual,
-  p.predicted.label as predicted
-FROM
-  predicted_vm p
-  LEFT OUTER JOIN training t ON (t.rowid = p.rowid)
-)
-SELECT
-  count(1) / ${total_cnt}
-FROM
-  t1
-WHERE
-  actual = predicted
-;
+<span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>)/<span class="hljs-number">30</span> <span class="hljs-keyword">from</span> eval_scw1 
+<span class="hljs-keyword">where</span> actual = predicted;
 </code></pre>
 <blockquote>
-<p>0.9533333333333334</p>
+<p>0.9666666666666667</p>
 </blockquote>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
@@ -2431,7 +2234,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"SCW","level":"7.2.2","depth":2,"next":{"title":"RandomForest","level":"7.2.3","depth":2,"path":"multiclass/iris_randomforest.md","ref":"multiclass/iris_randomforest.md","articles":[]},"previous":{"title":"Data preparation","level":"7.2.1","depth":2,"path":"multiclass/iris_dataset.md","ref":"multiclass/iris_dataset.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_scw.md","mtime":"2016-12-02T08:02:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-23T09:59:20.878Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"SCW","level":"7.2.2","depth":2,"next":{"title":"Random Forest","level":"7.2.3","depth":2,"path":"multiclass/iris_randomforest.md","ref":"multiclass/iris_randomforest.md","articles":[]},"previous":{"title":"Data preparation","level":"7.2.1","depth":2,"path":"multiclass/iris_dataset.md","ref":"multiclass/iris_dataset.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_scw.md","mtime":"2017-06-30T12:15:19.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-30T12:18:33.308Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
