@@ -97,7 +97,7 @@
     <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../misc/misc.html" />
+    <link rel="next" href="e2006_sql.html" />
     
     
     <link rel="prev" href="../binaryclass/" />
@@ -523,7 +523,7 @@
                     
                         <b>2.3.</b>
                     
-                    English/Japanese Text Tokenizer
+                    Text Tokenizer
             
                 </a>
             
@@ -1911,6 +1911,21 @@
             
         </li>
     
+        <li class="chapter " data-level="13.2.2" data-path="../binaryclass/a9a_sql.html">
+            
+                <a href="../binaryclass/a9a_sql.html">
+            
+                    
+                        <b>13.2.2.</b>
+                    
+                    a9a Tutorial for SQL
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1940,6 +1955,21 @@
                         <b>13.3.1.</b>
                     
                     E2006-tfidf regression Tutorial for DataFrame
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="13.3.2" data-path="e2006_sql.html">
+            
+                <a href="e2006_sql.html">
+            
+                    
+                        <b>13.3.2.</b>
+                    
+                    E2006-tfidf regression Tutorial for SQL
             
                 </a>
             
@@ -2132,10 +2162,15 @@
 $ wget http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/regression/E2006.test.bz2
 </code></pre>
 <pre><code class="lang-scala">scala&gt; :paste
-<span class="hljs-keyword">val</span> trainDf = spark.read.format(<span class="hljs-string">&quot;libsvm&quot;</span>).load(<span class="hljs-string">&quot;E2006.train.bz2&quot;</span>)
-  .select(
+<span class="hljs-keyword">val</span> rawTrainDf = spark.read.format(<span class="hljs-string">&quot;libsvm&quot;</span>).load(<span class="hljs-string">&quot;E2006.train.bz2&quot;</span>)
+
+<span class="hljs-keyword">val</span> (max, min) = rawTrainDf.select(max($<span class="hljs-string">&quot;label&quot;</span>), min($<span class="hljs-string">&quot;label&quot;</span>)).collect.map {
+  <span class="hljs-keyword">case</span> <span class="hljs-type">Row</span>(max: <span class="hljs-type">Double</span>, min: <span class="hljs-type">Double</span>) =&gt; (max, min)
+}
+
+<span class="hljs-keyword">val</span> trainDf = rawTrainDf.select(
     <span class="hljs-comment">// `label` must be [0.0, 1.0]</span>
-    rescale($<span class="hljs-string">&quot;label&quot;</span>, lit(<span class="hljs-number">-7.899578</span>f), lit(<span class="hljs-number">-0.51940954</span>f)).as(<span class="hljs-string">&quot;label&quot;</span>),
+    rescale($<span class="hljs-string">&quot;label&quot;</span>, lit(min), lit(max).as(<span class="hljs-string">&quot;label&quot;</span>),
     $<span class="hljs-string">&quot;features&quot;</span>
   )
 
@@ -2146,7 +2181,7 @@ root
 
 scala&gt; :paste
 <span class="hljs-keyword">val</span> testDf = spark.read.format(<span class="hljs-string">&quot;libsvm&quot;</span>).load(<span class="hljs-string">&quot;E2006.test.bz2&quot;</span>)
-  .select(rowid(), rescale($<span class="hljs-string">&quot;label&quot;</span>, lit(<span class="hljs-number">-7.899578</span>f), lit(<span class="hljs-number">-0.51940954</span>f)).as(<span class="hljs-string">&quot;label&quot;</span>), $<span class="hljs-string">&quot;features&quot;</span>)
+  .select(rowid(), rescale($<span class="hljs-string">&quot;label&quot;</span>, lit(min), lit(max)).as(<span class="hljs-string">&quot;label&quot;</span>), $<span class="hljs-string">&quot;features&quot;</span>)
   .explode_vector($<span class="hljs-string">&quot;features&quot;</span>)
   .select($<span class="hljs-string">&quot;rowid&quot;</span>, $<span class="hljs-string">&quot;label&quot;</span>.as(<span class="hljs-string">&quot;target&quot;</span>), $<span class="hljs-string">&quot;feature&quot;</span>, $<span class="hljs-string">&quot;weight&quot;</span>.as(<span class="hljs-string">&quot;value&quot;</span>))
   .cache
@@ -2244,7 +2279,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"E2006-tfidf regression Tutorial for DataFrame","level":"13.3.1","depth":2,"next":{"title":"Generic features","level":"13.4","depth":1,"path":"spark/misc/misc.md","ref":"spark/misc/misc.md","articles":[{"title":"Top-k Join processing","level":"13.4.1","depth":2,"path":"spark/misc/topk_join.md","ref":"spark/misc/topk_join.md","articles":[]},{"title":"Other utility functions","level":"13.4.2","depth":2,"path":"spark/misc/functions.md","ref":"spark/misc/functions.md","articles":[]}]},"previous":{"title":"Regression","level":"13.3","depth":1,"path":"spark/binaryclass/index.md","ref":"spark/binaryclass/index.md","articles":[{"title":"E2006-tfidf regression Tutorial for DataFrame","level":"13.3.1","depth":2,"path":"spark/regression/e2006_df.md","ref":"spark/regression/e2006_df.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"spark/regression/e2006_df.md","mtime":"2017-05-11T07:09:12.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-30T12:18:33.308Z"},"basePath":"../..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"E2006-tfidf regression Tutorial for DataFrame","level":"13.3.1","depth":2,"next":{"title":"E2006-tfidf regression Tutorial for SQL","level":"13.3.2","depth":2,"path":"spark/regression/e2006_sql.md","ref":"spark/regression/e2006_sql.md","articles":[]},"previous":{"title":"Regression","level":"13.3","depth":1,"path":"spark/binaryclass/index.md","ref":"spark/binaryclass/index.md","articles":[{"title":"E2006-tfidf regression Tutorial for DataFrame","level":"13.3.1","depth":2,"path":"spark/regression/e2006_df.md","ref":"spark/regression/e2006_df.md","articles":[]},{"title":"E2006-tfidf regression Tutorial for SQL","level":"13.3.2","depth":2,"path":"spark/regression/e2006_sql.md","ref":"spark/regression/e2006_sql.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"spark/regression/e2006_df.md","mtime":"2017-07-14T14:15:37.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-14T17:59:22.591Z"},"basePath":"../..","book":{"language":""}});
         });
     </script>
 </div>

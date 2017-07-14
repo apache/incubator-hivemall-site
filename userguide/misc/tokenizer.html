@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>English/Japanese Text Tokenizer · Hivemall User Manual</title>
+        <title>Text Tokenizer · Hivemall User Manual</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -523,7 +523,7 @@
                     
                         <b>2.3.</b>
                     
-                    English/Japanese Text Tokenizer
+                    Text Tokenizer
             
                 </a>
             
@@ -1911,6 +1911,21 @@
             
         </li>
     
+        <li class="chapter " data-level="13.2.2" data-path="../spark/binaryclass/a9a_sql.html">
+            
+                <a href="../spark/binaryclass/a9a_sql.html">
+            
+                    
+                        <b>13.2.2.</b>
+                    
+                    a9a Tutorial for SQL
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1940,6 +1955,21 @@
                         <b>13.3.1.</b>
                     
                     E2006-tfidf regression Tutorial for DataFrame
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="13.3.2" data-path="../spark/regression/e2006_sql.html">
+            
+                <a href="../spark/regression/e2006_sql.html">
+            
+                    
+                        <b>13.3.2.</b>
+                    
+                    E2006-tfidf regression Tutorial for SQL
             
                 </a>
             
@@ -2092,7 +2122,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >English/Japanese Text Tokenizer</a>
+        <a href=".." >Text Tokenizer</a>
     </h1>
 </div>
 
@@ -2129,24 +2159,62 @@
 <p>Hivemall provides simple English text tokenizer UDF that has following syntax:</p>
 <pre><code class="lang-sql">tokenize(text input, optional boolean toLowerCase = false)
 </code></pre>
-<h1 id="tokenizer-for-japanese-texts">Tokenizer for Japanese Texts</h1>
-<p>Hivemall-NLP module provides a Japanese text tokenizer UDF using <a href="https://github.com/atilika/kuromoji" target="_blank">Kuromoji</a>. </p>
-<p>First of all, you need to issue the following DDLs to use the NLP module. Note NLP module is not included in <a href="https://github.com/myui/hivemall/releases" target="_blank">hivemall-with-dependencies.jar</a>.</p>
+<h1 id="tokenizer-for-non-english-texts">Tokenizer for Non-English Texts</h1>
+<p>Hivemall-NLP module provides some Non-English Text tokenizer UDFs as follows.</p>
+<p>First of all, you need to issue the following DDLs to use the NLP module. Note NLP module is not included in <code>hivemall-with-dependencies.jar</code>.</p>
 <blockquote>
-<p>add jar /tmp/<a href="https://github.com/myui/hivemall/releases" target="_blank">hivemall-nlp-xxx-with-dependencies.jar</a>;</p>
-<p>source /tmp/<a href="https://github.com/myui/hivemall/releases" target="_blank">define-additional.hive</a>;</p>
+<p>add jar /path/to/hivemall-nlp-xxx-with-dependencies.jar;</p>
+<p>source /path/to/define-additional.hive;</p>
 </blockquote>
+<h2 id="japanese-tokenizer">Japanese Tokenizer</h2>
+<p>Japanese text tokenizer UDF uses <a href="https://github.com/atilika/kuromoji" target="_blank">Kuromoji</a>. </p>
 <p>The signature of the UDF is as follows:</p>
-<pre><code class="lang-sql">tokenize_ja(text input, optional const text mode = &quot;normal&quot;, optional const array&lt;string&gt; stopWords, optional const array&lt;string&gt; stopTags)
+<pre><code class="lang-sql">tokenize_ja(text input, optional const text mode = &quot;normal&quot;, optional const array&lt;string&gt; stopWords, const array&lt;string&gt; stopTags, const array&lt;string&gt; userDict)
 </code></pre>
-<p><em>Caution: <code>tokenize_ja</code> is supported since Hivemall v0.4.1 and later.</em></p>
-<p>It&apos;s basic usage is as follows:</p>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p><code>tokenize_ja</code> is supported since Hivemall v0.4.1, and the fifth argument is supported since v0.5-rc.1 and later.</p></div></div>
+<p>Its basic usage is as follows:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">select</span> tokenize_ja(<span class="hljs-string">&quot;kuromoji&#x3092;&#x4F7F;&#x3063;&#x305F;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&#x306E;&#x30C6;&#x30B9;&#x30C8;&#x3067;&#x3059;&#x3002;&#x7B2C;&#x4E8C;&#x5F15;&#x6570;&#x306B;&#x306F;normal/search/extended&#x3092;&#x6307;&#x5B9A;&#x3067;&#x304D;&#x307E;&#x3059;&#x3002;&#x30C7;&#x30D5;&#x30A9;&#x30EB;&#x30C8;&#x3067;&#x306F;normal&#x30E2;&#x30FC;&#x30C9;&#x3067;&#x3059;&#x3002;&quot;</span>);
 </code></pre>
 <blockquote>
 <p>[&quot;kuromoji&quot;,&quot;&#x4F7F;&#x3046;&quot;,&quot;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&quot;,&quot;&#x30C6;&#x30B9;&#x30C8;&quot;,&quot;&#x7B2C;&quot;,&quot;&#x4E8C;&quot;,&quot;&#x5F15;&#x6570;&quot;,&quot;normal&quot;,&quot;search&quot;,&quot;extended&quot;,&quot;&#x6307;&#x5B9A;&quot;,&quot;&#x30C7;&#x30D5;&#x30A9;&#x30EB;&#x30C8;&quot;,&quot;normal&quot;,&quot;&#x30E2;&#x30FC;&#x30C9;&quot;]</p>
 </blockquote>
-<p>For detailed APIs, please refer Javadoc of <a href="https://lucene.apache.org/core/5_3_1/analyzers-kuromoji/org/apache/lucene/analysis/ja/JapaneseAnalyzer.html" target="_blank">JapaneseAnalyzer</a> as well.
+<p>In addition, the third and fourth argument respectively allow you to use your own list of stop words and stop tags. For example, the following query simply ignores &quot;kuromoji&quot; (as a stop word) and noun word &quot;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&quot; (as a stop tag):</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> tokenize_ja(<span class="hljs-string">&quot;kuromoji&#x3092;&#x4F7F;&#x3063;&#x305F;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&#x306E;&#x30C6;&#x30B9;&#x30C8;&#x3067;&#x3059;&#x3002;&quot;</span>, <span class="hljs-string">&quot;normal&quot;</span>, <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;kuromoji&quot;</span>), <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;&#x540D;&#x8A5E;-&#x4E00;&#x822C;&quot;</span>));
+</code></pre>
+<blockquote>
+<p>[&quot;&#x3092;&quot;,&quot;&#x4F7F;&#x3046;&quot;,&quot;&#x305F;&quot;,&quot;&#x306E;&quot;,&quot;&#x30C6;&#x30B9;&#x30C8;&quot;,&quot;&#x3067;&#x3059;&quot;]</p>
+</blockquote>
+<p>Moreover, the fifth argument <code>userDict</code> enables you to register a user-defined custom dictionary in <a href="https://github.com/atilika/kuromoji/blob/909fd6b32bf4e9dc86b7599de5c9b50ca8f004a1/kuromoji-core/src/test/resources/userdict.txt" target="_blank">Kuromoji official format</a>:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> tokenize_ja(<span class="hljs-string">&quot;&#x65E5;&#x672C;&#x7D4C;&#x6E08;&#x65B0;&#x805E;&#xFF06;&#x95A2;&#x897F;&#x56FD;&#x969B;&#x7A7A;&#x6E2F;&quot;</span>, <span class="hljs-string">&quot;normal&quot;</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, 
+                   <span class="hljs-built_in">array</span>(
+                     <span class="hljs-string">&quot;&#x65E5;&#x672C;&#x7D4C;&#x6E08;&#x65B0;&#x805E;,&#x65E5;&#x672C; &#x7D4C;&#x6E08; &#x65B0;&#x805E;,&#x30CB;&#x30DB;&#x30F3; &#x30B1;&#x30A4;&#x30B6;&#x30A4; &#x30B7;&#x30F3;&#x30D6;&#x30F3;,&#x30AB;&#x30B9;&#x30BF;&#x30E0;&#x540D;&#x8A5E;&quot;</span>, 
+                     <span class="hljs-string">&quot;&#x95A2;&#x897F;&#x56FD;&#x969B;&#x7A7A;&#x6E2F;,&#x95A2;&#x897F; &#x56FD;&#x969B; &#x7A7A;&#x6E2F;,&#x30AB;&#x30F3;&#x30B5;&#x30A4; &#x30B3;&#x30AF;&#x30B5;&#x30A4; &#x30AF;&#x30A6;&#x30B3;&#x30A6;,&#x30C6;&#x30B9;&#x30C8;&#x540D;&#x8A5E;&quot;</span>
+                   ));
+</code></pre>
+<blockquote>
+<p>[&quot;&#x65E5;&#x672C;&quot;,&quot;&#x7D4C;&#x6E08;&quot;,&quot;&#x65B0;&#x805E;&quot;,&quot;&#x95A2;&#x897F;&quot;,&quot;&#x56FD;&#x969B;&quot;,&quot;&#x7A7A;&#x6E2F;&quot;]</p>
+</blockquote>
+<p>Note that you can pass <code>null</code> to each of the third and fourth argument to explicitly use Kuromoji&apos;s default stop words and stop tags. </p>
+<p>If you have a large custom dictionary as an external file, <code>userDict</code> can also be <code>const string userDictURL</code> which indicates URL of the external file on somewhere like Amazon S3:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> tokenize_ja(<span class="hljs-string">&quot;&#x65E5;&#x672C;&#x7D4C;&#x6E08;&#x65B0;&#x805E;&#xFF06;&#x95A2;&#x897F;&#x56FD;&#x969B;&#x7A7A;&#x6E2F;&quot;</span>, <span class="hljs-string">&quot;normal&quot;</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>,
+                   <span class="hljs-string">&quot;https://raw.githubusercontent.com/atilika/kuromoji/909fd6b32bf4e9dc86b7599de5c9b50ca8f004a1/kuromoji-core/src/test/resources/userdict.txt&quot;</span>);
+</code></pre>
+<blockquote>
+<p>[&quot;&#x65E5;&#x672C;&quot;,&quot;&#x7D4C;&#x6E08;&quot;,&quot;&#x65B0;&#x805E;&quot;,&quot;&#x95A2;&#x897F;&quot;,&quot;&#x56FD;&#x969B;&quot;,&quot;&#x7A7A;&#x6E2F;&quot;]</p>
+</blockquote>
+<p>For detailed APIs, please refer Javadoc of <a href="https://lucene.apache.org/core/5_3_1/analyzers-kuromoji/org/apache/lucene/analysis/ja/JapaneseAnalyzer.html" target="_blank">JapaneseAnalyzer</a> as well.</p>
+<h2 id="chinese-tokenizer">Chinese Tokenizer</h2>
+<p>Chinese text tokenizer UDF uses <a href="http://lucene.apache.org/core/5_3_1/analyzers-smartcn/org/apache/lucene/analysis/cn/smart/SmartChineseAnalyzer.html" target="_blank">SmartChineseAnalyzer</a>. </p>
+<p>The signature of the UDF is as follows:</p>
+<pre><code class="lang-sql">tokenize_cn(string line, optional const array&lt;string&gt; stopWords)
+</code></pre>
+<p>Its basic usage is as follows:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> tokenize_cn(<span class="hljs-string">&quot;Smartcn&#x4E3A;Apache2.0&#x534F;&#x8BAE;&#x7684;&#x5F00;&#x6E90;&#x4E2D;&#x6587;&#x5206;&#x8BCD;&#x7CFB;&#x7EDF;&#xFF0C;Java&#x8BED;&#x8A00;&#x7F16;&#x5199;&#xFF0C;&#x4FEE;&#x6539;&#x7684;&#x4E2D;&#x79D1;&#x9662;&#x8BA1;&#x7B97;&#x6240;ICTCLAS&#x5206;&#x8BCD;&#x7CFB;&#x7EDF;&#x3002;&quot;</span>);
+</code></pre>
+<blockquote>
+<p>[smartcn, &#x4E3A;, apach, 2, 0, &#x534F;&#x8BAE;, &#x7684;, &#x5F00;&#x6E90;, &#x4E2D;&#x6587;, &#x5206;&#x8BCD;, &#x7CFB;&#x7EDF;, java, &#x8BED;&#x8A00;, &#x7F16;&#x5199;, &#x4FEE;&#x6539;, &#x7684;, &#x4E2D;&#x79D1;&#x9662;, &#x8BA1;&#x7B97;, &#x6240;, ictcla, &#x5206;&#x8BCD;, &#x7CFB;&#x7EDF;]</p>
+</blockquote>
+<p>For detailed APIs, please refer Javadoc of <a href="http://lucene.apache.org/core/5_3_1/analyzers-smartcn/org/apache/lucene/analysis/cn/smart/SmartChineseAnalyzer.html" target="_blank">SmartChineseAnalyzer</a> as well.
 <div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2202,7 +2270,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"English/Japanese Text Tokenizer","level":"2.3","depth":1,"next":{"title":"Feature Scaling","level":"3.1","depth":1,"path":"ft_engineering/scaling.md","ref":"ft_engineering/scaling.md","articles":[]},"previous":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/tokenizer.md","mtime":"2016-12-02T08:02:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-06-30T12:18:33.308Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Text Tokenizer","level":"2.3","depth":1,"next":{"title":"Feature Scaling","level":"3.1","depth":1,"path":"ft_engineering/scaling.md","ref":"ft_engineering/scaling.md","articles":[]},"previous":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/tokenizer.md","mtime":"2017-07-14T16:03:12.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-14T17:59:22.591Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

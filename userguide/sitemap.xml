@@ -103,7 +103,9 @@
 <url> <loc>http://hivemall.incubator.apache.org/spark/getting_started/installation.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/spark/binaryclass/</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/spark/binaryclass/a9a_df.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/spark/binaryclass/a9a_sql.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/spark/regression/e2006_df.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/spark/regression/e2006_sql.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/spark/misc/misc.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/spark/misc/topk_join.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/spark/misc/functions.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
