@@ -244,7 +244,7 @@
                     
                         <b>1.3.1.</b>
                     
-                    Explicit addBias() for better prediction
+                    Explicit add_bias() for better prediction
             
                 </a>
             
@@ -707,14 +707,14 @@
         
         
     
-        <li class="chapter " data-level="4.1" data-path="../eval/stat_eval.html">
+        <li class="chapter " data-level="4.1" data-path="../eval/binary_classification_measures.html">
             
-                <a href="../eval/stat_eval.html">
+                <a href="../eval/binary_classification_measures.html">
             
                     
                         <b>4.1.</b>
                     
-                    Statistical evaluation of a prediction model
+                    Binary Classification Metrics
             
                 </a>
             
@@ -743,12 +743,42 @@
             
         </li>
     
-        <li class="chapter " data-level="4.2" data-path="../eval/rank.html">
+        <li class="chapter " data-level="4.2" data-path="../eval/multilabel_classification_measures.html">
+            
+                <a href="../eval/multilabel_classification_measures.html">
+            
+                    
+                        <b>4.2.</b>
+                    
+                    Multi-label Classification Metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.3" data-path="../eval/regression.html">
+            
+                <a href="../eval/regression.html">
+            
+                    
+                        <b>4.3.</b>
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4" data-path="../eval/rank.html">
             
                 <a href="../eval/rank.html">
             
                     
-                        <b>4.2.</b>
+                        <b>4.4.</b>
                     
                     Ranking Measures
             
@@ -758,12 +788,12 @@
             
         </li>
     
-        <li class="chapter " data-level="4.3" data-path="../eval/datagen.html">
+        <li class="chapter " data-level="4.5" data-path="../eval/datagen.html">
             
                 <a href="../eval/datagen.html">
             
                     
-                        <b>4.3.</b>
+                        <b>4.5.</b>
                     
                     Data Generation
             
@@ -774,12 +804,12 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="4.3.1" data-path="../eval/lr_datagen.html">
+        <li class="chapter " data-level="4.5.1" data-path="../eval/lr_datagen.html">
             
                 <a href="../eval/lr_datagen.html">
             
                     
-                        <b>4.3.1.</b>
+                        <b>4.5.1.</b>
                     
                     Logistic Regression data generation
             
@@ -2331,16 +2361,16 @@ For example, <code>pclass</code> is a categorical variable.</p>
   <span class="hljs-keyword">FROM</span> (
     <span class="hljs-keyword">SELECT</span>
       t.passengerid, 
-      <span class="hljs-comment">-- hivemall v0.4.1-alpha.2 or before</span>
-      <span class="hljs-comment">-- tree_predict(p.model, t.features, ${classification}) as predicted</span>
       <span class="hljs-comment">-- hivemall v0.4.1-alpha.3 or later</span>
       <span class="hljs-comment">-- tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted</span>
       <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
       p.model_weight,
       tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
+      <span class="hljs-comment">-- tree_predict_v1(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted -- to use the old model in v0.5-rc.1 or later</span>
     <span class="hljs-keyword">FROM</span> (
       <span class="hljs-keyword">SELECT</span> 
-        <span class="hljs-comment">-- model_id, pred_model</span>
+        <span class="hljs-comment">-- hivemall v0.4.1-alpha.3 or later</span>
+        <span class="hljs-comment">-- model_id, model_type, pred_model</span>
         <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
         model_id, model_weight, <span class="hljs-keyword">model</span>
       <span class="hljs-keyword">FROM</span> 
@@ -2354,6 +2384,7 @@ For example, <code>pclass</code> is a categorical variable.</p>
 ) t2
 ;
 </code></pre>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p><code>tree_predict_v1</code> is for the backward compatibility for using prediction models built before <code>v0.5-rc.1</code> on <code>v0.5-rc.1</code> or later.</p></div></div>
 <h1 id="kaggle-submission">Kaggle submission</h1>
 <pre><code class="lang-sql"><span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> predicted_rf_submit;
 <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> predicted_rf_submit
@@ -2451,15 +2482,15 @@ usage: tree_export(string model, const string options, optional
   <span class="hljs-keyword">FROM</span> (
     <span class="hljs-keyword">SELECT</span>
       t.passengerid, 
-      <span class="hljs-comment">-- hivemall v0.4.1-alpha.2 or before</span>
-      <span class="hljs-comment">-- tree_predict(p.model, t.features, ${classification}) as predicted</span>
       <span class="hljs-comment">-- hivemall v0.4.1-alpha.3 or later</span>
       <span class="hljs-comment">-- tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted</span>
       <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
       p.model_weight,
       tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
+      <span class="hljs-comment">-- tree_predict_v1(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted -- to use the old model in v0.5-rc.1 or later</span>
     <span class="hljs-keyword">FROM</span> (
       <span class="hljs-keyword">SELECT</span> 
+        <span class="hljs-comment">-- hivemall v0.4.1-alpha.3 or later</span>
         <span class="hljs-comment">-- model_id, model_type, pred_model</span>
         <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
         model_id, model_weight, <span class="hljs-keyword">model</span>
@@ -2471,8 +2502,7 @@ usage: tree_export(string model, const string options, optional
   ) t1
   <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
     passengerid
-) t2
-;
+) t2;
 
 <span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> rf_submit_03 <span class="hljs-keyword">as</span>
 <span class="hljs-keyword">select</span> 
@@ -2553,7 +2583,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Kaggle Titanic tutorial","level":"6.7","depth":1,"next":{"title":"News20 Multiclass tutorial","level":"7.1","depth":1,"path":"multiclass/news20.md","ref":"multiclass/news20.md","articles":[{"title":"Data preparation","level":"7.1.1","depth":2,"path":"multiclass/news20_dataset.md","ref":"multiclass/news20_dataset.md","articles":[]},{"title":"Data preparation for one-vs-the-rest classifiers","level":"7.1.2","depth":2,"path":"multiclass/news20_one-vs-the-rest_dataset.md","ref":"multiclass/news20_one-vs-the-rest_dataset.md","articles":[]},{"title":"PA","level":"7.1.3","depth":2,"path":"multiclass/news20_pa.md","ref":"multiclass/news20_pa.md","articles":[]},{"title":"CW, AROW, SCW","level":"7.1.4","depth":2,"path":"multiclass/news20_scw.md","ref":"multiclass/news20_scw.md","articles":[]},{"title":"Ensemble learning","level":"7.1.5","depth":2,"path":"multiclass/news20_ensemble.md","ref":"multiclass/news20_ensemble.md","articles":[]},{"title":"one-vs-the-rest classifier","level":"7.1.6","depth":2,"path":"multiclass/news20_one-vs-the-rest.md","ref":"multiclass/news20_one-vs-the-rest.md","articles":[]}]},"previous":{"title":"PA1, AROW, SCW","level":"6.6.2","depth":2,"path":"binaryclass/webspam_scw.md","ref":"binaryclass/webspam_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"binaryclass/titanic_rf.md","mtime":"2017-07-05T09:10:51.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-14T17:59:22.591Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Kaggle Titanic tutorial","level":"6.7","depth":1,"next":{"title":"News20 Multiclass tutorial","level":"7.1","depth":1,"path":"multiclass/news20.md","ref":"multiclass/news20.md","articles":[{"title":"Data preparation","level":"7.1.1","depth":2,"path":"multiclass/news20_dataset.md","ref":"multiclass/news20_dataset.md","articles":[]},{"title":"Data preparation for one-vs-the-rest classifiers","level":"7.1.2","depth":2,"path":"multiclass/news20_one-vs-the-rest_dataset.md","ref":"multiclass/news20_one-vs-the-rest_dataset.md","articles":[]},{"title":"PA","level":"7.1.3","depth":2,"path":"multiclass/news20_pa.md","ref":"multiclass/news20_pa.md","articles":[]},{"title":"CW, AROW, SCW","level":"7.1.4","depth":2,"path":"multiclass/news20_scw.md","ref":"multiclass/news20_scw.md","articles":[]},{"title":"Ensemble learning","level":"7.1.5","depth":2,"path":"multiclass/news20_ensemble.md","ref":"multiclass/news20_ensemble.md","articles":[]},{"title":"one-vs-the-rest classifier","level":"7.1.6","depth":2,"path":"multiclass/news20_one-vs-the-rest.md","ref":"multiclass/news20_one-vs-the-rest.md","articles":[]}]},"previous":{"title":"PA1, AROW, SCW","level":"6.6.2","depth":2,"path":"binaryclass/webspam_scw.md","ref":"binaryclass/webspam_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"binaryclass/titanic_rf.md","mtime":"2017-07-20T09:43:22.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-13T14:07:31.053Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -244,7 +244,7 @@
                     
                         <b>1.3.1.</b>
                     
-                    Explicit addBias() for better prediction
+                    Explicit add_bias() for better prediction
             
                 </a>
             
@@ -707,14 +707,14 @@
         
         
     
-        <li class="chapter " data-level="4.1" data-path="../eval/stat_eval.html">
+        <li class="chapter " data-level="4.1" data-path="../eval/binary_classification_measures.html">
             
-                <a href="../eval/stat_eval.html">
+                <a href="../eval/binary_classification_measures.html">
             
                     
                         <b>4.1.</b>
                     
-                    Statistical evaluation of a prediction model
+                    Binary Classification Metrics
             
                 </a>
             
@@ -743,12 +743,42 @@
             
         </li>
     
-        <li class="chapter " data-level="4.2" data-path="../eval/rank.html">
+        <li class="chapter " data-level="4.2" data-path="../eval/multilabel_classification_measures.html">
+            
+                <a href="../eval/multilabel_classification_measures.html">
+            
+                    
+                        <b>4.2.</b>
+                    
+                    Multi-label Classification Metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.3" data-path="../eval/regression.html">
+            
+                <a href="../eval/regression.html">
+            
+                    
+                        <b>4.3.</b>
+                    
+                    Regression metrics
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.4" data-path="../eval/rank.html">
             
                 <a href="../eval/rank.html">
             
                     
-                        <b>4.2.</b>
+                        <b>4.4.</b>
                     
                     Ranking Measures
             
@@ -758,12 +788,12 @@
             
         </li>
     
-        <li class="chapter " data-level="4.3" data-path="../eval/datagen.html">
+        <li class="chapter " data-level="4.5" data-path="../eval/datagen.html">
             
                 <a href="../eval/datagen.html">
             
                     
-                        <b>4.3.</b>
+                        <b>4.5.</b>
                     
                     Data Generation
             
@@ -774,12 +804,12 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="4.3.1" data-path="../eval/lr_datagen.html">
+        <li class="chapter " data-level="4.5.1" data-path="../eval/lr_datagen.html">
             
                 <a href="../eval/lr_datagen.html">
             
                     
-                        <b>4.3.1.</b>
+                        <b>4.5.1.</b>
                     
                     Logistic Regression data generation
             
@@ -2162,6 +2192,7 @@
 <li><a href="#array-functions">Array functions</a><ul>
 <li><a href="#array-udfs">Array UDFs</a></li>
 <li><a href="#array-udafs">Array UDAFs</a></li>
+<li><a href="#list-udaf">List UDAF</a></li>
 </ul>
 </li>
 <li><a href="#bitset-functions">Bitset functions</a><ul>
@@ -2231,6 +2262,38 @@
 <li><p><code>array_sum(array&lt;NUMBER&gt;)</code> - Returns an array<double> in which each element is summed up</double></p>
 </li>
 </ul>
+<h2 id="list-udaf">List UDAF</h2>
+<ul>
+<li><p><code>to_ordered_list(PRIMITIVE value [, PRIMITIVE key, const string options])</code> or <code>to_ordered_list(value, key [, const string options])</code> - Return list of values sorted by value itself or specific key</p>
+<pre><code class="lang-sql">  with t as (
+      <span class="hljs-keyword">select</span> <span class="hljs-number">5</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;apple&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+      <span class="hljs-keyword">union</span> all
+      <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;banana&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+      <span class="hljs-keyword">union</span> all
+      <span class="hljs-keyword">select</span> <span class="hljs-number">4</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;candy&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+      <span class="hljs-keyword">union</span> all
+      <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;donut&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+      <span class="hljs-keyword">union</span> all
+      <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;egg&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+  )
+  <span class="hljs-keyword">select</span>                                             <span class="hljs-comment">-- expected output</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-reverse&apos;</span>),       <span class="hljs-comment">-- [apple, candy, (banana, egg | egg, banana), donut] (reverse order)</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k 2&apos;</span>),           <span class="hljs-comment">-- [apple, candy] (top-k)</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k 100&apos;</span>),         <span class="hljs-comment">-- [apple, candy, (banana, egg | egg, banana), dunut]</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k 2 -reverse&apos;</span>),  <span class="hljs-comment">-- [donut, (banana | egg)] (reverse top-k = tail-k)</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>),                   <span class="hljs-comment">-- [donut, (banana, egg | egg, banana), candy, apple] (natural order)</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k -2&apos;</span>),          <span class="hljs-comment">-- [donut, (banana | egg)] (tail-k)</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k -100&apos;</span>),        <span class="hljs-comment">-- [donut, (banana, egg | egg, banana), candy, apple]</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k -2 -reverse&apos;</span>), <span class="hljs-comment">-- [apple, candy] (reverse tail-k = top-k)</span>
+      to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-string">&apos;-k 2&apos;</span>),                <span class="hljs-comment">-- [egg, donut] (alphabetically)    </span>
+      to_ordered_list(<span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k -2 -reverse&apos;</span>),        <span class="hljs-comment">-- [5, 4] (top-2 keys)</span>
+      to_ordered_list(<span class="hljs-keyword">key</span>)                           <span class="hljs-comment">-- [2, 3, 3, 4, 5] (natural ordered keys)</span>
+  <span class="hljs-keyword">from</span> 
+      t
+  ;
+</code></pre>
+</li>
+</ul>
 <h1 id="bitset-functions">Bitset functions</h1>
 <h2 id="bitset-udf">Bitset UDF</h2>
 <ul>
@@ -2280,7 +2343,28 @@ The compression level must be in range [-1,9]</p>
 <ul>
 <li><p><code>to_map(key, value)</code> - Convert two aggregated columns into a key-value map</p>
 </li>
-<li><p><code>to_ordered_map(key, value [, const boolean reverseOrder=false])</code> - Convert two aggregated columns into an ordered key-value map</p>
+<li><p><code>to_ordered_map(key, value [, const int k|const boolean reverseOrder=false])</code> - Convert two aggregated columns into an ordered key-value map</p>
+<pre><code class="lang-sql">  with t as (
+      <span class="hljs-keyword">select</span> <span class="hljs-number">10</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;apple&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+      <span class="hljs-keyword">union</span> all
+      <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;banana&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+      <span class="hljs-keyword">union</span> all
+      <span class="hljs-keyword">select</span> <span class="hljs-number">4</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;candy&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+  )
+  <span class="hljs-keyword">select</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-literal">true</span>),   <span class="hljs-comment">-- {10:&quot;apple&quot;,4:&quot;candy&quot;,3:&quot;banana&quot;} (reverse)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-number">1</span>),      <span class="hljs-comment">-- {10:&quot;apple&quot;} (top-1)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-number">2</span>),      <span class="hljs-comment">-- {10:&quot;apple&quot;,4:&quot;candy&quot;} (top-2)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-number">3</span>),      <span class="hljs-comment">-- {10:&quot;apple&quot;,4:&quot;candy&quot;,3:&quot;banana&quot;} (top-3)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-number">100</span>),    <span class="hljs-comment">-- {10:&quot;apple&quot;,4:&quot;candy&quot;,3:&quot;banana&quot;} (top-100)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>),         <span class="hljs-comment">-- {3:&quot;banana&quot;,4:&quot;candy&quot;,10:&quot;apple&quot;} (natural)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-number">-1</span>),     <span class="hljs-comment">-- {3:&quot;banana&quot;} (tail-1)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-number">-2</span>),     <span class="hljs-comment">-- {3:&quot;banana&quot;,4:&quot;candy&quot;} (tail-2)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-number">-3</span>),     <span class="hljs-comment">-- {3:&quot;banana&quot;,4:&quot;candy&quot;,10:&quot;apple&quot;} (tail-3)</span>
+      to_ordered_map(<span class="hljs-keyword">key</span>, <span class="hljs-keyword">value</span>, <span class="hljs-number">-100</span>)    <span class="hljs-comment">-- {3:&quot;banana&quot;,4:&quot;candy&quot;,10:&quot;apple&quot;} (tail-100)</span>
+  <span class="hljs-keyword">from</span> t
+  ;
+</code></pre>
 </li>
 </ul>
 <h1 id="mapreduce-functions">MapReduce functions</h1>
@@ -2317,6 +2401,12 @@ The compression level must be in range [-1,9]</p>
 <li><p><code>split_words(string query [, string regex])</code> - Returns an array<text> containing splitted strings</text></p>
 </li>
 <li><p><code>is_stopword(string word)</code> - Returns whether English stopword or not</p>
+</li>
+<li><p><code>singularize(string word)</code> - Returns singular form of a given English word</p>
+<pre><code class="lang-sql">  select singularize(lower(&quot;Apples&quot;));
+
+  &gt; &quot;apple&quot;
+</code></pre>
 </li>
 <li><p><code>tokenize(string englishText [, boolean toLowerCase])</code> - Returns words in array<string></string></p>
 </li>
@@ -2407,7 +2497,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List of generic Hivemall functions","level":"2.1","depth":1,"next":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"previous":{"title":"Map-side Join causes ClassCastException on Tez","level":"1.5.5","depth":2,"path":"troubleshooting/mapjoin_classcastex.md","ref":"troubleshooting/mapjoin_classcastex.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/generic_funcs.md","mtime":"2016-12-02T08:02:42.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-07-14T17:59:22.591Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of generic Hivemall functions","level":"2.1","depth":1,"next":{"title":"Efficient Top-K query processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"previous":{"title":"Map-side Join causes ClassCastException on Tez","level":"1.5.5","depth":2,"path":"troubleshooting/mapjoin_classcastex.md","ref":"troubleshooting/mapjoin_classcastex.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/generic_funcs.md","mtime":"2017-09-13T12:28:14.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-13T14:07:31.053Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

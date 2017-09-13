@@ -34,8 +34,10 @@
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/vectorization.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/quantify.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/tfidf.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
-<url> <loc>http://hivemall.incubator.apache.org/eval/stat_eval.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/eval/binary_classification_measures.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/auc.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/eval/multilabel_classification_measures.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/eval/regression.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/rank.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/datagen.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/eval/lr_datagen.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
