@@ -2217,7 +2217,7 @@ SLIM is a representative of neighborhood-learning recommendation algorithm intro
 <li><a href="#k-hold-corss-validation"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold corss validation</a></li>
 </ul>
 </li>
-<li><a href="#precompute-movie-movie-similarity">Precompute movie-movie similarity</a></li>
+<li><a href="#pre-compute-item-item-similarity">Pre-compute item-item similarity</a></li>
 <li><a href="#create-training-input-tables">Create training input tables</a></li>
 </ul>
 </li>
@@ -2227,7 +2227,8 @@ SLIM is a representative of neighborhood-learning recommendation algorithm intro
 </ul>
 </li>
 <li><a href="#prediction-and-recommendation">Prediction and recommendation</a><ul>
-<li><a href="#predict-unknown-value-of-user-item-matrix">Predict unknown value of user-item matrix</a></li>
+<li><a href="#predict-unknown-ratings-of-a-user-item-matrix">Predict unknown ratings of a user-item matrix</a></li>
+<li><a href="#top-k-item-recommendation-for-each-user">Top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span> item recommendation for each user</a></li>
 </ul>
 </li>
 <li><a href="#evaluation">Evaluation</a><ul>
@@ -2238,6 +2239,7 @@ SLIM is a representative of neighborhood-learning recommendation algorithm intro
 </li>
 <li><a href="#ranking-measures-mrr">Ranking measures: MRR</a><ul>
 <li><a href="#leave-one-out-result-1">Leave-one-out result</a></li>
+<li><a href="#k-hold-result-1"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold result</a></li>
 </ul>
 </li>
 </ul>
@@ -2338,7 +2340,7 @@ The numbers of training and testing samples roughly equal.</p>
 <div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>In the following section excluding evaluation section,
 we will show the example of queries and its results based on <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold cross validation case.
 But, this article&apos;s queries are valid for leave-one-out cross validation.</p></div></div>
-<h2 id="precompute-movie-movie-similarity">Precompute movie-movie similarity</h2>
+<h2 id="pre-compute-item-item-similarity">Pre-compute item-item similarity</h2>
 <p>SLIM needs top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> most similar movies for each movie to the approximate user-item matrix.
 Here, we particularly focus on <a href="item_based_cf.html#dimsum-approximated-all-pairs-cosine-similarity-computation">DIMSUM</a>,
 an efficient and approximated similarity computation scheme.</p>
@@ -2560,10 +2562,10 @@ For item recommendation or prediction, this matrix is stored into the table name
 <h1 id="prediction-and-recommendation">Prediction and recommendation</h1>
 <p>Here, we predict ratng values of binarized user-item rating matrix of testing dataset based on ratings in training dataset.</p>
 <p>Based on predicted rating scores, we can recommend top-k items for each user that he or she will be likely to put high scores.</p>
-<h2 id="predict-unknown-value-of-user-item-matrix">Predict unknown value of user-item matrix</h2>
-<p>Based on known ratings and SLIM weight matrix, we can predict unknown values in the user-item matrix in <code>predicted</code>.
+<h2 id="predict-unknown-ratings-of-a-user-item-matrix">Predict unknown ratings of a user-item matrix</h2>
+<p>Based on known ratings and SLIM weight matrix, we predict unknown ratings in the user-item matrix.
 SLIM predicts ratings of user-item pairs based on top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span> similar items.</p>
-<p>The <code>predict_pair</code> table represents candidates for recommended user-movie pairs, excluding known ratings in training dataset.</p>
+<p>The <code>predict_pair</code> table represents candidates for recommended user-movie pairs, excluding known ratings in the training dataset.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">OR</span> <span class="hljs-keyword">REPLACE</span> <span class="hljs-keyword">VIEW</span> predict_pair 
 <span class="hljs-keyword">as</span>
 <span class="hljs-keyword">WITH</span> testing_users <span class="hljs-keyword">as</span> (
@@ -2589,72 +2591,68 @@ user_items <span class="hljs-keyword">as</span> (
 <span class="hljs-keyword">where</span>
   r.itemid <span class="hljs-keyword">IS</span> <span class="hljs-literal">NULL</span> <span class="hljs-comment">-- anti join</span>
 ;
-``
 </code></pre>
-<p>-- optionally set the mean/default value of prediction
-set hivevar:mu=0.0;</p>
-<p>DROP TABLE predicted;
-CREATE TABLE predicted 
-as
-WITH knn_exploded as (
-  select
-    l.userid  as u,
-    l.itemid as i, -- axis
-    r1.other  as k, -- other
-    r2.rating as r_uk
-  from
+<pre><code class="lang-sql"><span class="hljs-comment">-- optionally set the mean/default value of prediction</span>
+<span class="hljs-keyword">set</span> hivevar:mu=<span class="hljs-number">0.0</span>;
+
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> predicted;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> predicted 
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">WITH</span> knn_exploded <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    l.userid  <span class="hljs-keyword">as</span> u,
+    l.itemid <span class="hljs-keyword">as</span> i, <span class="hljs-comment">-- axis</span>
+    r1.other  <span class="hljs-keyword">as</span> k, <span class="hljs-comment">-- other</span>
+    r2.rating <span class="hljs-keyword">as</span> r_uk
+  <span class="hljs-keyword">from</span>
     predict_pair l
-    LEFT OUTER JOIN knn_train r1
-      ON (r1.itemid = l.itemid)
-    JOIN training r2
-      ON (r2.userid = l.userid and r2.itemid = r1.other)
+    <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> knn_train r1
+      <span class="hljs-keyword">ON</span> (r1.itemid = l.itemid)
+    <span class="hljs-keyword">JOIN</span> training r2
+      <span class="hljs-keyword">ON</span> (r2.userid = l.userid <span class="hljs-keyword">and</span> r2.itemid = r1.other)
 )
-select
-  l.u as userid,
-  l.i as itemid,
-  coalesce(sum(l.r_uk <em> r.w), ${mu}) as predicted
-  -- coalesce(sum(l.r_uk </em> r.w)) as predicted
-from
+<span class="hljs-keyword">select</span>
+  l.u <span class="hljs-keyword">as</span> userid,
+  l.i <span class="hljs-keyword">as</span> itemid,
+  <span class="hljs-keyword">coalesce</span>(<span class="hljs-keyword">sum</span>(l.r_uk * r.w), ${mu}) <span class="hljs-keyword">as</span> predicted
+  <span class="hljs-comment">-- coalesce(sum(l.r_uk * r.w)) as predicted</span>
+<span class="hljs-keyword">from</span>
   knn_exploded l
-  LEFT OUTER JOIN slim_model r ON (l.i = r.i and l.k = r.nn)
-group by
+  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> slim_model r <span class="hljs-keyword">ON</span> (l.i = r.i <span class="hljs-keyword">and</span> l.k = r.nn)
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
   l.u, l.i
-;</p>
-<pre><code>
-&gt; #### Caution
-&gt; When {% math %}k{% endmath %} is small, slim predicted value may be `null`. Then, `$mu` replaces `null` value.
-&gt; The mean value of item ratings is a good choice for `$mu`.
+;
+</code></pre>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>When <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> is small, slim predicted value may be <code>null</code>. Then, <code>$mu</code> replaces <code>null</code> value.
+The mean value of item ratings is a good choice for <code>$mu</code>.</p></div></div>
+<h2 id="top-kkk-item-recommendation-for-each-user">Top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span> item recommendation for each user</h2>
+<p>Here, we recommend top-3 items for each user based on predicted values.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SET</span> hivevar:k=<span class="hljs-number">3</span>;
 
-## Top-{% math %}K{% endmath %} item recommendation for each user
-
-Here, we recommend top-3 items for each user based on predicted values.
-
-```sql
-SET hivevar:k=3;
-
-DROP TABLE IF EXISTS recommend;
-CREATE TABLE recommend
-as
-WITH top_n as (
-  select
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">IF</span> <span class="hljs-keyword">EXISTS</span> recommend;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> recommend
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">WITH</span> top_n <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
      each_top_k(${k}, userid, predicted, userid, itemid)
-      as (rank, predicted, userid, itemid)
-  from (
-    select * from predicted
-    CLUSTER BY userid
+      <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, predicted, userid, itemid)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> predicted
+    CLUSTER <span class="hljs-keyword">BY</span> userid
   ) t
 )
-select
+<span class="hljs-keyword">select</span>
   userid,
-  collect_list(itemid) as items
-from
+  collect_list(itemid) <span class="hljs-keyword">as</span> items
+<span class="hljs-keyword">from</span>
   top_n
-group by
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
   userid
 ;
 
-select * from recommend limit 5;
-</code></pre><table>
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> recommend <span class="hljs-keyword">limit</span> <span class="hljs-number">5</span>;
+</code></pre>
+<table>
 <thead>
 <tr>
 <th style="text-align:center">userid</th>
@@ -2807,7 +2805,6 @@ ground_truth <span class="hljs-keyword">as</span> (
 </tr>
 </tbody>
 </table>
-<p>```</p>
 <h3 id="kkk-hold-result"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold result</h3>
 <table>
 <thead>
@@ -2877,7 +2874,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"SLIM for Fast Top-K Recommendation","level":"9.3.5","depth":2,"next":{"title":"10-fold Cross Validation (Matrix Factorization)","level":"9.3.6","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"previous":{"title":"Factorization Machine","level":"9.3.4","depth":2,"path":"recommend/movielens_fm.md","ref":"recommend/movielens_fm.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_slim.md","mtime":"2017-09-28T03:29:07.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-28T03:33:29.495Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"SLIM for Fast Top-K Recommendation","level":"9.3.5","depth":2,"next":{"title":"10-fold Cross Validation (Matrix Factorization)","level":"9.3.6","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"previous":{"title":"Factorization Machine","level":"9.3.4","depth":2,"path":"recommend/movielens_fm.md","ref":"recommend/movielens_fm.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_slim.md","mtime":"2017-09-28T03:48:35.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-28T03:51:12.753Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
