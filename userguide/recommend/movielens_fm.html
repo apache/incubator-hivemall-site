@@ -97,7 +97,7 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="movielens_cv.html" />
+    <link rel="next" href="movielens_slim.html" />
     
     
     <link rel="prev" href="movielens_mf.html" />
@@ -1736,12 +1736,27 @@
             
         </li>
     
-        <li class="chapter " data-level="9.3.5" data-path="movielens_cv.html">
+        <li class="chapter " data-level="9.3.5" data-path="movielens_slim.html">
+            
+                <a href="movielens_slim.html">
+            
+                    
+                        <b>9.3.5.</b>
+                    
+                    SLIM for Fast Top-K Recommendation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.3.6" data-path="movielens_cv.html">
             
                 <a href="movielens_cv.html">
             
                     
-                        <b>9.3.5.</b>
+                        <b>9.3.6.</b>
                     
                     10-fold Cross Validation (Matrix Factorization)
             
@@ -2186,6 +2201,22 @@
   under the License.
 -->
 <p><em>Caution: Factorization Machine is supported from Hivemall v0.4 or later.</em></p>
+<!-- toc --><div id="toc" class="toc">
+
+<ul>
+<li><a href="#data-preparation">Data preparation</a></li>
+<li><a href="#training">Training</a><ul>
+<li><a href="#hyperparamters-for-training">Hyperparamters for Training</a></li>
+<li><a href="#build-a-prediction-model-by-factorization-machine">Build a prediction model by Factorization Machine</a></li>
+<li><a href="#usage-of-trainfm">Usage of <code>train_fm</code></a></li>
+</ul>
+</li>
+<li><a href="#prediction">Prediction</a></li>
+<li><a href="#evaluation">Evaluation</a></li>
+<li><a href="#fast-factorization-machines-training-using-int-features">Fast Factorization Machines Training using Int Features</a></li>
+</ul>
+
+</div><!-- tocstop -->
 <h1 id="data-preparation">Data preparation</h1>
 <p>First of all, please create <code>ratings</code> table described in <a href="movielens_dataset.html">this article</a>.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">use</span> movielens;
@@ -2266,7 +2297,7 @@ CLUSTER <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</sp
 <span class="hljs-comment">-- maximum number of training iterations</span>
 <span class="hljs-keyword">set</span> hivevar:iters=<span class="hljs-number">50</span>;
 </code></pre>
-<h2 id="build-a-prediction-mdoel-by-factorization-machine">Build a prediction mdoel by Factorization Machine</h2>
+<h2 id="build-a-prediction-model-by-factorization-machine">Build a prediction model by Factorization Machine</h2>
 <pre><code class="lang-sql"><span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> fm_model;
 <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> fm_model
 <span class="hljs-keyword">as</span>
@@ -2477,7 +2508,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Factorization Machine","level":"9.3.4","depth":2,"next":{"title":"10-fold Cross Validation (Matrix Factorization)","level":"9.3.5","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"previous":{"title":"Matrix Factorization","level":"9.3.3","depth":2,"path":"recommend/movielens_mf.md","ref":"recommend/movielens_mf.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_fm.md","mtime":"2017-07-20T11:24:46.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-13T14:07:31.053Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Factorization Machine","level":"9.3.4","depth":2,"next":{"title":"SLIM for Fast Top-K Recommendation","level":"9.3.5","depth":2,"path":"recommend/movielens_slim.md","ref":"recommend/movielens_slim.md","articles":[]},"previous":{"title":"Matrix Factorization","level":"9.3.3","depth":2,"path":"recommend/movielens_mf.md","ref":"recommend/movielens_mf.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_fm.md","mtime":"2017-09-28T03:13:53.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-28T03:21:22.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

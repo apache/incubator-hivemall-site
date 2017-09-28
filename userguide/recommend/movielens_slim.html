@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Item-based Collaborative Filtering · Hivemall User Manual</title>
+        <title>SLIM for Fast Top-K Recommendation · Hivemall User Manual</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.2">
@@ -97,10 +97,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="news20.html" />
+    <link rel="next" href="movielens_cv.html" />
     
     
-    <link rel="prev" href="cf.html" />
+    <link rel="prev" href="movielens_fm.html" />
     
 
     </head>
@@ -1559,7 +1559,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter active" data-level="9.1.1" data-path="item_based_cf.html">
+        <li class="chapter " data-level="9.1.1" data-path="item_based_cf.html">
             
                 <a href="item_based_cf.html">
             
@@ -1736,7 +1736,7 @@
             
         </li>
     
-        <li class="chapter " data-level="9.3.5" data-path="movielens_slim.html">
+        <li class="chapter active" data-level="9.3.5" data-path="movielens_slim.html">
             
                 <a href="movielens_slim.html">
             
@@ -2167,7 +2167,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Item-based Collaborative Filtering</a>
+        <a href=".." >SLIM for Fast Top-K Recommendation</a>
     </h1>
 </div>
 
@@ -2200,46 +2200,44 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>This document describes how to do Item-based Collaborative Filtering using Hivemall.</p>
+<p>Hivemall supports a neighborhood-learning scheme using SLIM. 
+SLIM is a representative of neighborhood-learning recommendation algorithm introduced in the following paper:</p>
+<ul>
+<li>Xia Ning and George Karypis, <a href="https://dl.acm.org/citation.cfm?id=2118303" target="_blank">SLIM: Sparse Linear Methods for Top-N Recommender Systems</a>, Proc. ICDM, 2011.</li>
+</ul>
+<p><em>Caution: SLIM is supported from Hivemall v0.5-rc.1 or later.</em></p>
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
-<li><a href="#prepare-transaction-table">Prepare <code>transaction</code> table</a></li>
-<li><a href="#create-itemfeatures-table">Create <code>item_features</code> table</a><ul>
-<li><a href="#step-1-creating-userpurchased-table">Step 1: Creating <code>user_purchased</code> table</a></li>
-<li><a href="#step-2-creating-cooccurrence-table">Step 2: Creating <code>cooccurrence</code> table</a><ul>
-<li><a href="#step-2-1-create-cooccurrence-table-directly">Step 2-1: Create <code>cooccurrence</code> table directly</a></li>
-<li><a href="#step-2-2-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">Step 2-2: Create <code>cooccurrence</code> table from Upper Triangular Matrix of cooccurrence</a></li>
-<li><a href="#computing-cooccurrence-ratio-optional-step">Computing cooccurrence ratio (optional step)</a></li>
+<li><a href="#slim-optimization-objective">SLIM optimization objective</a></li>
+<li><a href="#data-preparation">Data preparation</a><ul>
+<li><a href="#rating-binarization">Rating binarization</a></li>
+<li><a href="#splitting-dataset">Splitting dataset</a><ul>
+<li><a href="#leave-one-out-cross-validation">Leave-one-out cross validation</a></li>
+<li><a href="#k-hold-corss-validation"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold corss validation</a></li>
 </ul>
 </li>
-<li><a href="#step-3-creating-a-feature-vector-for-each-item">Step 3: Creating a feature vector for each item</a></li>
+<li><a href="#precompute-movie-movie-similarity">Precompute movie-movie similarity</a></li>
+<li><a href="#create-training-input-tables">Create training input tables</a></li>
 </ul>
 </li>
-<li><a href="#compute-item-similarity-scores">Compute item similarity scores</a><ul>
-<li><a href="#option-1-parallel-computation-with-computationally-heavy-shuffling">Option 1: Parallel computation with computationally heavy shuffling</a><ul>
-<li><a href="#taking-advantage-of-the-symmetric-property-of-item-similarity-matrix">Taking advantage of the symmetric property of item similarity matrix</a></li>
+<li><a href="#training">Training</a><ul>
+<li><a href="#build-a-prediction-model-by-slim">Build a prediction model by SLIM</a></li>
+<li><a href="#usage-of-trainslim">Usage of <code>train_slim</code></a></li>
 </ul>
 </li>
-<li><a href="#option-2-sequential-computation">Option 2: Sequential computation</a></li>
+<li><a href="#prediction-and-recommendation">Prediction and recommendation</a><ul>
+<li><a href="#predict-unknown-value-of-user-item-matrix">Predict unknown value of user-item matrix</a></li>
 </ul>
 </li>
-<li><a href="#item-based-recommendation">Item-based recommendation</a><ul>
-<li><a href="#step-1-computes-top-k-recently-purchased-items-for-each-user">Step 1: Computes top-k recently purchased items for each user</a></li>
-<li><a href="#step-2-recommend-top-k-items-based-on-users-recently-purchased-items">Step 2: Recommend top-k items based on users&apos; recently purchased items</a><ul>
-<li><a href="#cooccurrence-based">Cooccurrence-based</a></li>
-<li><a href="#similarity-based">Similarity-based</a></li>
+<li><a href="#evaluation">Evaluation</a><ul>
+<li><a href="#top-k-ranking-measures-hit-ratek-mrrk-and-precisionk">Top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span> ranking measures: Hit-Rate@K, MRR@K, and Precision@K</a><ul>
+<li><a href="#leave-one-out-result">Leave-one-out result</a></li>
+<li><a href="#k-hold-result"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold result</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#efficient-similarity-computation">Efficient similarity computation</a><ul>
-<li><a href="#minhash-compute-pseudo-jaccard-similarity">MinHash: Compute &quot;pseudo&quot; Jaccard similarity</a><ul>
-<li><a href="#compute-approximated-cosine-similarity-by-using-the-minhash-based-jaccard-similarity">Compute approximated cosine similarity by using the MinHash-based Jaccard similarity</a></li>
-</ul>
-</li>
-<li><a href="#dimsum-approximated-all-pairs-cosine-similarity-computation">DIMSUM: Approximated all-pairs &quot;Cosine&quot; similarity computation</a><ul>
-<li><a href="#create-itemsimilarity-from-upper-triangular-matrix">Create <code>item_similarity</code> from Upper Triangular Matrix</a></li>
+<li><a href="#ranking-measures-mrr">Ranking measures: MRR</a><ul>
+<li><a href="#leave-one-out-result-1">Leave-one-out result</a></li>
 </ul>
 </li>
 </ul>
@@ -2247,633 +2245,122 @@
 </ul>
 
 </div><!-- tocstop -->
-<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>Naive similarity computation is <code>O(n^2)</code> to compute all item-item pair similarity. In order to accelerate the procedure, Hivemall has an efficient scheme for computing Jaccard and/or cosine similarity <a href="#efficient-similarity-computation">as mentioned later</a>.</p></div></div>
-<h1 id="prepare-transaction-table">Prepare <code>transaction</code> table</h1>
-<p>Prepare following <code>transaction</code> table. We will generate <code>feature_vector</code> for each <code>itemid</code> based on cooccurrence of purchased items, a sort of bucket analysis.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">userid</th>
-<th style="text-align:center">itemid</th>
-<th style="text-align:center">purchase_at <code>timestamp</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">2015-04-9 00:29:02</td>
-</tr>
-<tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">13212</td>
-<td style="text-align:center">2016-05-24 16:29:02</td>
-</tr>
-<tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">312</td>
-<td style="text-align:center">2016-06-03 23:29:02</td>
-</tr>
-<tr>
-<td style="text-align:center">3</td>
-<td style="text-align:center">2313</td>
-<td style="text-align:center">2016-06-04 19:29:02</td>
-</tr>
-<tr>
-<td style="text-align:center">..</td>
-<td style="text-align:center">..</td>
-<td style="text-align:center">..</td>
-</tr>
-</tbody>
-</table>
-<h1 id="create-itemfeatures-table">Create <code>item_features</code> table</h1>
-<p>What we want for creating a feature vector for each item is the following <code>cooccurrence</code> relation.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">itemid</th>
-<th style="text-align:center">other</th>
-<th style="text-align:center">cnt</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">583266</td>
-<td style="text-align:center">621056</td>
-<td style="text-align:center">9999</td>
-</tr>
-<tr>
-<td style="text-align:center">583266</td>
-<td style="text-align:center">583266</td>
-<td style="text-align:center">18</td>
-</tr>
-<tr>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">13212</td>
-<td style="text-align:center">129</td>
-</tr>
-<tr>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">3</td>
-</tr>
-<tr>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">9833</td>
-<td style="text-align:center">953</td>
-</tr>
-<tr>
-<td style="text-align:center">...</td>
-<td style="text-align:center">...</td>
-<td style="text-align:center">...</td>
-</tr>
-</tbody>
-</table>
-<p>Feature vectors of each item will be as follows:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">itemid</th>
-<th style="text-align:left">feature_vector <code>array&lt;string&gt;</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">583266</td>
-<td style="text-align:left">621056:9999, 583266:18</td>
-</tr>
-<tr>
-<td style="text-align:center">31231</td>
-<td style="text-align:left">13212:129, 31231:3, 9833:953</td>
-</tr>
-<tr>
-<td style="text-align:center">...</td>
-<td style="text-align:left">...</td>
-</tr>
-</tbody>
-</table>
-<p>Note that value of feature vector should be scaled for k-NN similarity computation e.g., as follows:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">itemid</th>
-<th style="text-align:left">feature_vector <code>array&lt;string&gt;</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">583266</td>
-<td style="text-align:left">621056:<code>ln(9999+1)</code>, 583266:<code>ln(18+1)</code></td>
-</tr>
-<tr>
-<td style="text-align:center">31231</td>
-<td style="text-align:left">13212:<code>ln(129+1)</code>, 31231:<code>ln(3+1)</code>, 9833:<code>ln(953+1)</code></td>
-</tr>
-<tr>
-<td style="text-align:center">...</td>
-<td style="text-align:left">...</td>
-</tr>
-</tbody>
-</table>
-<p>The following queries results in creating the above table.</p>
-<h2 id="step-1-creating-userpurchased-table">Step 1: Creating <code>user_purchased</code> table</h2>
-<p>The following query creates a table that contains <code>userid</code>, <code>itemid</code>, and <code>purchased_at</code>. The table represents the last user-item contact (purchase) while the <code>transaction</code> table holds all contacts.</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> user_purchased <span class="hljs-keyword">as</span>
-<span class="hljs-comment">-- INSERT OVERWRITE TABLE user_purchased</span>
-<span class="hljs-keyword">select</span> 
+<h1 id="slim-optimization-objective">SLIM optimization objective</h1>
+<p>The optimization objective of <a href="(http:/glaros.dtc.umn.edu/gkhome/fetch/papers/SLIM2011icdm.pdf">SLIM</a>) is similar to Elastic Net (L1+L2 regularization) with additional constraints as follows:</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mtable><mtr><mtd><mrow></mrow></mtd><mtd><mrow><mrow></mrow><mspace width="0.277778em"></mspace><mrow><mstyle mathsize="0.5em"><mtable><mtr><mtd><mrow></mrow></mtd></mtr><mtr><mtd><mrow><mstyle mathsize="1em"><mtext><mi mathvariant="normal">m</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">z</mi><mi mathvariant="normal">e</mi></mtext></mstyle></mrow></mtd></mtr><mtr><mtd><mrow><msup><mrow></mrow><mrow><mstyle mathsize="0.7em"><msub><mi>w</mi><mrow><mi>j</mi></mrow></msub></mstyle></mrow></msup></mrow></mtd></mtr></mtable></mstyle></mrow><mspace width="0.277778em"></mspace></mrow></mtd><mtd><mrow></mrow></mtd><mtd><mrow><mrow></mrow><mfrac><mrow><mn>1</mn></mrow><mrow><mn>2</mn></mrow></mfrac><mi mathvariant="normal">&#x2225;</mi><msub><mi>r</mi><mrow><mi>j</mi></mrow></msub><mo>&#x2212;</mo><mi>R</mi><msub><mi>w</mi><mrow><mi>j</mi></mrow></msub><msubsup><mi mathvariant="normal">&#x2225;</mi><mn>2</mn><mn>2</mn></msubsup><mo>+</mo><mfrac><mrow><mi>&#x3B2;</mi></mrow><mrow><mn>2</mn></mrow></mfrac><mi mathvariant="normal">&#x2225;</mi><msub><mi>w</mi><mrow><mi>j</mi></mrow></msub><msubsup><mi mathvariant="normal">&#x2225;</mi><mn>2</mn><mn>2</mn></msubsup><mo>+</mo><mi>&#x3BB;</mi><mi mathvariant="normal">&#x2225;</mi><msub><mi>w</mi><mrow><mi>j</mi></mrow></msub><msub><mi mathvariant="normal">&#x2225;</mi><mn>1</mn></msub></mrow></mtd></mtr><mtr><mtd><mrow></mrow></mtd><mtd><mrow><mrow></mrow><mtext><mi mathvariant="normal">s</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">j</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">t</mi><mtext>&#xA0;</mtext><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi></mtext></mrow></mtd><mtd><mrow></mrow></mtd><mtd><mrow><mrow></mrow><msub><mi>w</mi><mrow><mi>j</mi></mrow></msub><mo>&#x2265;</mo><mn>0</mn></mrow></mtd></mtr><mtr><mtd><mrow></mrow></mtd><mtd><mrow><mrow></mrow></mrow></mtd><mtd><mrow></mrow></mtd><mtd><mrow><mrow></mrow><mi>d</mi><mi>i</mi><mi>a</mi><mi>g</mi><mo>(</mo><mi>W</mi><mo>)</mo><mo>=</mo><mn>0</mn></mrow></mtd></mtr></mtable></mrow><annotation encoding="application/x-tex">
+\begin{aligned}
+&amp; \;{\tiny\begin{matrix}\\ \normalsize \text{minimize} \\ ^{\scriptsize w_{j}}\end{matrix}}\; 
+&amp;&amp; \frac{1}{2}\Vert r_{j} - Rw_{j} \Vert_2^2 + \frac{\beta}{2} \Vert w_{j} \Vert_2^2 + \lambda \Vert w_{j} \Vert_1 \\
+&amp; \text{subject to} 
+&amp;&amp; w_{j} \geq 0 \\
+&amp;&amp;&amp; diag(W)= 0
+\end{aligned}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:2.5232200000000002em;"></span><span class="strut bottom" style="height:4.5464400000000005em;vertical-align:-2.02322em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord"><span class="mtable"><span class="col-align-r"><span class="vlist"><span style="top:-1.1517800000000002em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span style="top:0.4632199999999996em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span style="top:1.6632199999999997em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="col-align-l"><span class="vlist"><span style="top:-1.1517800000000002em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0.5em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mord displaystyle textstyle uncramped"><span class="mspace thickspace"></span><span class="mord sizing reset-size5 size1 displaystyle textstyle uncramped"><span class="mtable"><span class="col-align-c"><span class="vlist"><span style="top:-1.2099999999999997em;"><span class="fontsize-ensurer reset-size1 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span style="top:-0.00999999999999951em;"><span class="fontsize-ensurer reset-size1 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord text displaystyle textstyle uncramped sizing reset-size1 size5 displaystyle textstyle uncramped"><span class="mord mathrm">minimize</span></span></span></span><span style="top:1.1900000000000006em;"><span class="fontsize-ensurer reset-size1 size5"><span style="font-size:1em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord"><span></span><span class="msupsub"><span class="vlist"><span style="top:-0.413em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size1 size5"><span style="font-size:0.48999999999999994em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord scriptstyle uncramped mtight"><span class="mord mtight sizing reset-size1 size2 scriptstyle uncramped"><span class="mord mathit mtight" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist"><span style="top:0.14300000000000002em;margin-right:0.07142857142857144em;margin-left:-0.02691em;"><span class="fontsize-ensurer reset-size2 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle scriptscriptstyle cramped mtight"><span class="mord scriptscriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size2 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size1 size5"><span style="font-size:0.48999999999999994em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size1 size5"><span style="font-size:1em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span><span class="mspace thickspace"></span></span></span><span style="top:0.4632199999999996em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0.5em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mord text displaystyle textstyle uncramped"><span class="mord mathrm">subject&#xA0;to</span></span></span></span><span style="top:1.6632199999999997em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0.5em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0.5em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="arraycolsep" style="width:2em;"></span><span class="col-align-r"><span class="vlist"><span style="top:-1.1517800000000002em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span style="top:0.4632199999999996em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span style="top:1.6632199999999997em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="col-align-l"><span class="vlist"><span style="top:-1.1517800000000002em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mopen sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathrm">2</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.677em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathrm">1</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mord mathrm">&#x2225;</span><span class="mord"><span class="mord mathit" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02778em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mbin">&#x2212;</span><span class="mord mathit" style="margin-right:0.00773em;">R</span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02691em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mord"><span class="mord mathrm">&#x2225;</span><span class="msupsub"><span class="vlist"><span style="top:0.247em;margin-left:0em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathrm mtight">2</span></span></span><span style="top:-0.4129999999999999em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord mathrm mtight">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mbin">+</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mopen sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathrm">2</span></span></span></span><span style="top:-0.22999999999999998em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.677em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathit" style="margin-right:0.05278em;">&#x3B2;</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mord mathrm">&#x2225;</span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02691em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mord"><span class="mord mathrm">&#x2225;</span><span class="msupsub"><span class="vlist"><span style="top:0.247em;margin-left:0em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathrm mtight">2</span></span></span><span style="top:-0.4129999999999999em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord mathrm mtight">2</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mbin">+</span><span class="mord mathit">&#x3BB;</span><span class="mord mathrm">&#x2225;</span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02691em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mord"><span class="mord mathrm">&#x2225;</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord mathrm mtight">1</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span><span style="top:0.4632199999999996em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mord"><span class="mord mathit" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.02691em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mrel">&#x2265;</span><span class="mord mathrm">0</span></span></span><span style="top:1.6632199999999997em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="mord displaystyle textstyle uncramped"><span class="mord displaystyle textstyle uncramped"></span><span class="mord mathit">d</span><span class="mord mathit">i</span><span class="mord mathit">a</span><span class="mord mathit" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord mathit" style="margin-right:0.13889em;">W</span><span class="mclose">)</span><span class="mrel">=</span><span class="mord mathrm">0</span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span></span></span></p>
+<h1 id="data-preparation">Data preparation</h1>
+<h2 id="rating-binarization">Rating binarization</h2>
+<p>In this article, each user-movie matrix element is binarized to reduce training samples and consider only high rated movies whose rating is 4 or 5. So, every matrix element having a lower rating than 4 is not used for training.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SET</span> hivevar:<span class="hljs-keyword">seed</span>=<span class="hljs-number">31</span>;
+
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> ratings2;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ratings2 <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span>
+  <span class="hljs-keyword">rand</span>(${<span class="hljs-keyword">seed</span>}) <span class="hljs-keyword">as</span> rnd,
   userid,
-  itemid,
-  <span class="hljs-keyword">max</span>(purchased_at) <span class="hljs-keyword">as</span> purchased_at,
-  <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> purchase_count
+  movieid <span class="hljs-keyword">as</span> itemid,
+  <span class="hljs-keyword">cast</span>(<span class="hljs-number">1.0</span> <span class="hljs-keyword">as</span> <span class="hljs-built_in">float</span>) <span class="hljs-keyword">as</span> rating <span class="hljs-comment">-- double is also accepted</span>
 <span class="hljs-keyword">from</span>
-  <span class="hljs-keyword">transaction</span>
-<span class="hljs-comment">-- where purchased_at &lt; xxx -- divide training/testing data by time </span>
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  userid, itemid
+  ratings
+<span class="hljs-keyword">where</span> rating &gt;= <span class="hljs-number">4.</span>
 ;
 </code></pre>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>Better to avoid too old transactions because those information would be outdated though an enough number of transactions is required for recommendation.</p></div></div>
-<h2 id="step-2-creating-cooccurrence-table">Step 2: Creating <code>cooccurrence</code> table</h2>
-<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>Item-item cooccurrence matrix is a symmetric matrix that has the number of total occurrence for each diagonal element. If the size of items is <code>k</code>, then the size of expected matrix is <code>k * (k - 1) / 2</code>, usually a very large one. Hence, it is better to use <a href="#step-2-2-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">step 2-2</a> instead of <a href="#step-2-1-create-cooccurrence-table-directly">step 2-1</a> for creating a <code>cooccurrence</code> table where dataset is large.</p></div></div>
-<h3 id="step-2-1-create-cooccurrence-table-directly">Step 2-1: Create <code>cooccurrence</code> table directly</h3>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence <span class="hljs-keyword">as</span> 
-<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence</span>
-<span class="hljs-keyword">select</span>
-  u1.itemid,
-  u2.itemid <span class="hljs-keyword">as</span> other, 
-  <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> cnt
-<span class="hljs-keyword">from</span>
-  user_purchased u1
-  <span class="hljs-keyword">JOIN</span> user_purchased u2 <span class="hljs-keyword">ON</span> (u1.userid = u2.userid)
-<span class="hljs-keyword">where</span>
-  u1.itemid != u2.itemid 
-  <span class="hljs-comment">-- AND u2.purchased_at &gt;= u1.purchased_at -- the other item should be purchased with/after the base item</span>
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  u1.itemid, u2.itemid
-<span class="hljs-comment">-- having -- optional but recommended to have this condition where dataset is large</span>
-<span class="hljs-comment">--  cnt &gt;= 2 -- count(1) &gt;= 2</span>
-;
-</code></pre>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>Note that specifying <code>having cnt &gt;= 2</code> has a drawback that item cooccurrence is not calculated where <code>cnt</code> is less than 2. It could result no recommended items for certain items. Please ignore <code>having cnt &gt;= 2</code> if the following computations finish in an acceptable/reasonable time.</p></div></div>
-<p><br></p>
-<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>We ignore a purchase order in the following example. It means that the occurrence counts of <code>ItemA -&gt; ItemB</code> and <code>ItemB -&gt; ItemA</code> are assumed to be same. It is sometimes not a good idea in terms of reasoning; for example, <code>Camera -&gt; SD card</code> and <code>SD card -&gt; Camera</code> need to be considered separately.</p></div></div>
-<h3 id="step-2-2-create-cooccurrence-table-from-upper-triangular-matrix-of-cooccurrence">Step 2-2: Create <code>cooccurrence</code> table from Upper Triangular Matrix of cooccurrence</h3>
-<p>Better to create <a href="https://en.wikipedia.org/wiki/Triangular_matrix#Description" target="_blank">Upper Triangular Matrix</a> that has <code>itemid &gt; other</code> if resulting table is very large. No need to create Upper Triangular Matrix if your Hadoop cluster can handle the following instructions without considering it.</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence_upper_triangular <span class="hljs-keyword">as</span> 
-<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence_upper_triangular</span>
-<span class="hljs-keyword">select</span>
-  u1.itemid,
-  u2.itemid <span class="hljs-keyword">as</span> other, 
-  <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> cnt
-<span class="hljs-keyword">from</span>
-  user_purchased u1
-  <span class="hljs-keyword">JOIN</span> user_purchased u2 <span class="hljs-keyword">ON</span> (u1.userid = u2.userid)
-<span class="hljs-keyword">where</span>
-  u1.itemid &gt; u2.itemid 
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  u1.itemid, u2.itemid
-;
-</code></pre>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence <span class="hljs-keyword">as</span> 
-<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence</span>
-<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> (
-  <span class="hljs-keyword">select</span> itemid, other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
-  <span class="hljs-keyword">UNION</span> ALL
-  <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
-) t;
-</code></pre>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p><code>UNION ALL</code> <a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Union#LanguageManualUnion-UNIONwithinaFROMClause" target="_blank">required to be embedded</a> in Hive.</p></div></div>
-<h4 id="limiting-size-of-elements-in-cooccurrenceuppertriangular">Limiting size of elements in <code>cooccurrence_upper_triangular</code></h4>
-<p>Using only top-N frequently co-occurred item pairs allows you to reduce the size of <code>cooccurrence</code> table:</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence_upper_triangular <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">WITH</span> t1 <span class="hljs-keyword">as</span> (
+<p><code>rnd</code> field is appended for each record to split <code>ratings2</code> into training and testing data later.</p>
+<p>Binarization is an optional step, and you can use raw rating values to train a SLIM model.</p>
+<h2 id="splitting-dataset">Splitting dataset</h2>
+<p>To evaluate a recommendation model, this tutorial uses two type cross validations:</p>
+<ul>
+<li>Leave-one-out cross validation</li>
+<li><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold cross validation</li>
+</ul>
+<p>The former is used in the <a href="http://glaros.dtc.umn.edu/gkhome/fetch/papers/SLIM2011icdm.pdf" target="_blank">SLIM&apos;s paper</a> and the latter is used in <a href="http://slideshare.net/MarkLevy/efficient-slides/" target="_blank">Mendeley&apos;s slide</a>.</p>
+<h3 id="leave-one-out-cross-validation">Leave-one-out cross validation</h3>
+<p>For leave-one-out cross validation, the dataset is split into a training set and a testing set by randomly selecting one of the non-zero entries of each user and placing it into the testing set.
+In the following query, the movie has the smallest <code>rnd</code> value is used as test data (<code>testing</code> table) per a user.
+And, the others are used as training data (<code>training</code> table).</p>
+<p>When we select slim&apos;s best hyperparameters, different test data is used in <a href="#evaluation">evaluation section</a> several times.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> testing;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> testing
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">WITH</span> top_k <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
-    u1.itemid,
-    u2.itemid <span class="hljs-keyword">as</span> other, 
-    <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> cnt
-  <span class="hljs-keyword">from</span>
-    user_purchased u1
-    <span class="hljs-keyword">JOIN</span> user_purchased u2 <span class="hljs-keyword">ON</span> (u1.userid = u2.userid)
-  <span class="hljs-keyword">where</span>
-    u1.itemid &gt; u2.itemid 
-  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-    u1.itemid, u2.itemid
-),
-t2 <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span>
-    each_top_k( <span class="hljs-comment">-- top 1000</span>
-      <span class="hljs-number">1000</span>, itemid, cnt, 
-      itemid, other, cnt
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, cmpkey, itemid, other, cnt)
+     each_top_k(<span class="hljs-number">1</span>, userid, rnd, userid, itemid, rating)
+      <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, rnd, userid, itemid, rating)
   <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> t1
-    CLUSTER <span class="hljs-keyword">BY</span> itemid
-  ) t;
-)
-<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence_upper_triangular</span>
-<span class="hljs-keyword">select</span> itemid, other, cnt
-<span class="hljs-keyword">from</span> t2;
-</code></pre>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> cooccurrence <span class="hljs-keyword">as</span> 
-<span class="hljs-keyword">WITh</span> t1 <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span> itemid, other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
-  <span class="hljs-keyword">UNION</span> ALL
-  <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, cnt <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
-),
-t2 <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span>
-    each_top_k(
-      <span class="hljs-number">1000</span>, itemid, cnt,
-      itemid, other, cnt
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, cmpkey, itemid, other, cnt)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> t1
-    CLUSTER <span class="hljs-keyword">BY</span> itemid
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ratings2
+    CLUSTER <span class="hljs-keyword">BY</span> userid
   ) t
 )
-<span class="hljs-comment">-- INSERT OVERWRITE TABLE cooccurrence</span>
-<span class="hljs-keyword">select</span> itemid, other, cnt
-<span class="hljs-keyword">from</span> t2;
-</code></pre>
-<h3 id="computing-cooccurrence-ratio-optional-step">Computing cooccurrence ratio (optional step)</h3>
-<p>You can optionally compute cooccurrence ratio as follows:</p>
-<pre><code class="lang-sql">WITH stats as (
-  <span class="hljs-keyword">select</span> 
-    itemid,
-    <span class="hljs-keyword">sum</span>(cnt) <span class="hljs-keyword">as</span> totalcnt
-  <span class="hljs-keyword">from</span> 
-    cooccurrence
-  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-    itemid
-)
-<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> cooccurrence_ratio
-<span class="hljs-keyword">SELECT</span>
-  l.itemid,
-  l.other, 
-  (l.cnt / r.totalcnt) <span class="hljs-keyword">as</span> ratio
-<span class="hljs-keyword">FROM</span>
-  cooccurrence l
-  <span class="hljs-keyword">JOIN</span> stats r <span class="hljs-keyword">ON</span> (l.itemid = r.itemid)
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  l.itemid, l.other
-;
-</code></pre>
-<p><code>l.cnt / r.totalcnt</code> represents a cooccurrence ratio of range <code>[0,1]</code>.</p>
-<h2 id="step-3-creating-a-feature-vector-for-each-item">Step 3: Creating a feature vector for each item</h2>
-<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_features
-<span class="hljs-keyword">SELECT</span>
-  itemid,
-  <span class="hljs-comment">-- scaling `ln(cnt+1)` to avoid large value in the feature vector</span>
-  <span class="hljs-comment">-- rounding to xxx.yyyyy to reduce size of feature_vector in array&lt;string&gt;</span>
-  collect_list(feature(other, <span class="hljs-keyword">round</span>(<span class="hljs-keyword">ln</span>(cnt+<span class="hljs-number">1</span>),<span class="hljs-number">5</span>))) <span class="hljs-keyword">as</span> feature_vector
-<span class="hljs-keyword">FROM</span>
-  cooccurrence
-<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span>
-  itemid
-;
-</code></pre>
-<h1 id="compute-item-similarity-scores">Compute item similarity scores</h1>
-<p>Item-item similarity computation is known to be computational complexity <code>O(n^2)</code> where <code>n</code> is the number of items. We have two options to compute the similarities, and, depending on your cluster size and your dataset, the optimal solution differs. </p>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>If your dataset is large enough, better to choose <a href="#taking-advantage-of-the-symmetric-property-of-item-similarity-matrix">modified version of option 1</a>, which utilizes the symmetric property of similarity matrix.</p></div></div>
-<h2 id="option-1-parallel-computation-with-computationally-heavy-shuffling">Option 1: Parallel computation with computationally heavy shuffling</h2>
-<p>This version involves 3-way joins w/ large data shuffle; However, this version works in parallel where a cluster has enough task slots.</p>
-<pre><code class="lang-sql">WITH similarity as (
-  <span class="hljs-keyword">select</span>
-    o.itemid,
-    o.other,
-    cosine_similarity(t1.feature_vector, t2.feature_vector) <span class="hljs-keyword">as</span> similarity
-  <span class="hljs-keyword">from</span>
-    cooccurrence o
-    <span class="hljs-keyword">JOIN</span> item_features t1 <span class="hljs-keyword">ON</span> (o.itemid = t1.itemid)
-    <span class="hljs-keyword">JOIN</span> item_features t2 <span class="hljs-keyword">ON</span> (o.other = t2.itemid)
-),
-topk <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span>
-    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
-      <span class="hljs-number">10</span>, itemid, similarity,
-      itemid, other <span class="hljs-comment">-- output items</span>
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
-    <span class="hljs-keyword">where</span> similarity &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- similarity &gt; 0.01</span>
-    CLUSTER <span class="hljs-keyword">BY</span> itemid
-  ) t
-)
-<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_similarity
-<span class="hljs-keyword">select</span> 
-  itemid, other, similarity
-<span class="hljs-keyword">from</span> 
-  topk;
-</code></pre>
-<h3 id="taking-advantage-of-the-symmetric-property-of-item-similarity-matrix">Taking advantage of the symmetric property of item similarity matrix</h3>
-<p>Notice that <code>item_similarity</code> is a symmetric matrix. So, you can compute it from an upper triangular matrix as follows.</p>
-<pre><code class="lang-sql">WITH cooccurrence_top100 as (
-  <span class="hljs-keyword">select</span>
-    each_top_k(
-      <span class="hljs-number">100</span>, itemid, cnt,  
-      itemid, other
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, cmpkey, itemid, other)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> cooccurrence_upper_triangular
-    CLUSTER <span class="hljs-keyword">BY</span> itemid
-  ) t
-), 
-similarity <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span>
-    o.itemid,
-    o.other,
-    cosine_similarity(t1.feature_vector, t2.feature_vector) <span class="hljs-keyword">as</span> similarity
-  <span class="hljs-keyword">from</span>
-    cooccurrence_top100 o
-    <span class="hljs-comment">-- cooccurrence_upper_triangular o</span>
-    <span class="hljs-keyword">JOIN</span> item_features t1 <span class="hljs-keyword">ON</span> (o.itemid = t1.itemid)
-    <span class="hljs-keyword">JOIN</span> item_features t2 <span class="hljs-keyword">ON</span> (o.other = t2.itemid)
-),
-topk <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span>
-    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
-      <span class="hljs-number">10</span>, itemid, similarity,
-      itemid, other <span class="hljs-comment">-- output items</span>
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
-    <span class="hljs-keyword">where</span> similarity &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- similarity &gt; 0.01</span>
-    CLUSTER <span class="hljs-keyword">BY</span> itemid
-  ) t
-)
-<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_similarity_upper_triangler
-<span class="hljs-keyword">select</span> 
-  itemid, other, similarity
-<span class="hljs-keyword">from</span> 
-  topk;
-</code></pre>
-<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_similarity
-<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> (
-  <span class="hljs-keyword">select</span> itemid, other, similarity <span class="hljs-keyword">from</span> item_similarity_upper_triangler
-  <span class="hljs-keyword">UNION</span> ALL
-  <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, similarity <span class="hljs-keyword">from</span> item_similarity_upper_triangler
-) t;
-</code></pre>
-<h2 id="option-2-sequential-computation">Option 2: Sequential computation</h2>
-<p>Alternatively, you can compute cosine similarity as follows. This version involves cross join and thus runs sequentially in a single task. However, it involves less shuffle compared to option 1.</p>
-<pre><code class="lang-sql">WITH similarity as (
-  <span class="hljs-keyword">select</span>
-   t1.itemid,
-   t2.itemid <span class="hljs-keyword">as</span> other,
-   cosine_similarity(t1.feature_vector, t2.feature_vector) <span class="hljs-keyword">as</span> similarity
-  <span class="hljs-keyword">from</span>
-   item_features t1
-   <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> item_features t2
-  <span class="hljs-keyword">WHERE</span>
-    t1.itemid != t2.itemid
-),
-topk <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span>
-    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
-      <span class="hljs-number">10</span>, itemid, similarity,
-      itemid, other <span class="hljs-comment">-- output items</span>
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
-    <span class="hljs-keyword">where</span> similarity &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- similarity &gt; 0.01</span>
-    CLUSTER <span class="hljs-keyword">BY</span> itemid
-  ) t
-)
-<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_similarity
-<span class="hljs-keyword">select</span> 
-  itemid, other, similarity
-<span class="hljs-keyword">from</span> 
-  topk
-;
-</code></pre>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">item</th>
-<th style="text-align:center">other</th>
-<th style="text-align:center">similarity</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">583266</td>
-<td style="text-align:center">621056</td>
-<td style="text-align:center">0.33</td>
-</tr>
-<tr>
-<td style="text-align:center">583266</td>
-<td style="text-align:center">583266</td>
-<td style="text-align:center">0.18</td>
-</tr>
-<tr>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">13212</td>
-<td style="text-align:center">1.29</td>
-</tr>
-<tr>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">0.3</td>
-</tr>
-<tr>
-<td style="text-align:center">31231</td>
-<td style="text-align:center">9833</td>
-<td style="text-align:center">0.953</td>
-</tr>
-<tr>
-<td style="text-align:center">...</td>
-<td style="text-align:center">...</td>
-<td style="text-align:center">...</td>
-</tr>
-</tbody>
-</table>
-<h1 id="item-based-recommendation">Item-based recommendation</h1>
-<p>This section introduces item-based recommendation based on recently purchased items by each user.</p>
-<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>It would better to ignore recommending some of items that user already purchased (only 1 time) while items that are purchased twice or more would be okey to be included in the recommendation list (e.g., repeatedly purchased daily necessities). So, you would need an item property table showing that each item is repeatedly purchased items or not.</p></div></div>
-<h2 id="step-1-computes-top-k-recently-purchased-items-for-each-user">Step 1: Computes top-k recently purchased items for each user</h2>
-<p>First, prepare <code>recently_purchased_items</code> table as follows:</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> recently_purchased_items
 <span class="hljs-keyword">select</span>
-  each_top_k( <span class="hljs-comment">-- get top-5 recently purchased items for each user</span>
-     <span class="hljs-number">5</span>, userid, purchased_at,
-     userid, itemid
-  ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, purchased_at, userid, itemid)
-<span class="hljs-keyword">from</span> (
-  <span class="hljs-keyword">select</span>
-    purchased_at, userid, itemid
-  <span class="hljs-keyword">from</span> 
-    user_purchased
-  <span class="hljs-comment">-- where [optional filtering]</span>
-  <span class="hljs-comment">--  purchased_at &gt;= xxx -- divide training/test data by time</span>
-  CLUSTER <span class="hljs-keyword">BY</span>
-    user_id <span class="hljs-comment">-- Note CLUSTER BY is mandatory when using each_top_k</span>
-) t;
-</code></pre>
-<h2 id="step-2-recommend-top-k-items-based-on-users-recently-purchased-items">Step 2: Recommend top-k items based on users&apos; recently purchased items</h2>
-<p>In order to generate a list of recommended items, you can use either cooccurrence count or similarity as a relevance score.</p>
-<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>In order to obtain ranked list of items, this section introduces queries using <code>map_values(to_ordered_map(rank, rec_item))</code>. However, this kind of usage has a potential issue that multiple <code>rec_item</code>-s which have the exactly same <code>rank</code> will be aggregated to single arbitrary <code>rec_item</code>, because <code>to_ordered_map()</code> creates a key-value map which uses duplicated <code>rank</code> as key.</p><p>Since such situation is possible in case that <code>each_top_k()</code> is executed for different <code>userid</code>-s who have the same <code>cnt</code> or <code>similarity</code>, we recommend you to use <code>to_ordered_list(rec_item, rank, &apos;-reverse&apos;)</code> instead of <code>map_values(to_ordered_map(rank, rec_item, true))</code>. The alternative approach is available from Hivemall v0.5-rc.1 or later.</p></div></div>
-<h3 id="cooccurrence-based">Cooccurrence-based</h3>
-<pre><code class="lang-sql">WITH topk as (
-  <span class="hljs-keyword">select</span>
-    each_top_k(
-       <span class="hljs-number">5</span>, userid, cnt,
-       userid, other
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, cnt, userid, rec_item)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> 
-      t1.userid, t2.other, <span class="hljs-keyword">max</span>(t2.cnt) <span class="hljs-keyword">as</span> cnt
-    <span class="hljs-keyword">from</span>
-      recently_purchased_items t1
-      <span class="hljs-keyword">JOIN</span> cooccurrence t2 <span class="hljs-keyword">ON</span> (t1.itemid = t2.itemid)
-    <span class="hljs-keyword">where</span>
-      t1.itemid != t2.other <span class="hljs-comment">-- do not include items that user already purchased</span>
-      <span class="hljs-keyword">AND</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">EXISTS</span> (
-        <span class="hljs-keyword">SELECT</span> a.itemid <span class="hljs-keyword">FROM</span> user_purchased a
-        <span class="hljs-keyword">WHERE</span> a.userid = t1.userid <span class="hljs-keyword">AND</span> a.itemid = t2.other
-<span class="hljs-comment">--        AND a.purchased_count &lt;= 1 -- optional</span>
-      )
-    <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-      t1.userid, t2.other
-    CLUSTER <span class="hljs-keyword">BY</span>
-      userid <span class="hljs-comment">-- top-k grouping by userid</span>
-  ) t1
-)
-<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_recommendation
-<span class="hljs-keyword">select</span>
-  userid,
-  map_values(to_ordered_map(<span class="hljs-keyword">rank</span>, rec_item)) <span class="hljs-keyword">as</span> rec_items
+  userid, itemid, rating
 <span class="hljs-keyword">from</span>
-  topk
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  userid
-;
-</code></pre>
-<h3 id="similarity-based">Similarity-based</h3>
-<pre><code class="lang-sql">WITH topk as (
-  <span class="hljs-keyword">select</span>
-    each_top_k(
-       <span class="hljs-number">5</span>, userid, similarity,
-       userid, other
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, userid, rec_item)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span>
-      t1.userid, t2.other, <span class="hljs-keyword">max</span>(t2.similarity) <span class="hljs-keyword">as</span> similarity
-    <span class="hljs-keyword">from</span>
-      recently_purchased_items t1
-      <span class="hljs-keyword">JOIN</span> item_similarity t2 <span class="hljs-keyword">ON</span> (t1.itemid = t2.itemid)
-    <span class="hljs-keyword">where</span>
-      t1.itemid != t2.other <span class="hljs-comment">-- do not include items that user already purchased</span>
-      <span class="hljs-keyword">AND</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">EXISTS</span> (
-        <span class="hljs-keyword">SELECT</span> a.itemid <span class="hljs-keyword">FROM</span> user_purchased a
-        <span class="hljs-keyword">WHERE</span> a.userid = t1.userid <span class="hljs-keyword">AND</span> a.itemid = t2.other
-<span class="hljs-comment">--        AND a.purchased_count &lt;= 1 -- optional</span>
-      )
-    <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-      t1.userid, t2.other
-    CLUSTER <span class="hljs-keyword">BY</span>
-      userid <span class="hljs-comment">-- top-k grouping by userid</span>
-  ) t1
-)
-<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> item_recommendation
-<span class="hljs-keyword">select</span>
-  userid,
-  map_values(to_ordered_map(<span class="hljs-keyword">rank</span>, rec_item)) <span class="hljs-keyword">as</span> rec_items
-<span class="hljs-keyword">from</span>
-  topk
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  userid
-;
-</code></pre>
-<h1 id="efficient-similarity-computation">Efficient similarity computation</h1>
-<p>Since naive similarity computation takes <code>O(n^2)</code> computational complexity, utilizing a certain approximation scheme is practically important to improve efficiency and feasibility. In particular, Hivemall enables you to use one of two sophisticated approximation schemes, <a href="##minhash-compute-pseudo-jaccard-similarity">MinHash</a> and <a href="#dimsum-approximated-all-pairs-cosine-similarity-computation">DIMSUM</a>.</p>
-<h2 id="minhash-compute-pseudo-jaccard-similarity">MinHash: Compute &quot;pseudo&quot; Jaccard similarity</h2>
-<p>Refer <a href="https://en.wikipedia.org/wiki/MinHash#Jaccard_similarity_and_minimum_hash_values" target="_blank">this article</a> to get details about MinHash and Jarccard similarity. <a href="https://blog.treasuredata.com/blog/2016/02/16/minhash-in-hivemall/" target="_blank">This blog article</a> also explains about Hivemall&apos;s minhash.</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> minhash <span class="hljs-comment">-- results in 30x records of item_features</span>
-<span class="hljs-keyword">select</span>  
-  <span class="hljs-comment">-- assign 30 minhash values for each item</span>
-  minhash(itemid, feature_vector, <span class="hljs-string">&quot;-n 30&quot;</span>) <span class="hljs-keyword">as</span> (clusterid, itemid) <span class="hljs-comment">-- &apos;-n&apos; would be 10~100</span>
-<span class="hljs-keyword">from</span>
-  item_features
+  top_k
 ;
 
-WITH t1 as (
-  <span class="hljs-keyword">select</span>
-    l.itemid,
-    r.itemid <span class="hljs-keyword">as</span> other,
-    <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) / <span class="hljs-number">30</span> <span class="hljs-keyword">as</span> similarity <span class="hljs-comment">-- Pseudo jaccard similarity &apos;-n 30&apos;</span>
-  <span class="hljs-keyword">from</span>
-    minhash l 
-    <span class="hljs-keyword">JOIN</span> minhash r 
-      <span class="hljs-keyword">ON</span> (l.clusterid = r.clusterid)
-  <span class="hljs-keyword">where</span> 
-    l.itemid != r.itemid
-  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-    l.itemid, r.itemid
-  <span class="hljs-keyword">having</span>
-    <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) &gt;= <span class="hljs-number">3</span> <span class="hljs-comment">-- [optional] filtering equals to (count(1)/30) &gt;= 0.1</span>
-),
-top100 <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span>
-    each_top_k(<span class="hljs-number">100</span>, itemid, similarity, itemid, other)
-      <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> t1 
-    <span class="hljs-comment">-- where similarity &gt;= 0.1 -- Optional filtering. Can be ignored.</span>
-    CLUSTER <span class="hljs-keyword">BY</span> itemid 
-  ) t2
-)
-<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> jaccard_similarity
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> training;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> training <span class="hljs-keyword">as</span>
 <span class="hljs-keyword">select</span>
-  itemid, other, similarity
+  l.*
 <span class="hljs-keyword">from</span>
-  top100
+  ratings2 l
+  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> testing r <span class="hljs-keyword">ON</span> (l.userid=r.userid <span class="hljs-keyword">and</span> l.itemid=r.itemid)
+<span class="hljs-keyword">where</span>
+  r.itemid <span class="hljs-keyword">IS</span> <span class="hljs-literal">NULL</span> <span class="hljs-comment">-- anti join</span>
 ;
 </code></pre>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>There might be no similar item for certain items.</p></div></div>
-<h3 id="compute-approximated-cosine-similarity-by-using-the-minhash-based-jaccard-similarity">Compute approximated cosine similarity by using the MinHash-based Jaccard similarity</h3>
-<p>Once the MinHash-based approach found rough <code>top-N</code> similar items, you can efficiently find <code>top-k</code> similar items in terms of cosine similarity, where <code>k &lt;&lt; N</code> (e.g., k=10 and N=100).</p>
-<pre><code class="lang-sql">WITH similarity as (
-  <span class="hljs-keyword">select</span>
-    o.itemid,
-    o.other,
-    cosine_similarity(t1.feature_vector, t2.feature_vector) <span class="hljs-keyword">as</span> similarity
-  <span class="hljs-keyword">from</span>
-    jaccard_similarity o
-    <span class="hljs-keyword">JOIN</span> item_features t1 <span class="hljs-keyword">ON</span> (o.itemid = t1.itemid)
-    <span class="hljs-keyword">JOIN</span> item_features t2 <span class="hljs-keyword">ON</span> (o.other = t2.itemid)
-),
-topk <span class="hljs-keyword">as</span> (
-  <span class="hljs-keyword">select</span>
-    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
-      <span class="hljs-number">10</span>, itemid, similarity,
-      itemid, other <span class="hljs-comment">-- output items</span>
-    ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
-  <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
-    <span class="hljs-keyword">where</span> similarity &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- similarity &gt; 0.01</span>
-    CLUSTER <span class="hljs-keyword">BY</span> itemid
-  ) t
-)
-<span class="hljs-keyword">INSERT</span> OVERWRITE <span class="hljs-keyword">TABLE</span> cosine_similarity
-<span class="hljs-keyword">select</span> 
-  itemid, other, similarity
-<span class="hljs-keyword">from</span> 
-  topk;
+<h3 id="kkk-hold-corss-validation"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold corss validation</h3>
+<p>When <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">K=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span><span class="mrel">=</span><span class="mord mathrm">2</span></span></span></span>, the dataset is divided into training data and testing dataset.
+The numbers of training and testing samples roughly equal.</p>
+<p>When we select slim&apos;s best hyperparameters, you&apos;ll first train a SLIM prediction model from training data and evaluate the prediction model by testing data.</p>
+<p>Optionally, you can switch training data with testing data and evaluate again.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> testing;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> testing
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ratings2
+<span class="hljs-keyword">where</span> rnd &gt;= <span class="hljs-number">0.5</span>
+;
+
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> training;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> training
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> ratings2
+<span class="hljs-keyword">where</span> rnd &lt; <span class="hljs-number">0.5</span>
+;
 </code></pre>
-<h2 id="dimsum-approximated-all-pairs-cosine-similarity-computation">DIMSUM: Approximated all-pairs &quot;Cosine&quot; similarity computation</h2>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>This feature is supported from Hivemall v0.5-rc.1 or later.</p></div></div>
-<p>DIMSUM is a technique to efficiently and approximately compute <a href="https://en.wikipedia.org/wiki/Cosine_similarity" target="_blank">Cosine similarities</a> for all-pairs of items. You can refer to <a href="https://blog.twitter.com/engineering/en_us/a/2014/all-pairs-similarity-via-dimsum.html" target="_blank">an article in Twitter&apos;s Engineering blog</a> to learn how DIMSUM reduces running time.</p>
-<p>Here, let us begin with the <code>user_purchased</code> table. <code>item_similarity</code> table can be obtained as follows:</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> item_similarity <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">with</span> item_magnitude <span class="hljs-keyword">as</span> ( <span class="hljs-comment">-- compute magnitude of each item vector</span>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>In the following section excluding evaluation section,
+we will show the example of queries and its results based on <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold cross validation case.
+But, this article&apos;s queries are valid for leave-one-out cross validation.</p></div></div>
+<h2 id="precompute-movie-movie-similarity">Precompute movie-movie similarity</h2>
+<p>SLIM needs top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> most similar movies for each movie to the approximate user-item matrix.
+Here, we particularly focus on <a href="item_based_cf.html#dimsum-approximated-all-pairs-cosine-similarity-computation">DIMSUM</a>,
+an efficient and approximated similarity computation scheme.</p>
+<p>Because we set <code>k=20</code>, the output has 20 most-similar movies per <code>itemid</code>.
+We can adjust trade-off between training and prediction time and precision of matrix approximation by varying <code>k</code>.
+Larger <code>k</code> is the better approximation for raw user-item matrix, but training time and memory usage tend to increase.</p>
+<p><a href="item_based_cf.html#dimsum-approximated-all-pairs-cosine-similarity-computation.md">As we explained in the general introduction of item-based CF</a>,
+following query finds top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.69444em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.03148em;">k</span></span></span></span> nearest-neighborhood movies for each movie:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:k=<span class="hljs-number">20</span>;
+
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> knn_train;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> knn_train
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">with</span> item_magnitude <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
     to_map(j, mag) <span class="hljs-keyword">as</span> mags
   <span class="hljs-keyword">from</span> (
-    <span class="hljs-keyword">select</span> 
+    <span class="hljs-keyword">select</span>
       itemid <span class="hljs-keyword">as</span> j,
-      l2_norm(<span class="hljs-keyword">ln</span>(purchase_count+<span class="hljs-number">1</span>)) <span class="hljs-keyword">as</span> mag <span class="hljs-comment">-- use scaled value</span>
-    <span class="hljs-keyword">from</span> 
-      user_purchased
+      l2_norm(rating) <span class="hljs-keyword">as</span> mag
+    <span class="hljs-keyword">from</span>
+      training
     <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
       itemid
   ) t0
@@ -2882,85 +2369,459 @@ item_features <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
     userid <span class="hljs-keyword">as</span> i,
     collect_list(
-      feature(itemid, <span class="hljs-keyword">ln</span>(purchase_count+<span class="hljs-number">1</span>)) <span class="hljs-comment">-- use scaled value</span>
+      feature(itemid, rating)
     ) <span class="hljs-keyword">as</span> feature_vector
   <span class="hljs-keyword">from</span>
-    user_purchased
+    training
   <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
     userid
 ),
-partial_result <span class="hljs-keyword">as</span> ( <span class="hljs-comment">-- launch DIMSUM in a MapReduce fashion</span>
+partial_result <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
-    dimsum_mapper(f.feature_vector, m.mags, <span class="hljs-string">&apos;-threshold 0.5&apos;</span>)
+    dimsum_mapper(f.feature_vector, m.mags, <span class="hljs-string">&apos;-threshold 0.1 -int_feature&apos;</span>)
       <span class="hljs-keyword">as</span> (itemid, other, s)
   <span class="hljs-keyword">from</span>
     item_features f
-  <span class="hljs-keyword">left</span> <span class="hljs-keyword">outer</span> <span class="hljs-keyword">join</span> item_magnitude m
+    <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> item_magnitude m
 ),
 similarity <span class="hljs-keyword">as</span> (
-  <span class="hljs-comment">-- reduce (i.e., sum up) mappers&apos; partial results</span>
   <span class="hljs-keyword">select</span>
-    itemid, 
+    itemid,
     other,
     <span class="hljs-keyword">sum</span>(s) <span class="hljs-keyword">as</span> similarity
-  <span class="hljs-keyword">from</span> 
+  <span class="hljs-keyword">from</span>
     partial_result
   <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
     itemid, other
 ),
 topk <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
-    each_top_k( <span class="hljs-comment">-- get top-10 items based on similarity score</span>
-      <span class="hljs-number">10</span>, itemid, similarity,
-      itemid, other <span class="hljs-comment">-- output items</span>
+    each_top_k(
+      ${k}, itemid, similarity, <span class="hljs-comment">-- use top k items</span>
+      itemid, other
     ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, similarity, itemid, other)
   <span class="hljs-keyword">from</span> (
     <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> similarity
     CLUSTER <span class="hljs-keyword">BY</span> itemid
   ) t
 )
-<span class="hljs-comment">-- insert overwrite table item_similarity</span>
-<span class="hljs-keyword">select</span> 
+<span class="hljs-keyword">select</span>
   itemid, other, similarity
-<span class="hljs-keyword">from</span> 
+<span class="hljs-keyword">from</span>
   topk
 ;
 </code></pre>
-<p>Ultimately, using <code>item_similarity</code> for <a href="#item-based-recommendation">item-based recommendation</a> is straightforward in a similar way to what we explained above.</p>
-<p>In the above query, an important part is obviously <code>dimsum_mapper(f.feature_vector, m.mags, &apos;-threshold 0.5&apos;)</code>. An option <code>-threshold</code> is a real value in <code>[0, 1)</code> range, and intuitively it illustrates <em>&quot;similarities above this threshold are approximated by the DIMSUM algorithm&quot;</em>.</p>
-<h3 id="create-itemsimilarity-from-upper-triangular-matrix">Create <code>item_similarity</code> from Upper Triangular Matrix</h3>
-<p>Thanks to the symmetric property of similarity matrix, DIMSUM enables you to utilize space-efficient Upper-Triangular-Matrix-style output by just adding an option <code>-disable_symmetric_output</code>:</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> item_similarity <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">with</span> item_magnitude <span class="hljs-keyword">as</span> (
-  ...
-),
-partial_result <span class="hljs-keyword">as</span> (
+<table>
+<thead>
+<tr>
+<th style="text-align:center">itemid</th>
+<th style="text-align:center">other</th>
+<th style="text-align:left">similarity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">3114</td>
+<td style="text-align:left">0.28432244</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1265</td>
+<td style="text-align:left">0.25180137</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2355</td>
+<td style="text-align:left">0.24781825</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2396</td>
+<td style="text-align:left">0.24435896</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">588</td>
+<td style="text-align:left">0.24359442</td>
+</tr>
+<tr>
+<td style="text-align:center">...</td>
+<td style="text-align:center">...</td>
+<td style="text-align:left">...</td>
+</tr>
+</tbody>
+</table>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>To run the query above, you may need to run the following statements:</p><pre><code class="lang-sql"><span class="hljs-keyword">set</span> hive.<span class="hljs-keyword">strict</span>.checks.cartesian.product=<span class="hljs-literal">false</span>;
+<span class="hljs-keyword">set</span> hive.mapred.<span class="hljs-keyword">mode</span>=nonstrict;
+</code></pre></div></div>
+<h2 id="create-training-input-tables">Create training input tables</h2>
+<p>Here, we prepare input tables for SLIM training.</p>
+<p>SLIM input consists of the following columns in <code>slim_training_item</code>:</p>
+<ul>
+<li><code>i</code>: axis item id</li>
+<li><code>Ri</code>: the user-rating vector of the axis item <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.65952em;"></span><span class="strut bottom" style="height:0.65952em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">i</span></span></span></span> expressed as <code>map&lt;userid, rating&gt;</code>.</li>
+<li><code>knn_i</code>: top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span> similar item matrix of item <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.65952em;"></span><span class="strut bottom" style="height:0.65952em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit">i</span></span></span></span>; the user-item rating matrix is expressed as <code>map&lt;userid, map&lt;itemid, rating&gt;&gt;</code>.</li>
+<li><code>j</code>: an item id in <code>knn_i</code>.</li>
+<li><code>Rj</code>: the user-rating vector of the item <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>j</mi></mrow><annotation encoding="application/x-tex">j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.65952em;"></span><span class="strut bottom" style="height:0.85396em;vertical-align:-0.19444em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.05724em;">j</span></span></span></span> expressed as <code>map&lt;userid, rating&gt;</code>.</li>
+</ul>
+<pre><code class="lang-sql"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> item_matrix;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">table</span> item_matrix <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span>
+  itemid <span class="hljs-keyword">as</span> i,
+  to_map(userid, rating) <span class="hljs-keyword">as</span> R_i
+<span class="hljs-keyword">from</span>
+  training
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  itemid;
+
+<span class="hljs-comment">-- Temporary set off map join because the following query does not work well for map join</span>
+<span class="hljs-keyword">set</span> hive.<span class="hljs-keyword">auto</span>.<span class="hljs-keyword">convert</span>.<span class="hljs-keyword">join</span>=<span class="hljs-literal">false</span>;
+<span class="hljs-comment">-- set mapred.reduce.tasks=64;</span>
+
+<span class="hljs-comment">-- Create SLIM input features</span>
+<span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> slim_training_item;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> slim_training_item <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">WITH</span> knn_item_user_matrix <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
-    dimsum_mapper(f.feature_vector, m.mags, <span class="hljs-string">&apos;-threshold 0.5 -disable_symmetric_output&apos;</span>)
-      <span class="hljs-keyword">as</span> (itemid, other, s)
+    l.itemid,
+    r.userid,
+    to_map(l.other, r.rating) ratings
   <span class="hljs-keyword">from</span>
-    item_features f
-  <span class="hljs-keyword">left</span> <span class="hljs-keyword">outer</span> <span class="hljs-keyword">join</span> item_magnitude m
-),
-similarity_upper_triangular <span class="hljs-keyword">as</span> (
-  <span class="hljs-comment">-- if similarity of (i1, i2) pair is in this table, (i2, i1)&apos;s similarity is omitted</span>
-  <span class="hljs-keyword">select</span>
-    itemid, 
-    other,
-    <span class="hljs-keyword">sum</span>(s) <span class="hljs-keyword">as</span> similarity
-  <span class="hljs-keyword">from</span> 
-    partial_result
+    knn_train l
+    <span class="hljs-keyword">JOIN</span> training r <span class="hljs-keyword">ON</span> (l.other = r.itemid)
   <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-    itemid, other
+    l.itemid, r.userid
 ),
-similarity <span class="hljs-keyword">as</span> ( <span class="hljs-comment">-- copy (i1, i2)&apos;s similarity as (i2, i1)&apos;s one</span>
-  <span class="hljs-keyword">select</span> itemid, other, similarity <span class="hljs-keyword">from</span> similarity_upper_triangular
-  <span class="hljs-keyword">union</span> all
-  <span class="hljs-keyword">select</span> other <span class="hljs-keyword">as</span> itemid, itemid <span class="hljs-keyword">as</span> other, similarity <span class="hljs-keyword">from</span> similarity_upper_triangular
-),
-topk <span class="hljs-keyword">as</span> (
-  ...
+knn_item_matrix <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    itemid <span class="hljs-keyword">as</span> i,
+    to_map(userid, ratings) <span class="hljs-keyword">as</span> KNN_i <span class="hljs-comment">-- map&lt;userid, map&lt;itemid, rating&gt;&gt;</span>
+  <span class="hljs-keyword">from</span>
+    knn_item_user_matrix
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    itemid
+)
+<span class="hljs-keyword">select</span>
+  l.itemid <span class="hljs-keyword">as</span> i,
+  r1.R_i,
+  r2.knn_i,
+  l.other <span class="hljs-keyword">as</span> j,
+  r3.R_i <span class="hljs-keyword">as</span> R_j
+<span class="hljs-keyword">from</span>
+  knn_train l
+  <span class="hljs-keyword">JOIN</span> item_matrix r1 <span class="hljs-keyword">ON</span> (l.itemid = r1.i)
+  <span class="hljs-keyword">JOIN</span> knn_item_matrix r2 <span class="hljs-keyword">ON</span> (l.itemid = r2.i)
+  <span class="hljs-keyword">JOIN</span> item_matrix r3 <span class="hljs-keyword">ON</span> (l.other = r3.i)
+;
+
+<span class="hljs-comment">-- set to the default value</span>
+<span class="hljs-keyword">set</span> hive.<span class="hljs-keyword">auto</span>.<span class="hljs-keyword">convert</span>.<span class="hljs-keyword">join</span>=<span class="hljs-literal">true</span>;
 </code></pre>
+<h1 id="training">Training</h1>
+<h2 id="build-a-prediction-model-by-slim">Build a prediction model by SLIM</h2>
+<p><code>train_slim</code> function outputs the nonzero elements of an item-item matrix.
+For item recommendation or prediction, this matrix is stored into the table named <code>slim_model</code>.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> slim_model;
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> slim_model <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">select</span>
+  i, nn, <span class="hljs-keyword">avg</span>(w) <span class="hljs-keyword">as</span> w
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span>
+    train_slim(i, r_i, knn_i, j, r_j) <span class="hljs-keyword">as</span> (i, nn, w)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> slim_training_item
+    CLUSTER <span class="hljs-keyword">BY</span> i
+  ) t1
+) t2
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> i, nn
+;
+</code></pre>
+<h2 id="usage-of-trainslim">Usage of <code>train_slim</code></h2>
+<p>You can obtain information about <code>train_slim</code> function and its arguments by giving <code>-help</code> option as follows:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> train_slim(<span class="hljs-string">&quot;-help&quot;</span>);
+</code></pre>
+<pre><code class="lang-sql">usage: train_slim( int i, map&lt;int, double&gt; r_i, map&lt;int, map&lt;int, double&gt;&gt; topKRatesOfI,
+       int j, map&lt;int, double&gt; r_j [, constant string options])
+       - Returns row index, column index and non-zero weight value of prediction model
+       [-cv_rate &lt;arg&gt;] [-disable_cv] [-help] [-iters &lt;arg&gt;] [-l1 &lt;arg&gt;] [-l2 &lt;arg&gt;]
+ -cv_rate,--convergence_rate &lt;arg&gt;   Threshold to determine convergence
+                                     [default: 0.005]
+ -disable_cv,--disable_cvtest        Whether to disable convergence check
+                                     [default: enabled]
+ -help                               Show function help
+ -iters,--iterations &lt;arg&gt;           The number of iterations for
+                                     coordinate descent [default: 30]
+ -l1,--l1coefficient &lt;arg&gt;           Coefficient for l1 regularizer
+                                     [default: 0.001]
+ -l2,--l2coefficient &lt;arg&gt;           Coefficient for l2 regularizer
+                                     [default: 0.0005]
+</code></pre>
+<h1 id="prediction-and-recommendation">Prediction and recommendation</h1>
+<p>Here, we predict ratng values of binarized user-item rating matrix of testing dataset based on ratings in training dataset.</p>
+<p>Based on predicted rating scores, we can recommend top-k items for each user that he or she will be likely to put high scores.</p>
+<h2 id="predict-unknown-value-of-user-item-matrix">Predict unknown value of user-item matrix</h2>
+<p>Based on known ratings and SLIM weight matrix, we can predict unknown values in the user-item matrix in <code>predicted</code>.
+SLIM predicts ratings of user-item pairs based on top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span> similar items.</p>
+<p>The <code>predict_pair</code> table represents candidates for recommended user-movie pairs, excluding known ratings in training dataset.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">OR</span> <span class="hljs-keyword">REPLACE</span> <span class="hljs-keyword">VIEW</span> predict_pair 
+<span class="hljs-keyword">as</span>
+<span class="hljs-keyword">WITH</span> testing_users <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span> <span class="hljs-keyword">DISTINCT</span>(userid) <span class="hljs-keyword">as</span> userid <span class="hljs-keyword">from</span> testing
+),
+training_items <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span> <span class="hljs-keyword">DISTINCT</span>(itemid) <span class="hljs-keyword">as</span> itemid <span class="hljs-keyword">from</span> training
+),
+user_items <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    l.userid,
+    r.itemid
+  <span class="hljs-keyword">from</span>
+    testing_users l
+    <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> training_items r
+)
+<span class="hljs-keyword">select</span>
+  l.userid,
+  l.itemid
+<span class="hljs-keyword">from</span>
+  user_items l
+  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> training r <span class="hljs-keyword">ON</span> (l.userid=r.userid <span class="hljs-keyword">and</span> l.itemid=r.itemid)
+<span class="hljs-keyword">where</span>
+  r.itemid <span class="hljs-keyword">IS</span> <span class="hljs-literal">NULL</span> <span class="hljs-comment">-- anti join</span>
+;
+``
+</code></pre>
+<p>-- optionally set the mean/default value of prediction
+set hivevar:mu=0.0;</p>
+<p>DROP TABLE predicted;
+CREATE TABLE predicted 
+as
+WITH knn_exploded as (
+  select
+    l.userid  as u,
+    l.itemid as i, -- axis
+    r1.other  as k, -- other
+    r2.rating as r_uk
+  from
+    predict_pair l
+    LEFT OUTER JOIN knn_train r1
+      ON (r1.itemid = l.itemid)
+    JOIN training r2
+      ON (r2.userid = l.userid and r2.itemid = r1.other)
+)
+select
+  l.u as userid,
+  l.i as itemid,
+  coalesce(sum(l.r_uk <em> r.w), ${mu}) as predicted
+  -- coalesce(sum(l.r_uk </em> r.w)) as predicted
+from
+  knn_exploded l
+  LEFT OUTER JOIN slim_model r ON (l.i = r.i and l.k = r.nn)
+group by
+  l.u, l.i
+;</p>
+<pre><code>
+&gt; #### Caution
+&gt; When {% math %}k{% endmath %} is small, slim predicted value may be `null`. Then, `$mu` replaces `null` value.
+&gt; The mean value of item ratings is a good choice for `$mu`.
+
+## Top-{% math %}K{% endmath %} item recommendation for each user
+
+Here, we recommend top-3 items for each user based on predicted values.
+
+```sql
+SET hivevar:k=3;
+
+DROP TABLE IF EXISTS recommend;
+CREATE TABLE recommend
+as
+WITH top_n as (
+  select
+     each_top_k(${k}, userid, predicted, userid, itemid)
+      as (rank, predicted, userid, itemid)
+  from (
+    select * from predicted
+    CLUSTER BY userid
+  ) t
+)
+select
+  userid,
+  collect_list(itemid) as items
+from
+  top_n
+group by
+  userid
+;
+
+select * from recommend limit 5;
+</code></pre><table>
+<thead>
+<tr>
+<th style="text-align:center">userid</th>
+<th style="text-align:center">items</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">[364,594,2081]</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">[2028,3256,589]</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">[260,1291,2791]</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">[1196,1200,1210]</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">[3813,1366,89]</td>
+</tr>
+<tr>
+<td style="text-align:center">...</td>
+<td style="text-align:center">...</td>
+</tr>
+</tbody>
+</table>
+<h1 id="evaluation">Evaluation</h1>
+<h2 id="top-kkk-ranking-measures-hit-ratek-mrrk-and-precisionk">Top-<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span> ranking measures: Hit-Rate@K, MRR@K, and Precision@K</h2>
+<p>In this section, <code>Hit-Rate@k</code>, <code>MRR@k</code>, and <code>Precision@k</code> are computed based on recommended items.</p>
+<p><a href="../eval/rank.html#precision-at-k"><code>Precision@K</code></a> is a good evaluation measure for <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold cross validation.</p>
+<p>On the other hand, <code>Hit-Rate</code> and <a href="https://en.wikipedia.org/wiki/Mean_reciprocal_rank" target="_blank"><code>Mean Reciprocal Rank</code></a> (i.e., Average Reciprocal Hit-Rate) are good evaluation measures for leave-one-out cross validation.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SET</span> hivevar:n=<span class="hljs-number">10</span>;
+
+WITH top_k as (
+  <span class="hljs-keyword">select</span>
+    each_top_k(${n}, userid, predicted, userid, itemid)
+      <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, predicted, userid, itemid)
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> predicted
+    CLUSTER <span class="hljs-keyword">BY</span> userid
+  ) t
+),
+rec_items <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    userid,
+    collect_list(itemid) <span class="hljs-keyword">as</span> items
+  <span class="hljs-keyword">from</span>
+    top_k
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    userid
+),
+ground_truth <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    userid,
+    collect_list(itemid) <span class="hljs-keyword">as</span> truth
+  <span class="hljs-keyword">from</span>
+    testing
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    userid
+)
+<span class="hljs-keyword">select</span>
+  hitrate(l.items, r.truth) <span class="hljs-keyword">as</span> hitrate,
+  mrr(l.items, r.truth) <span class="hljs-keyword">as</span> mrr,
+  precision_at(l.items, r.truth) <span class="hljs-keyword">as</span> prec
+<span class="hljs-keyword">from</span>
+  rec_items l
+  <span class="hljs-keyword">join</span> ground_truth r <span class="hljs-keyword">on</span> (l.userid=r.userid)
+;
+</code></pre>
+<h3 id="leave-one-out-result">Leave-one-out result</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">hitrate</th>
+<th style="text-align:center">mrr</th>
+<th style="text-align:center">prec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.21517309922146763</td>
+<td style="text-align:center">0.09377752536606271</td>
+<td style="text-align:center">0.021517309922146725</td>
+</tr>
+</tbody>
+</table>
+<p>Hit Rate and MRR are similar to ones in <a href="http://glaros.dtc.umn.edu/gkhome/fetch/papers/SLIM2011icdm.pdf" target="_blank">the result of Table II in Slim&apos;s paper</a></p>
+<h3 id="kkk-hold-result"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold result</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">hitrate</th>
+<th style="text-align:center">mrr</th>
+<th style="text-align:center">prec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.8952775476387739</td>
+<td style="text-align:center">1.1751514972186057</td>
+<td style="text-align:center">0.3564871582435789</td>
+</tr>
+</tbody>
+</table>
+<p>Precision value is similar to <a href="https://www.slideshare.net/MarkLevy/efficient-slides/13" target="_blank">the result of Mendeley&apos;s slide</a>.</p>
+<h2 id="ranking-measures-mrr">Ranking measures: MRR</h2>
+<p>In this example, whole recommended items are evaluated using MRR.</p>
+<pre><code class="lang-sql">WITH rec_items as (
+  <span class="hljs-keyword">select</span>
+    userid,
+    to_ordered_list(itemid, predicted, <span class="hljs-string">&apos;-reverse&apos;</span>) <span class="hljs-keyword">as</span> items
+  <span class="hljs-keyword">from</span>
+    predicted
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    userid
+),
+ground_truth <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    userid,
+    collect_list(itemid) <span class="hljs-keyword">as</span> truth
+  <span class="hljs-keyword">from</span>
+    testing
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    userid
+)
+<span class="hljs-keyword">select</span>
+  mrr(l.items, r.truth) <span class="hljs-keyword">as</span> mrr
+<span class="hljs-keyword">from</span>
+  rec_items l
+  <span class="hljs-keyword">join</span> ground_truth r <span class="hljs-keyword">on</span> (l.userid=r.userid)
+;
+</code></pre>
+<h3 id="leave-one-out-result">Leave-one-out result</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">mrr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.10782647321821472</td>
+</tr>
+</tbody>
+</table>
+<p>```</p>
+<h3 id="kkk-hold-result"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.68333em;"></span><span class="strut bottom" style="height:0.68333em;vertical-align:0em;"></span><span class="base textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">K</span></span></span></span>-hold result</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">mrr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0.6179983058881773</td>
+</tr>
+</tbody>
+</table>
+<p>This MRR value is similar to one in <a href="https://www.slideshare.net/MarkLevy/efficient-slides/13" target="_blank">the Mendeley&apos;s slide</a>.</p>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -3016,7 +2877,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Item-based Collaborative Filtering","level":"9.1.1","depth":2,"next":{"title":"News20 related article recommendation Tutorial","level":"9.2","depth":1,"path":"recommend/news20.md","ref":"recommend/news20.md","articles":[{"title":"Data preparation","level":"9.2.1","depth":2,"path":"multiclass/news20_dataset.md","ref":"multiclass/news20_dataset.md","articles":[]},{"title":"LSH/Minhash and Jaccard Similarity","level":"9.2.2","depth":2,"path":"recommend/news20_jaccard.md","ref":"recommend/news20_jaccard.md","articles":[]},{"title":"LSH/Minhash and Brute-Force Search","level":"9.2.3","depth":2,"path":"recommend/news20_knn.md","ref":"recommend/news20_knn.md","articles":[]},{"title":"kNN search using b-Bits Minhash","level":"9.2.4","depth":2,"path":"recommend/news20_bbit_minhash.md","ref":"recommend/news20_bbit_minhash.md","articles":[]}]},"previous":{"title":"Collaborative Filtering","level":"9.1","depth":1,"path":"recommend/cf.md","ref":"recommend/cf.md","articles":[{"title":"Item-based Collaborative Filtering","level":"9.1.1","depth":2,"path":"recommend/item_based_cf.md","ref":"recommend/item_based_cf.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/item_based_cf.md","mtime":"2017-09-28T03:13:53.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-28T03:21:22.085Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"SLIM for Fast Top-K Recommendation","level":"9.3.5","depth":2,"next":{"title":"10-fold Cross Validation (Matrix Factorization)","level":"9.3.6","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"previous":{"title":"Factorization Machine","level":"9.3.4","depth":2,"path":"recommend/movielens_fm.md","ref":"recommend/movielens_fm.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"recommend/movielens_slim.md","mtime":"2017-09-28T03:13:53.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-28T03:21:22.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

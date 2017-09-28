@@ -1736,12 +1736,27 @@
             
         </li>
     
-        <li class="chapter " data-level="9.3.5" data-path="../recommend/movielens_cv.html">
+        <li class="chapter " data-level="9.3.5" data-path="../recommend/movielens_slim.html">
+            
+                <a href="../recommend/movielens_slim.html">
+            
+                    
+                        <b>9.3.5.</b>
+                    
+                    SLIM for Fast Top-K Recommendation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.3.6" data-path="../recommend/movielens_cv.html">
             
                 <a href="../recommend/movielens_cv.html">
             
                     
-                        <b>9.3.5.</b>
+                        <b>9.3.6.</b>
                     
                     10-fold Cross Validation (Matrix Factorization)
             
@@ -2342,7 +2357,8 @@
 rec <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
     userid,
-    map_values(to_ordered_map(score, itemid, <span class="hljs-literal">true</span>)) <span class="hljs-keyword">as</span> rec,
+    <span class="hljs-comment">-- map_values(to_ordered_map(score, itemid, true)) as rec,</span>
+    to_ordered_list(itemid, score, <span class="hljs-string">&apos;-reverse&apos;</span>) <span class="hljs-keyword">as</span> rec,
     <span class="hljs-keyword">cast</span>(<span class="hljs-keyword">count</span>(itemid) <span class="hljs-keyword">as</span> <span class="hljs-built_in">int</span>) <span class="hljs-keyword">as</span> max_k
   <span class="hljs-keyword">from</span> dummy_rec
   <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> userid
@@ -2493,7 +2509,7 @@ Here, <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msu
 <th style="text-align:center">userid</th>
 <th style="text-align:center">itemid</th>
 <th style="text-align:center">score<br>(predicted)</th>
-<th style="text-align:center">rel<br>(expected)</th>
+<th style="text-align:center">relscore<br>(expected)</th>
 </tr>
 </thead>
 <tbody>
@@ -2591,28 +2607,32 @@ Here, <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msu
 </table>
 <p>The function <code>ndcg()</code> can take non-binary <code>truth</code> values as the second argument: </p>
 <pre><code class="lang-sql">with truth as (
-  <span class="hljs-keyword">select</span> userid, map_keys(to_ordered_map(relscore, itemid, <span class="hljs-literal">true</span>)) <span class="hljs-keyword">as</span> truth
-  <span class="hljs-keyword">from</span> dummy_recrel
-  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> userid
+  <span class="hljs-keyword">select</span>
+    userid,
+    to_ordered_list(relscore, <span class="hljs-string">&apos;-reverse&apos;</span>) <span class="hljs-keyword">as</span> truth
+  <span class="hljs-keyword">from</span>
+    dummy_recrel
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    userid
 ),
 rec <span class="hljs-keyword">as</span> (
   <span class="hljs-keyword">select</span>
     userid,
-    map_values (
-      to_ordered_map(score, <span class="hljs-keyword">struct</span>(relscore, itemid), <span class="hljs-literal">true</span>)
-    ) <span class="hljs-keyword">as</span> rec,
-    <span class="hljs-keyword">cast</span>(<span class="hljs-keyword">count</span>(itemid) <span class="hljs-keyword">as</span> <span class="hljs-built_in">int</span>) <span class="hljs-keyword">as</span> max_k
-  <span class="hljs-keyword">from</span> dummy_recrel
-  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> userid
+    to_ordered_list(<span class="hljs-keyword">struct</span>(relscore, itemid), score, <span class="hljs-string">&quot;-reverse&quot;</span>) <span class="hljs-keyword">as</span> rec,
+    <span class="hljs-keyword">count</span>(itemid) <span class="hljs-keyword">as</span> max_k
+  <span class="hljs-keyword">from</span>
+    dummy_recrel
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    userid
 )
 <span class="hljs-keyword">select</span> 
   <span class="hljs-comment">-- top-2 recommendation</span>
   ndcg(t1.rec, t2.truth, <span class="hljs-number">2</span>), <span class="hljs-comment">-- =&gt; 0.8128912838590544</span>
-
   <span class="hljs-comment">-- top-3 recommendation</span>
   ndcg(t1.rec, t2.truth, <span class="hljs-number">3</span>)  <span class="hljs-comment">-- =&gt; 0.9187707805346093</span>
-<span class="hljs-keyword">from</span> rec t1
-<span class="hljs-keyword">join</span> truth t2 <span class="hljs-keyword">on</span> (t1.userid = t2.userid)
+<span class="hljs-keyword">from</span>
+  rec t1
+  <span class="hljs-keyword">join</span> truth t2 <span class="hljs-keyword">on</span> (t1.userid = t2.userid)
 ;
 </code></pre>
 <p><div id="page-footer" class="localized-footer"><hr><!--
@@ -2670,7 +2690,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ranking Measures","level":"4.4","depth":1,"next":{"title":"Data Generation","level":"4.5","depth":1,"path":"eval/datagen.md","ref":"eval/datagen.md","articles":[{"title":"Logistic Regression data generation","level":"4.5.1","depth":2,"path":"eval/lr_datagen.md","ref":"eval/lr_datagen.md","articles":[]}]},"previous":{"title":"Regression metrics","level":"4.3","depth":1,"path":"eval/regression.md","ref":"eval/regression.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"eval/rank.md","mtime":"2017-09-13T12:25:17.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-13T14:07:31.053Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ranking Measures","level":"4.4","depth":1,"next":{"title":"Data Generation","level":"4.5","depth":1,"path":"eval/datagen.md","ref":"eval/datagen.md","articles":[{"title":"Logistic Regression data generation","level":"4.5.1","depth":2,"path":"eval/lr_datagen.md","ref":"eval/lr_datagen.md","articles":[]}]},"previous":{"title":"Regression metrics","level":"4.3","depth":1,"path":"eval/regression.md","ref":"eval/regression.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"eval/rank.md","mtime":"2017-09-15T09:51:57.000Z","type":"markdown"},"gitbook":{"version":"3.2.2","time":"2017-09-28T03:21:22.085Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
