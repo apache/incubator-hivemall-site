@@ -24,6 +24,7 @@
 <url> <loc>http://hivemall.incubator.apache.org/misc/generic_funcs.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/misc/topk.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/misc/tokenizer.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>http://hivemall.incubator.apache.org/misc/approx.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/scaling.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/hashing.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>http://hivemall.incubator.apache.org/ft_engineering/selection.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
