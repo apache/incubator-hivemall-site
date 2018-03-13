@@ -2220,16 +2220,17 @@
 <li>Hadoop v2.4.0 or later</li>
 <li>Hive v0.13 or later</li>
 <li>Java 7 or later</li>
-<li><a href="https://github.com/myui/hivemall/releases" target="_blank">hivemall-core-xxx-with-dependencies.jar</a></li>
-<li><a href="https://github.com/myui/hivemall/releases" target="_blank">define-all.hive</a></li>
+<li><a href="https://search.maven.org/#search%7Cga%7C1%7Ca%3A%22hivemall-all%22" target="_blank">hivemall-all-xxx.jar</a></li>
+<li><a href="https://github.com/apache/incubator-hivemall/blob/master/resources/ddl/define-all.hive" target="_blank">define-all.hive</a> (of a given version, e.g., <a href="https://github.com/apache/incubator-hivemall/blob/v0.5.0/resources/ddl/define-all.hive" target="_blank">v0.5.0</a>)</li>
 </ul>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"></div></div>
 <h1 id="installation">Installation</h1>
 <p>Add the following two lines to your <code>$HOME/.hiverc</code> file.</p>
-<pre><code>add jar /home/myui/tmp/hivemall-core-xxx-with-dependencies.jar;
+<pre><code>add jar /home/myui/tmp/hivemall-all-xxx.jar;
 source /home/myui/tmp/define-all.hive;
 </code></pre><p>This automatically loads all Hivemall functions every time you start a Hive session. Alternatively, you can run the following command each time.</p>
 <pre><code>$ hive
-add jar /tmp/hivemall-core-xxx-with-dependencies.jar;
+add jar /tmp/hivemall-all-xxx.jar;
 source /tmp/define-all.hive;
 </code></pre><h1 id="other-choices">Other choices</h1>
 <p>You can also run Hivemall on the following platforms:</p>
@@ -2243,7 +2244,7 @@ source /tmp/define-all.hive;
 $ <span class="hljs-built_in">cd</span> incubator-hivemall
 $ bin/build.sh
 </code></pre>
-<p>Then, you can find hivemall jars in <code>./target</code>.</p>
+<p>Then, you can find Hivemall jars in <code>./target</code>.</p>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2299,7 +2300,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Installation","level":"1.2.1","depth":2,"next":{"title":"Install as permanent functions","level":"1.2.2","depth":2,"path":"getting_started/permanent-functions.md","ref":"getting_started/permanent-functions.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting_started/README.md","ref":"getting_started/README.md","articles":[{"title":"Installation","level":"1.2.1","depth":2,"path":"getting_started/installation.md","ref":"getting_started/installation.md","articles":[]},{"title":"Install as permanent functions","level":"1.2.2","depth":2,"path":"getting_started/permanent-functions.md","ref":"getting_started/permanent-functions.md","articles":[]},{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"getting_started/installation.md","mtime":"2017-11-02T05:41:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-11-21T12:54:35.166Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Installation","level":"1.2.1","depth":2,"next":{"title":"Install as permanent functions","level":"1.2.2","depth":2,"path":"getting_started/permanent-functions.md","ref":"getting_started/permanent-functions.md","articles":[]},"previous":{"title":"Getting Started","level":"1.2","depth":1,"path":"getting_started/README.md","ref":"getting_started/README.md","articles":[{"title":"Installation","level":"1.2.1","depth":2,"path":"getting_started/installation.md","ref":"getting_started/installation.md","articles":[]},{"title":"Install as permanent functions","level":"1.2.2","depth":2,"path":"getting_started/permanent-functions.md","ref":"getting_started/permanent-functions.md","articles":[]},{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"getting_started/installation.md","mtime":"2018-03-13T14:17:50.960Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-13T16:05:28.906Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -2329,7 +2330,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
         
     
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js"></script>
         
     
         

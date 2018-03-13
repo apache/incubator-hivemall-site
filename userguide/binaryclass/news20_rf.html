@@ -2216,7 +2216,7 @@
   under the License.
 -->
 <p>Hivemall Random Forest supports libsvm-like sparse inputs. </p>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>This feature, i.e., Sparse input support in Random Forest, is supported since Hivemall v0.5-rc.1 or later._
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>This feature, i.e., Sparse input support in Random Forest, is supported since Hivemall v0.5.0 or later._
 <a href="http://hivemall.incubator.apache.org/userguide/ft_engineering/hashing.html#featurehashing-function" target="_blank"><code>feature_hashing</code></a> function is useful to prepare feature vectors for Random Forest.</p></div></div>
 <!-- toc --><div id="toc" class="toc">
 
@@ -2242,7 +2242,7 @@
 </code></pre>
 <div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>label must be in <code>[0, k)</code> where <code>k</code> is the number of classes.</p></div></div>
 <h2 id="prediction">Prediction</h2>
-<pre><code class="lang-sql"><span class="hljs-keyword">SET</span> hivevar:classification=<span class="hljs-literal">true</span>;
+<pre><code class="lang-sql"><span class="hljs-comment">-- SET hivevar:classification=true;</span>
 
 <span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> rf_predicted;
 <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> rf_predicted
@@ -2255,7 +2255,10 @@
   <span class="hljs-keyword">SELECT</span>
     <span class="hljs-keyword">rowid</span>, 
     m.model_weight,
-    tree_predict(m.model_id, m.<span class="hljs-keyword">model</span>, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
+    <span class="hljs-comment">-- v0.5.0 and later</span>
+    tree_predict(m.model_id, m.<span class="hljs-keyword">model</span>, t.features, <span class="hljs-string">&quot;-classification&quot;</span>) <span class="hljs-keyword">as</span> predicted
+    <span class="hljs-comment">-- before v0.5.0</span>
+    <span class="hljs-comment">-- tree_predict(m.model_id, m.model, t.features, ${classification}) as predicted</span>
   <span class="hljs-keyword">FROM</span>
     rf_model m
     <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-comment">-- CROSS JOIN</span>
@@ -2336,7 +2339,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Random Forest","level":"6.3.5","depth":2,"next":{"title":"KDD2010a tutorial","level":"6.4","depth":1,"path":"binaryclass/kdd2010a.md","ref":"binaryclass/kdd2010a.md","articles":[{"title":"Data preparation","level":"6.4.1","depth":2,"path":"binaryclass/kdd2010a_dataset.md","ref":"binaryclass/kdd2010a_dataset.md","articles":[]},{"title":"PA, CW, AROW, SCW","level":"6.4.2","depth":2,"path":"binaryclass/kdd2010a_scw.md","ref":"binaryclass/kdd2010a_scw.md","articles":[]}]},"previous":{"title":"AdaGradRDA, AdaGrad, AdaDelta","level":"6.3.4","depth":2,"path":"binaryclass/news20_adagrad.md","ref":"binaryclass/news20_adagrad.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"binaryclass/news20_rf.md","mtime":"2017-11-02T05:41:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-11-21T12:54:35.166Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Random Forest","level":"6.3.5","depth":2,"next":{"title":"KDD2010a tutorial","level":"6.4","depth":1,"path":"binaryclass/kdd2010a.md","ref":"binaryclass/kdd2010a.md","articles":[{"title":"Data preparation","level":"6.4.1","depth":2,"path":"binaryclass/kdd2010a_dataset.md","ref":"binaryclass/kdd2010a_dataset.md","articles":[]},{"title":"PA, CW, AROW, SCW","level":"6.4.2","depth":2,"path":"binaryclass/kdd2010a_scw.md","ref":"binaryclass/kdd2010a_scw.md","articles":[]}]},"previous":{"title":"AdaGradRDA, AdaGrad, AdaDelta","level":"6.3.4","depth":2,"path":"binaryclass/news20_adagrad.md","ref":"binaryclass/news20_adagrad.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"binaryclass/news20_rf.md","mtime":"2018-03-13T14:17:50.955Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-13T16:05:28.906Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -2366,7 +2369,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
         
     
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js"></script>
         
     
         

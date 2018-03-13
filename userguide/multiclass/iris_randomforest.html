@@ -2299,15 +2299,17 @@ $ sed &apos;/^$/d&apos; iris.data | hadoop fs -put - /dataset/iris/raw/iris.data
   <span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> SEQUENCEFILE 
 <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">select</span> 
-  train_randomforest_classifier(features, label) 
-  <span class="hljs-comment">-- hivemall v0.4.1-alpha.2 and before</span>
+  train_randomforest_classifier(features, label)
+  <span class="hljs-comment">-- v0.5.0 and later</span>
+  <span class="hljs-comment">-- train_randomforest_classifier(features, label) as (model_id, model_weight, model, var_importance, oob_errors, oob_tests)</span>
+  <span class="hljs-comment">-- v0.4.1-alpha.2 and before</span>
   <span class="hljs-comment">-- train_randomforest_classifier(features, label) as (pred_model, var_importance, oob_errors, oob_tests)</span>
-  <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
+  <span class="hljs-comment">-- from v0.4.1 to v0.4.2-rc4</span>
   <span class="hljs-comment">-- train_randomforest_classifier(features, label) as (model_id, model_type, pred_model, var_importance, oob_errors, oob_tests)</span>
 <span class="hljs-keyword">from</span>
   training;
 </code></pre>
-<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>The default <code>TEXTFILE</code> should not be used for model table when using Javascript output through <code>-output javascript</code> option.</p></div></div>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>Note that model storage format is different between versions as seen the above.</p></div></div>
 <pre><code class="lang-sql">hive&gt; desc extended model;
 </code></pre>
 <table>
@@ -2384,7 +2386,7 @@ usage: train_randomforest_classifier(array&lt;double|string&gt; features, int
                                      features [default:
                                      ceil(sqrt(x[0].length))].
                                      int(num_variables * x[0].length) is
-                                     considered if num_variable is (0,1
+                                     considered if num_variable is (0,1]
 </code></pre>
 <div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p><code>-num_trees</code> controls the number of trees for each task, not the total number of trees.</p></div></div>
 <h3 id="parallelize-training">Parallelize Training</h3>
@@ -2416,7 +2418,7 @@ usage: train_randomforest_classifier(array&lt;double|string&gt; features, int
 <p>[6.837674865013268,4.1317115752776665,24.331571871930226,25.677497925673062]    0.056666666666666664</p>
 </blockquote>
 <h1 id="prediction">Prediction</h1>
-<pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:classification=<span class="hljs-literal">true</span>;
+<pre><code class="lang-sql"><span class="hljs-comment">-- set hivevar:classification=true;</span>
 <span class="hljs-keyword">set</span> hive.<span class="hljs-keyword">auto</span>.<span class="hljs-keyword">convert</span>.<span class="hljs-keyword">join</span>=<span class="hljs-literal">true</span>;
 <span class="hljs-keyword">set</span> hive.mapjoin.optimized.hashtable=<span class="hljs-literal">false</span>;
 
@@ -2425,18 +2427,19 @@ usage: train_randomforest_classifier(array&lt;double|string&gt; features, int
 <span class="hljs-keyword">SELECT</span>
   <span class="hljs-keyword">rowid</span>,
   <span class="hljs-comment">-- rf_ensemble(predicted) as predicted</span>
-  <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+  <span class="hljs-comment">-- v0.5.0 or later</span>
   rf_ensemble(predicted.<span class="hljs-keyword">value</span>, predicted.posteriori, model_weight) <span class="hljs-keyword">as</span> predicted
   <span class="hljs-comment">-- rf_ensemble(predicted.value, predicted.posteriori) as predicted -- avoid OOB accuracy (i.e., model_weight)</span>
 <span class="hljs-keyword">FROM</span> (
   <span class="hljs-keyword">SELECT</span>
     <span class="hljs-keyword">rowid</span>, 
-    <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
+    <span class="hljs-comment">-- from v0.4.1 to v0.4.2-rc4</span>
     <span class="hljs-comment">-- tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted</span>
-    <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+    <span class="hljs-comment">-- v0.5.0 or later</span>
     p.model_weight,
-    tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
-    <span class="hljs-comment">-- tree_predict_v1(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted -- to use the old model in v0.5-rc.1 or later</span>
+    tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, <span class="hljs-string">&quot;-classification&quot;</span>) <span class="hljs-keyword">as</span> predicted
+    <span class="hljs-comment">-- tree_predict(p.model_id, p.model, t.features, ${classification}) as predicted</span>
+    <span class="hljs-comment">-- tree_predict_v1(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted -- to use the old model in v0.5.0 or later</span>
   <span class="hljs-keyword">FROM</span>
     <span class="hljs-keyword">model</span> p
     <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-comment">-- CROSS JOIN</span>
@@ -2446,7 +2449,7 @@ usage: train_randomforest_classifier(array&lt;double|string&gt; features, int
   <span class="hljs-keyword">rowid</span>
 ;
 </code></pre>
-<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p><code>tree_predict_v1</code> is for the backward compatibility for using prediction models built before <code>v0.5-rc.1</code> on <code>v0.5-rc.1</code> or later.</p></div></div>
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>Left outer join without a join condition (i.e., <code>model p LEFT OUTER JOIN training t</code>) is a trick to fix the left table for cross join.</p><h4 id="caution">Caution</h4><p><code>tree_predict_v1</code> is for the backward compatibility for using prediction models built before <code>v0.5</code> on <code>v0.5</code> or later.</p></div></div>
 <h3 id="parallelize-prediction">Parallelize Prediction</h3>
 <p>The following query runs predictions in N-parallel. It would reduce elapsed time for prediction almost by N.</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">SET</span> hivevar:classification=<span class="hljs-literal">true</span>;
@@ -2454,28 +2457,30 @@ usage: train_randomforest_classifier(array&lt;double|string&gt; features, int
 <span class="hljs-keyword">SET</span> hive.mapjoin.optimized.hashtable=<span class="hljs-literal">false</span>;
 <span class="hljs-keyword">SET</span> mapred.reduce.tasks=<span class="hljs-number">8</span>;
 
+<span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> predicted;
 <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> predicted
 <span class="hljs-keyword">as</span>
 <span class="hljs-keyword">SELECT</span>
   <span class="hljs-keyword">rowid</span>,
   <span class="hljs-comment">-- rf_ensemble(predicted) as predicted</span>
-  <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+  <span class="hljs-comment">-- v0.5.0 or later</span>
   rf_ensemble(predicted.<span class="hljs-keyword">value</span>, predicted.posteriori, model_weight) <span class="hljs-keyword">as</span> predicted
   <span class="hljs-comment">-- rf_ensemble(predicted.value, predicted.posteriori) as predicted -- avoid OOB accuracy (i.e., model_weight)</span>
 <span class="hljs-keyword">FROM</span> (
   <span class="hljs-keyword">SELECT</span>
     t.<span class="hljs-keyword">rowid</span>, 
-    <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
+    <span class="hljs-comment">-- from v0.4.1 to v0.4.2-rc4</span>
     <span class="hljs-comment">-- tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted</span>
-    <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+    <span class="hljs-comment">-- v0.5.0 or later</span>
     p.model_weight,
-    tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, ${classification}) <span class="hljs-keyword">as</span> predicted
-    <span class="hljs-comment">-- tree_predict_v1(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted as predicted -- to use the old model in v0.5-rc.1 or later</span>
+    tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, <span class="hljs-string">&quot;-classification&quot;</span>) <span class="hljs-keyword">as</span> predicted
+    <span class="hljs-comment">-- tree_predict(p.model_id, p.model, t.features, ${classification}) as predicted</span>
+    <span class="hljs-comment">-- tree_predict_v1(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted as predicted -- to use the old model in v0.5.0 or later</span>
   <span class="hljs-keyword">FROM</span> (
     <span class="hljs-keyword">SELECT</span> 
-      <span class="hljs-comment">-- hivemall v0.4.1 and later</span>
+      <span class="hljs-comment">-- from v0.4.1 to v0.4.2-rc4</span>
       <span class="hljs-comment">-- model_id, model_type, pred_model</span>
-      <span class="hljs-comment">-- hivemall v0.5-rc.1 or later</span>
+      <span class="hljs-comment">-- v0.5.0 or later</span>
       model_id, model_weight, <span class="hljs-keyword">model</span>
     <span class="hljs-keyword">FROM</span> <span class="hljs-keyword">model</span>
     <span class="hljs-keyword">DISTRIBUTE</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">rand</span>(<span class="hljs-number">1</span>)
@@ -2494,13 +2499,13 @@ usage: train_randomforest_classifier(array&lt;double|string&gt; features, int
 <pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:total_cnt=<span class="hljs-number">150</span>;
 
 WITH t1 as (
-<span class="hljs-keyword">SELECT</span>
-  t.<span class="hljs-keyword">rowid</span>,
-  t.label <span class="hljs-keyword">as</span> actual,
-  p.predicted.label <span class="hljs-keyword">as</span> predicted
-<span class="hljs-keyword">FROM</span>
-  predicted p
-  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> training t <span class="hljs-keyword">ON</span> (t.<span class="hljs-keyword">rowid</span> = p.<span class="hljs-keyword">rowid</span>)
+  <span class="hljs-keyword">SELECT</span>
+    t.<span class="hljs-keyword">rowid</span>,
+    t.label <span class="hljs-keyword">as</span> actual,
+    p.predicted.label <span class="hljs-keyword">as</span> predicted
+  <span class="hljs-keyword">FROM</span>
+    predicted p
+    <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> training t <span class="hljs-keyword">ON</span> (t.<span class="hljs-keyword">rowid</span> = p.<span class="hljs-keyword">rowid</span>)
 )
 <span class="hljs-keyword">SELECT</span>
   <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) / ${total_cnt}
@@ -2514,7 +2519,7 @@ WITH t1 as (
 <p>0.98</p>
 </blockquote>
 <h1 id="graphvis-export">Graphvis export</h1>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p><code>tree_export</code> feature is supported from Hivemall v0.5-rc.1 or later.
+<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p><code>tree_export</code> feature is supported from Hivemall v0.5.0 or later.
 Better to limit tree depth on training by <code>-depth</code> option to plot a Decision Tree.</p></div></div>
 <p>Hivemall provide <code>tree_export</code> to export a decision tree into <a href="http://www.graphviz.org/" target="_blank">Graphviz</a> or human-readable Javascript format. You can find the usage by issuing the following query:</p>
 <pre><code>&gt; select tree_export(&quot;&quot;,&quot;-help&quot;);
@@ -2626,7 +2631,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Random Forest","level":"7.2.3","depth":2,"next":{"title":"Regression","level":"8.1","depth":1,"path":"regression/general.md","ref":"regression/general.md","articles":[]},"previous":{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_randomforest.md","mtime":"2017-11-02T05:41:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-11-21T12:54:35.166Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Random Forest","level":"7.2.3","depth":2,"next":{"title":"Regression","level":"8.1","depth":1,"path":"regression/general.md","ref":"regression/general.md","articles":[]},"previous":{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_randomforest.md","mtime":"2018-03-13T14:17:50.963Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-13T16:05:28.906Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -2656,7 +2661,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
         
     
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js"></script>
         
     
         

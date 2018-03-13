@@ -2218,6 +2218,7 @@
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
+<li><a href="#l1l2-normalization">L1/L2 Normalization</a></li>
 <li><a href="#min-max-normalization">Min-Max Normalization</a></li>
 <li><a href="#feature-scaling-by-zscore">Feature scaling by zscore</a></li>
 <li><a href="#apply-normalization-to-more-complex-feature-vector">Apply Normalization to more complex feature vector</a></li>
@@ -2225,6 +2226,18 @@
 </ul>
 
 </div><!-- tocstop -->
+<h1 id="l1l2-normalization">L1/L2 Normalization</h1>
+<p><a href="http://mathworld.wolfram.com/L1-Norm.html" target="_blank">L1</a> and <a href="http://mathworld.wolfram.com/L2-Norm.html" target="_blank">L2</a> normalization ensures that each feature vector has unit length:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> l1_normalize(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;banana:0.5&apos;</span>))
+</code></pre>
+<blockquote>
+<p>[&quot;apple:0.6666667&quot;,&quot;banana:0.33333334&quot;]</p>
+</blockquote>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> l2_normalize(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;banana:0.5&apos;</span>))
+</code></pre>
+<blockquote>
+<p>[&quot;apple:0.8944272&quot;,&quot;banana:0.4472136&quot;]</p>
+</blockquote>
 <h1 id="min-max-normalization">Min-Max Normalization</h1>
 <p><a href="http://en.wikipedia.org/wiki/Feature_scaling#Rescaling" target="_blank">http://en.wikipedia.org/wiki/Feature_scaling#Rescaling</a></p>
 <pre><code class="lang-sql"><span class="hljs-keyword">select</span> <span class="hljs-keyword">min</span>(target), <span class="hljs-keyword">max</span>(target)
@@ -2432,7 +2445,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Feature Scaling","level":"3.1","depth":1,"next":{"title":"Feature Hashing","level":"3.2","depth":1,"path":"ft_engineering/hashing.md","ref":"ft_engineering/hashing.md","articles":[]},"previous":{"title":"Approximate Aggregate Functions","level":"2.4","depth":1,"path":"misc/approx.md","ref":"misc/approx.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"ft_engineering/scaling.md","mtime":"2017-11-02T05:41:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2017-11-21T12:54:35.166Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Feature Scaling","level":"3.1","depth":1,"next":{"title":"Feature Hashing","level":"3.2","depth":1,"path":"ft_engineering/hashing.md","ref":"ft_engineering/hashing.md","articles":[]},"previous":{"title":"Approximate Aggregate Functions","level":"2.4","depth":1,"path":"misc/approx.md","ref":"misc/approx.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"ft_engineering/scaling.md","mtime":"2017-12-18T17:16:01.621Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-13T16:05:28.906Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -2462,7 +2475,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
         
     
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.1.1/anchor.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js"></script>
         
     
         
