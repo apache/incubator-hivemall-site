@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Outlier Detection using Local Outlier Factor (LOF) · Hivemall User Manual</title>
+        <title>List of Functions · Hivemall User Manual</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -97,10 +97,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="sst.html" />
+    <link rel="next" href="../tips/" />
     
     
-    <link rel="prev" href="../recommend/movielens_cv.html" />
+    <link rel="prev" href="../getting_started/input-format.html" />
     
 
     </head>
@@ -221,9 +221,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="../misc/funcs.html">
+        <li class="chapter active" data-level="1.3" data-path="funcs.html">
             
-                <a href="../misc/funcs.html">
+                <a href="funcs.html">
             
                     
                         <b>1.3.</b>
@@ -501,9 +501,9 @@
         
         
     
-        <li class="chapter " data-level="2.1" data-path="../misc/generic_funcs.html">
+        <li class="chapter " data-level="2.1" data-path="generic_funcs.html">
             
-                <a href="../misc/generic_funcs.html">
+                <a href="generic_funcs.html">
             
                     
                         <b>2.1.</b>
@@ -516,9 +516,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.2" data-path="../misc/topk.html">
+        <li class="chapter " data-level="2.2" data-path="topk.html">
             
-                <a href="../misc/topk.html">
+                <a href="topk.html">
             
                     
                         <b>2.2.</b>
@@ -531,9 +531,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.3" data-path="../misc/tokenizer.html">
+        <li class="chapter " data-level="2.3" data-path="tokenizer.html">
             
-                <a href="../misc/tokenizer.html">
+                <a href="tokenizer.html">
             
                     
                         <b>2.3.</b>
@@ -546,9 +546,9 @@
             
         </li>
     
-        <li class="chapter " data-level="2.4" data-path="../misc/approx.html">
+        <li class="chapter " data-level="2.4" data-path="approx.html">
             
-                <a href="../misc/approx.html">
+                <a href="approx.html">
             
                     
                         <b>2.4.</b>
@@ -861,9 +861,9 @@
         
         
     
-        <li class="chapter " data-level="5.1" data-path="../misc/prediction.html">
+        <li class="chapter " data-level="5.1" data-path="prediction.html">
             
-                <a href="../misc/prediction.html">
+                <a href="prediction.html">
             
                     
                         <b>5.1.</b>
@@ -1808,9 +1808,9 @@
         
         
     
-        <li class="chapter active" data-level="10.1" data-path="lof.html">
+        <li class="chapter " data-level="10.1" data-path="../anomaly/lof.html">
             
-                <a href="lof.html">
+                <a href="../anomaly/lof.html">
             
                     
                         <b>10.1.</b>
@@ -1823,9 +1823,9 @@
             
         </li>
     
-        <li class="chapter " data-level="10.2" data-path="sst.html">
+        <li class="chapter " data-level="10.2" data-path="../anomaly/sst.html">
             
-                <a href="sst.html">
+                <a href="../anomaly/sst.html">
             
                     
                         <b>10.2.</b>
@@ -1838,9 +1838,9 @@
             
         </li>
     
-        <li class="chapter " data-level="10.3" data-path="changefinder.html">
+        <li class="chapter " data-level="10.3" data-path="../anomaly/changefinder.html">
             
-                <a href="changefinder.html">
+                <a href="../anomaly/changefinder.html">
             
                     
                         <b>10.3.</b>
@@ -2182,7 +2182,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Outlier Detection using Local Outlier Factor (LOF)</a>
+        <a href=".." >List of Functions</a>
     </h1>
 </div>
 
@@ -2215,176 +2215,459 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>This article introduces how to find outliers using <a href="http://en.wikipedia.org/wiki/Local_outlier_factor" target="_blank">Local Outlier Detection (LOF)</a> on Hivemall.</p>
+<p>This page describes a list of Hivemall functions. See also a <a href="generic_funcs.html">list of generic Hivemall functions</a> for more general-purpose functions such as array and map UDFs.</p>
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
-<li><a href="#data-preparation">Data Preparation</a><ul>
-<li><a href="#apply-data-normalization">Apply Data Normalization</a></li>
+<li><a href="#regression">Regression</a></li>
+<li><a href="#classification">Classification</a><ul>
+<li><a href="#binary-classification">Binary classification</a></li>
+<li><a href="#multiclass-classification">Multiclass classification</a></li>
 </ul>
 </li>
-<li><a href="#outlier-detection-using-local-outlier-facotor-lof">Outlier Detection using Local Outlier Facotor (LOF)</a></li>
-<li><a href="#parallelize-top-k-computation">Parallelize Top-k computation</a></li>
+<li><a href="#matrix-factorization">Matrix factorization</a></li>
+<li><a href="#factorization-machines">Factorization machines</a></li>
+<li><a href="#recommendation">Recommendation</a></li>
+<li><a href="#anomaly-detection">Anomaly detection</a></li>
+<li><a href="#topic-modeling">Topic modeling</a></li>
+<li><a href="#preprocessing">Preprocessing</a><ul>
+<li><a href="#feature-creation">Feature creation</a></li>
+<li><a href="#data-amplification">Data amplification</a></li>
+<li><a href="#feature-binning">Feature binning</a></li>
+<li><a href="#feature-format-conversion">Feature format conversion</a></li>
+<li><a href="#feature-hashing">Feature hashing</a></li>
+<li><a href="#feature-paring">Feature paring</a></li>
+<li><a href="#ranking">Ranking</a></li>
+<li><a href="#feature-scaling">Feature scaling</a></li>
+<li><a href="#feature-selection">Feature selection</a></li>
+<li><a href="#feature-transformation-and-vectorization">Feature transformation and vectorization</a></li>
+</ul>
+</li>
+<li><a href="#geospatial-functions">Geospatial functions</a></li>
+<li><a href="#distance-measures">Distance measures</a></li>
+<li><a href="#locality-sensitive-hashing">Locality-sensitive hashing</a></li>
+<li><a href="#similarity-measures">Similarity measures</a></li>
+<li><a href="#evaluation">Evaluation</a></li>
+<li><a href="#sketching">Sketching</a></li>
+<li><a href="#ensemble-learning">Ensemble learning</a><ul>
+<li><a href="#utils">Utils</a></li>
+<li><a href="#bagging">Bagging</a></li>
+</ul>
+</li>
+<li><a href="#dicision-trees-and-randomforest">Dicision trees and RandomForest</a></li>
+<li><a href="#xgboost">XGBoost</a></li>
+<li><a href="#others">Others</a></li>
 </ul>
 
 </div><!-- tocstop -->
-<h1 id="data-preparation">Data Preparation</h1>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">database</span> lof;
-<span class="hljs-keyword">use</span> lof;
-
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">external</span> <span class="hljs-keyword">table</span> hundred_balls (
-  <span class="hljs-keyword">rowid</span> <span class="hljs-built_in">int</span>, 
-  weight <span class="hljs-keyword">double</span>,
-  specific_heat <span class="hljs-keyword">double</span>,
-  reflectance <span class="hljs-keyword">double</span>
-)
-<span class="hljs-keyword">ROW</span> <span class="hljs-keyword">FORMAT</span> <span class="hljs-keyword">DELIMITED</span>
-  <span class="hljs-keyword">FIELDS</span> <span class="hljs-keyword">TERMINATED</span> <span class="hljs-keyword">BY</span> <span class="hljs-string">&apos; &apos;</span>
-<span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> TEXTFILE LOCATION <span class="hljs-string">&apos;/dataset/lof/hundred_balls&apos;</span>;
+<h1 id="regression">Regression</h1>
+<ul>
+<li><p><code>train_arow_regr(array&lt;int|bigint|string&gt; features, float target [, constant string options])</code> - Returns a relation consists of &lt;{int|bigint|string} feature, float weight, float covar&gt;</p>
+</li>
+<li><p><code>train_arowe2_regr(array&lt;int|bigint|string&gt; features, float target [, constant string options])</code> - Returns a relation consists of &lt;{int|bigint|string} feature, float weight, float covar&gt;</p>
+</li>
+<li><p><code>train_arowe_regr(array&lt;int|bigint|string&gt; features, float target [, constant string options])</code> - Returns a relation consists of &lt;{int|bigint|string} feature, float weight, float covar&gt;</p>
+</li>
+<li><p><code>train_pa1_regr(array&lt;int|bigint|string&gt; features, float target [, constant string options])</code> - Returns a relation consists of &lt;{int|bigint|string} feature, float weight&gt;</p>
+</li>
+<li><p><code>train_pa1a_regr(array&lt;int|bigint|string&gt; features, float target [, constant string options])</code> - Returns a relation consists of &lt;{int|bigint|string} feature, float weight&gt;</p>
+</li>
+<li><p><code>train_pa2_regr(array&lt;int|bigint|string&gt; features, float target [, constant string options])</code> - Returns a relation consists of &lt;{int|bigint|string} feature, float weight&gt;</p>
+</li>
+<li><p><code>train_pa2a_regr(array&lt;int|bigint|string&gt; features, float target [, constant string options])</code> - Returns a relation consists of &lt;{int|bigint|string} feature, float weight&gt;</p>
+</li>
+<li><p><code>train_regressor(list&lt;string|int|bigint&gt; features, double label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight&gt;</p>
+<pre><code>Build a prediction model by a generic regressor
+</code></pre></li>
+</ul>
+<h1 id="classification">Classification</h1>
+<h2 id="binary-classification">Binary classification</h2>
+<ul>
+<li><p><code>kpa_predict(@Nonnull double xh, @Nonnull double xk, @Nullable float w0, @Nonnull float w1, @Nonnull float w2, @Nullable float w3)</code> - Returns a prediction value in Double</p>
+</li>
+<li><p><code>train_arow(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Adaptive Regularization of Weight Vectors (AROW) binary classifier
+</code></pre></li>
+<li><p><code>train_arowh(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by AROW binary classifier using hinge loss
+</code></pre></li>
+<li><p><code>train_classifier(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight&gt;</p>
+<pre><code>Build a prediction model by a generic classifier
+</code></pre></li>
+<li><p><code>train_cw(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Confidence-Weighted (CW) binary classifier
+</code></pre></li>
+<li><p><code>train_kpa(array&lt;string|int|bigint&gt; features, int label [, const string options])</code> - returns a relation &lt;h int, hk int, float w0, float w1, float w2, float w3&gt;</p>
+</li>
+<li><p><code>train_pa(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight&gt;</p>
+<pre><code>Build a prediction model by Passive-Aggressive (PA) binary classifier
+</code></pre></li>
+<li><p><code>train_pa1(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight&gt;</p>
+<pre><code>Build a prediction model by Passive-Aggressive 1 (PA-1) binary classifier
+</code></pre></li>
+<li><p><code>train_pa2(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight&gt;</p>
+<pre><code>Build a prediction model by Passive-Aggressive 2 (PA-2) binary classifier
+</code></pre></li>
+<li><p><code>train_perceptron(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight&gt;</p>
+<pre><code>Build a prediction model by Perceptron binary classifier
+</code></pre></li>
+<li><p><code>train_scw(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Soft Confidence-Weighted (SCW-1) binary classifier
+</code></pre></li>
+<li><p><code>train_scw2(list&lt;string|int|bigint&gt; features, int label [, const string options])</code> - Returns a relation consists of &lt;string|int|bigint feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Soft Confidence-Weighted 2 (SCW-2) binary classifier
+</code></pre></li>
+</ul>
+<h2 id="multiclass-classification">Multiclass classification</h2>
+<ul>
+<li><p><code>train_multiclass_arow(list&lt;string|int|bigint&gt; features, {int|string} label [, const string options])</code> - Returns a relation consists of &lt;{int|string} label, {string|int|bigint} feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Adaptive Regularization of Weight Vectors (AROW) multiclass classifier
+</code></pre></li>
+<li><p><code>train_multiclass_arowh(list&lt;string|int|bigint&gt; features, int|string label [, const string options])</code> - Returns a relation consists of &lt;int|string label, string|int|bigint feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Adaptive Regularization of Weight Vectors (AROW) multiclass classifier using hinge loss
+</code></pre></li>
+<li><p><code>train_multiclass_cw(list&lt;string|int|bigint&gt; features, {int|string} label [, const string options])</code> - Returns a relation consists of &lt;{int|string} label, {string|int|bigint} feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Confidence-Weighted (CW) multiclass classifier
+</code></pre></li>
+<li><p><code>train_multiclass_pa(list&lt;string|int|bigint&gt; features, {int|string} label [, const string options])</code> - Returns a relation consists of &lt;{int|string} label, {string|int|bigint} feature, float weight&gt;</p>
+<pre><code>Build a prediction model by Passive-Aggressive (PA) multiclass classifier
+</code></pre></li>
+<li><p><code>train_multiclass_pa1(list&lt;string|int|bigint&gt; features, {int|string} label [, const string options])</code> - Returns a relation consists of &lt;{int|string} label, {string|int|bigint} feature, float weight&gt;</p>
+<pre><code>Build a prediction model by Passive-Aggressive 1 (PA-1) multiclass classifier
+</code></pre></li>
+<li><p><code>train_multiclass_pa2(list&lt;string|int|bigint&gt; features, {int|string} label [, const string options])</code> - Returns a relation consists of &lt;{int|string} label, {string|int|bigint} feature, float weight&gt;</p>
+<pre><code>Build a prediction model by Passive-Aggressive 2 (PA-2) multiclass classifier
+</code></pre></li>
+<li><p><code>train_multiclass_perceptron(list&lt;string|int|bigint&gt; features, {int|string} label [, const string options])</code> - Returns a relation consists of &lt;{int|string} label, {string|int|bigint} feature, float weight&gt;</p>
+<pre><code>Build a prediction model by Perceptron multiclass classifier
+</code></pre></li>
+<li><p><code>train_multiclass_scw(list&lt;string|int|bigint&gt; features, {int|string} label [, const string options])</code> - Returns a relation consists of &lt;{int|string} label, {string|int|bigint} feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Soft Confidence-Weighted (SCW-1) multiclass classifier
+</code></pre></li>
+<li><p><code>train_multiclass_scw2(list&lt;string|int|bigint&gt; features, {int|string} label [, const string options])</code> - Returns a relation consists of &lt;{int|string} label, {string|int|bigint} feature, float weight, float covar&gt;</p>
+<pre><code>Build a prediction model by Soft Confidence-Weighted 2 (SCW-2) multiclass classifier
+</code></pre></li>
+</ul>
+<h1 id="matrix-factorization">Matrix factorization</h1>
+<ul>
+<li><p><code>bprmf_predict(List&lt;Float&gt; Pu, List&lt;Float&gt; Qi[, double Bi])</code> - Returns the prediction value</p>
+</li>
+<li><p><code>mf_predict(List&lt;Float&gt; Pu, List&lt;Float&gt; Qi[, double Bu, double Bi[, double mu]])</code> - Returns the prediction value</p>
+</li>
+<li><p><code>train_bprmf(INT user, INT posItem, INT negItem [, String options])</code> - Returns a relation &lt;INT i, FLOAT Pi, FLOAT Qi [, FLOAT Bi]&gt;</p>
+</li>
+<li><p><code>train_mf_adagrad(INT user, INT item, FLOAT rating [, CONSTANT STRING options])</code> - Returns a relation consists of &lt;int idx, array&lt;float&gt; Pu, array&lt;float&gt; Qi [, float Bu, float Bi [, float mu]]&gt;</p>
+</li>
+<li><p><code>train_mf_sgd(INT user, INT item, FLOAT rating [, CONSTANT STRING options])</code> - Returns a relation consists of &lt;int idx, array&lt;float&gt; Pu, array&lt;float&gt; Qi [, float Bu, float Bi [, float mu]]&gt;</p>
+</li>
+</ul>
+<h1 id="factorization-machines">Factorization machines</h1>
+<ul>
+<li><p><code>ffm_predict(float Wi, array&lt;float&gt; Vifj, array&lt;float&gt; Vjfi, float Xi, float Xj)</code> - Returns a prediction value in Double</p>
+</li>
+<li><p><code>fm_predict(Float Wj, array&lt;float&gt; Vjf, float Xj)</code> - Returns a prediction value in Double</p>
+</li>
+<li><p><code>train_ffm(array&lt;string&gt; x, double y [, const string options])</code> - Returns a prediction model</p>
+</li>
+<li><p><code>train_fm(array&lt;string&gt; x, double y [, const string options])</code> - Returns a prediction model</p>
+</li>
+</ul>
+<h1 id="recommendation">Recommendation</h1>
+<ul>
+<li><code>train_slim( int i, map&lt;int, double&gt; r_i, map&lt;int, map&lt;int, double&gt;&gt; topKRatesOfI, int j, map&lt;int, double&gt; r_j [, constant string options])</code> - Returns row index, column index and non-zero weight value of prediction model</li>
+</ul>
+<h1 id="anomaly-detection">Anomaly detection</h1>
+<ul>
+<li><p><code>changefinder(double|array&lt;double&gt; x [, const string options])</code> - Returns outlier/change-point scores and decisions using ChangeFinder. It will return a tuple &lt;double outlier_score, double changepoint_score [, boolean is_anomaly [, boolean is_changepoint]]</p>
+</li>
+<li><p><code>sst(double|array&lt;double&gt; x [, const string options])</code> - Returns change-point scores and decisions using Singular Spectrum Transformation (SST). It will return a tuple &lt;double changepoint_score [, boolean is_changepoint]&gt;</p>
+</li>
+</ul>
+<h1 id="topic-modeling">Topic modeling</h1>
+<ul>
+<li><p><code>lda_predict(string word, float value, int label, float lambda[, const string options])</code> - Returns a list which consists of &lt;int label, float prob&gt;</p>
+</li>
+<li><p><code>plsa_predict(string word, float value, int label, float prob[, const string options])</code> - Returns a list which consists of &lt;int label, float prob&gt;</p>
+</li>
+<li><p><code>train_lda(array&lt;string&gt; words[, const string options])</code> - Returns a relation consists of &lt;int topic, string word, float score&gt;</p>
+</li>
+<li><p><code>train_plsa(array&lt;string&gt; words[, const string options])</code> - Returns a relation consists of &lt;int topic, string word, float score&gt;</p>
+</li>
+</ul>
+<h1 id="preprocessing">Preprocessing</h1>
+<h2 id="feature-creation">Feature creation</h2>
+<ul>
+<li><p><code>add_bias(feature_vector in array&lt;string&gt;)</code> - Returns features with a bias in array&lt;string&gt;</p>
+</li>
+<li><p><code>add_feature_index(ARRAY[DOUBLE]: dense feature vector)</code> - Returns a feature vector with feature indices</p>
+</li>
+<li><p><code>extract_feature(feature_vector in array&lt;string&gt;)</code> - Returns features in array&lt;string&gt;</p>
+</li>
+<li><p><code>extract_weight(feature_vector in array&lt;string&gt;)</code> - Returns the weights of features in array&lt;string&gt;</p>
+</li>
+<li><p><code>feature(&lt;string|int|long|short|byte&gt; feature, &lt;number&gt; value)</code> - Returns a feature string</p>
+</li>
+<li><p><code>feature_index(feature_vector in array&lt;string&gt;)</code> - Returns feature indices in array&lt;index&gt;</p>
+</li>
+<li><p><code>sort_by_feature(map in map&lt;int,float&gt;)</code> - Returns a sorted map</p>
+</li>
+</ul>
+<h2 id="data-amplification">Data amplification</h2>
+<ul>
+<li><p><code>amplify(const int xtimes, *)</code> - amplify the input records x-times</p>
+</li>
+<li><p><code>rand_amplify(const int xtimes [, const string options], *)</code> - amplify the input records x-times in map-side</p>
+</li>
+</ul>
+<h2 id="feature-binning">Feature binning</h2>
+<ul>
+<li><p><code>build_bins(number weight, const int num_of_bins[, const boolean auto_shrink = false])</code> - Return quantiles representing bins: array&lt;double&gt;</p>
+</li>
+<li><p><code>feature_binning(array&lt;features::string&gt; features, const map&lt;string, array&lt;number&gt;&gt; quantiles_map)</code> / _FUNC(number weight, const array&lt;number&gt; quantiles) - Returns binned features as an array&lt;features::string&gt; / bin ID as int</p>
+</li>
+</ul>
+<h2 id="feature-format-conversion">Feature format conversion</h2>
+<ul>
+<li><p><code>conv2dense(int feature, float weight, int nDims)</code> - Return a dense model in array&lt;float&gt;</p>
+</li>
+<li><p><code>quantify(boolean outout, col1, col2, ...)</code> - Returns an identified features</p>
+</li>
+<li><p><code>to_dense_features(array&lt;string&gt; feature_vector, int dimensions)</code> - Returns a dense feature in array&lt;float&gt;</p>
+</li>
+<li><p><code>to_sparse_features(array&lt;float&gt; feature_vector)</code> - Returns a sparse feature in array&lt;string&gt;</p>
+</li>
+</ul>
+<h2 id="feature-hashing">Feature hashing</h2>
+<ul>
+<li><p><code>array_hash_values(array&lt;string&gt; values, [string prefix [, int numFeatures], boolean useIndexAsPrefix])</code> returns hash values in array&lt;int&gt;</p>
+</li>
+<li><p><code>feature_hashing(array&lt;string&gt; features [, const string options])</code> - returns a hashed feature vector in array&lt;string&gt;</p>
+</li>
+<li><p><code>mhash(string word)</code> returns a murmurhash3 INT value starting from 1</p>
+</li>
+<li><p><code>prefixed_hash_values(array&lt;string&gt; values, string prefix [, boolean useIndexAsPrefix])</code> returns array&lt;string&gt; that each element has the specified prefix</p>
+</li>
+<li><p><code>sha1(string word [, int numFeatures])</code> returns a SHA-1 value</p>
+</li>
+</ul>
+<h2 id="feature-paring">Feature paring</h2>
+<ul>
+<li><p><code>feature_pairs(feature_vector in array&lt;string&gt;, [, const string options])</code> - Returns a relation &lt;string i, string j, double xi, double xj&gt;</p>
+</li>
+<li><p><code>polynomial_features(feature_vector in array&lt;string&gt;)</code> - Returns a feature vectorhaving polynominal feature space</p>
+</li>
+<li><p><code>powered_features(feature_vector in array&lt;string&gt;, int degree [, boolean truncate])</code> - Returns a feature vector having a powered feature space</p>
+</li>
+</ul>
+<h2 id="ranking">Ranking</h2>
+<ul>
+<li><p><code>bpr_sampling(int userId, List&lt;int&gt; posItems [, const string options])</code>- Returns a relation consists of &lt;int userId, int itemId&gt;</p>
+</li>
+<li><p><code>item_pairs_sampling(array&lt;int|long&gt; pos_items, const int max_item_id [, const string options])</code>- Returns a relation consists of &lt;int pos_item_id, int neg_item_id&gt;</p>
+</li>
+<li><p><code>populate_not_in(list items, const int max_item_id [, const string options])</code>- Returns a relation consists of &lt;int item&gt; that item does not exist in the given items</p>
+</li>
+</ul>
+<h2 id="feature-scaling">Feature scaling</h2>
+<ul>
+<li><p><code>l1_normalize(ftvec string)</code> - Returned a L1 normalized value</p>
+</li>
+<li><p><code>l2_normalize(ftvec string)</code> - Returned a L2 normalized value</p>
+</li>
+<li><p><code>rescale(value, min, max)</code> - Returns rescaled value by min-max normalization</p>
+</li>
+<li><p><code>zscore(value, mean, stddev)</code> - Returns a standard score (zscore)</p>
+</li>
+</ul>
+<h2 id="feature-selection">Feature selection</h2>
+<ul>
+<li><p><code>chi2(array&lt;array&lt;number&gt;&gt; observed, array&lt;array&lt;number&gt;&gt; expected)</code> - Returns chi2_val and p_val of each columns as &lt;array&lt;double&gt;, array&lt;double&gt;&gt;</p>
+</li>
+<li><p><code>snr(array&lt;number&gt; features, array&lt;int&gt; one-hot class label)</code> - Returns Signal Noise Ratio for each feature as array&lt;double&gt;</p>
+</li>
+</ul>
+<h2 id="feature-transformation-and-vectorization">Feature transformation and vectorization</h2>
+<ul>
+<li><p><code>add_field_indices(array&lt;string&gt; features)</code> - Returns arrays of string that field indices (&lt;field&gt;:&lt;feature&gt;)* are argumented</p>
+</li>
+<li><p><code>binarize_label(int/long positive, int/long negative, ...)</code> - Returns positive/negative records that are represented as (..., int label) where label is 0 or 1</p>
+</li>
+<li><p><code>categorical_features(array&lt;string&gt; featureNames, feature1, feature2, .. [, const string options])</code> - Returns a feature vector array&lt;string&gt;</p>
+</li>
+<li><p><code>ffm_features(const array&lt;string&gt; featureNames, feature1, feature2, .. [, const string options])</code> - Takes categroical variables and returns a feature vector array&lt;string&gt; in a libffm format &lt;field&gt;:&lt;index&gt;:&lt;value&gt;</p>
+</li>
+<li><p><code>indexed_features(double v1, double v2, ...)</code> - Returns a list of features as array&lt;string&gt;: [1:v1, 2:v2, ..]</p>
+</li>
+<li><p><code>onehot_encoding(PRIMITIVE feature, ...)</code> - Compute onehot encoded label for each feature</p>
+</li>
+<li><p><code>quantified_features(boolean output, col1, col2, ...)</code> - Returns an identified features in a dense array&lt;double&gt;</p>
+</li>
+<li><p><code>quantitative_features(array&lt;string&gt; featureNames, feature1, feature2, .. [, const string options])</code> - Returns a feature vector array&lt;string&gt;</p>
+</li>
+<li><p><code>vectorize_features(array&lt;string&gt; featureNames, feature1, feature2, .. [, const string options])</code> - Returns a feature vector array&lt;string&gt;</p>
+</li>
+</ul>
+<h1 id="geospatial-functions">Geospatial functions</h1>
+<ul>
+<li><p><code>haversine_distance(double lat1, double lon1, double lat2, double lon2, [const boolean mile=false])</code>::double - return distance between two locations in km [or miles] using <code>haversine</code> formula</p>
+<pre><code>Usage: select latlon_distance(lat1, lon1, lat2, lon2) from ...
+</code></pre></li>
+<li><p><code>lat2tiley(double lat, int zoom)</code>::int - Returns the tile number of the given latitude and zoom level</p>
+</li>
+<li><p><code>lon2tilex(double lon, int zoom)</code>::int - Returns the tile number of the given longitude and zoom level</p>
+</li>
+<li><p><code>map_url(double lat, double lon, int zoom [, const string option])</code> - Returns a URL string</p>
+<pre><code>OpenStreetMap: http://tile.openstreetmap.org/${zoom}/${xtile}/${ytile}.png
+Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
+</code></pre></li>
+<li><p><code>tile(double lat, double lon, int zoom)</code>::bigint - Returns a tile number 2^2n where n is zoom level.</p>
+<pre><code>_FUNC_(lat,lon,zoom) = xtile(lon,zoom) + ytile(lat,zoom) * 2^zoomrefer http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames for detail
+</code></pre></li>
+<li><p><code>tilex2lon(int x, int zoom)</code>::double - Returns longitude of the given tile x and zoom level</p>
+</li>
+<li><p><code>tiley2lat(int y, int zoom)</code>::double - Returns latitude of the given tile y and zoom level</p>
+</li>
+</ul>
+<h1 id="distance-measures">Distance measures</h1>
+<ul>
+<li><p><code>angular_distance(ftvec1, ftvec2)</code> - Returns an angular distance of the given two vectors</p>
+</li>
+<li><p><code>cosine_distance(ftvec1, ftvec2)</code> - Returns a cosine distance of the given two vectors</p>
+</li>
+<li><p><code>euclid_distance(ftvec1, ftvec2)</code> - Returns the square root of the sum of the squared differences: sqrt(sum((x - y)^2))</p>
+</li>
+<li><p><code>hamming_distance(A, B [,int k])</code> - Returns Hamming distance between A and B</p>
+</li>
+<li><p><code>jaccard_distance(A, B [,int k])</code> - Returns Jaccard distance between A and B</p>
+</li>
+<li><p><code>kld(double m1, double sigma1, double mu2, double sigma 2)</code> - Returns KL divergence between two distributions</p>
+</li>
+<li><p><code>manhattan_distance(list x, list y)</code> - Returns sum(|x - y|)</p>
+</li>
+<li><p><code>minkowski_distance(list x, list y, double p)</code> - Returns sum(|x - y|^p)^(1/p)</p>
+</li>
+<li><p><code>popcnt(a [, b])</code> - Returns a popcount value</p>
+</li>
+</ul>
+<h1 id="locality-sensitive-hashing">Locality-sensitive hashing</h1>
+<ul>
+<li><p><code>bbit_minhash(array&lt;&gt; features [, int numHashes])</code> - Returns a b-bits minhash value</p>
+</li>
+<li><p><code>minhash(ANY item, array&lt;int|bigint|string&gt; features [, constant string options])</code> - Returns n differnce k-depth signatures (i.e., clusteid) for each item &lt;clusteid, item&gt;</p>
+</li>
+<li><p><code>minhashes(array&lt;&gt; features [, int numHashes, int keyGroup [, boolean noWeight]])</code> - Returns minhash values</p>
+</li>
+</ul>
+<h1 id="similarity-measures">Similarity measures</h1>
+<ul>
+<li><p><code>angular_similarity(ftvec1, ftvec2)</code> - Returns an angular similarity of the given two vectors</p>
+</li>
+<li><p><code>cosine_similarity(ftvec1, ftvec2)</code> - Returns a cosine similarity of the given two vectors</p>
+</li>
+<li><p><code>dimsum_mapper(array&lt;string&gt; row, map&lt;int col_id, double norm&gt; colNorms [, const string options])</code> - Returns column-wise partial similarities</p>
+</li>
+<li><p><code>distance2similarity(float d)</code> - Returns 1.0 / (1.0 + d)</p>
+</li>
+<li><p><code>euclid_similarity(ftvec1, ftvec2)</code> - Returns a euclid distance based similarity, which is <code>1.0 / (1.0 + distance)</code>, of the given two vectors</p>
+</li>
+<li><p><code>jaccard_similarity(A, B [,int k])</code> - Returns Jaccard similarity coefficient of A and B</p>
+</li>
+</ul>
+<h1 id="evaluation">Evaluation</h1>
+<ul>
+<li><p><code>auc(array rankItems | double score, array correctItems | int label [, const int recommendSize = rankItems.size ])</code> - Returns AUC</p>
+</li>
+<li><p><code>average_precision(array rankItems, array correctItems [, const int recommendSize = rankItems.size])</code> - Returns MAP</p>
+</li>
+<li><p><code>f1score(array[int], array[int])</code> - Return a F1 score</p>
+</li>
+<li><p><code>fmeasure(array|int|boolean actual, array|int| boolean predicted [, const string options])</code> - Return a F-measure (f1score is the special with beta=1.0)</p>
+</li>
+<li><p><code>hitrate(array rankItems, array correctItems [, const int recommendSize = rankItems.size])</code> - Returns HitRate</p>
+</li>
+<li><p><code>logloss(double predicted, double actual)</code> - Return a Logrithmic Loss</p>
+</li>
+<li><p><code>mae(double predicted, double actual)</code> - Return a Mean Absolute Error</p>
+</li>
+<li><p><code>mrr(array rankItems, array correctItems [, const int recommendSize = rankItems.size])</code> - Returns MRR</p>
+</li>
+<li><p><code>mse(double predicted, double actual)</code> - Return a Mean Squared Error</p>
+</li>
+<li><p><code>ndcg(array rankItems, array correctItems [, const int recommendSize = rankItems.size])</code> - Returns nDCG</p>
+</li>
+<li><p><code>precision_at(array rankItems, array correctItems [, const int recommendSize = rankItems.size])</code> - Returns Precision</p>
+</li>
+<li><p><code>r2(double predicted, double actual)</code> - Return R Squared (coefficient of determination)</p>
+</li>
+<li><p><code>recall_at(array rankItems, array correctItems [, const int recommendSize = rankItems.size])</code> - Returns Recall</p>
+</li>
+<li><p><code>rmse(double predicted, double actual)</code> - Return a Root Mean Squared Error</p>
+</li>
+</ul>
+<h1 id="sketching">Sketching</h1>
+<ul>
+<li><code>approx_count_distinct(expr x [, const string options])</code> - Returns an approximation of count(DISTINCT x) using HyperLogLogPlus algorithm</li>
+</ul>
+<h1 id="ensemble-learning">Ensemble learning</h1>
+<h2 id="utils">Utils</h2>
+<ul>
+<li><p><code>argmin_kld(float mean, float covar)</code> - Returns mean or covar that minimize a KL-distance among distributions</p>
+<pre><code>The returned value is (1.0 / (sum(1.0 / covar))) * (sum(mean / covar)
+</code></pre></li>
+<li><p><code>max_label(double value, string label)</code> - Returns a label that has the maximum value</p>
+</li>
+<li><p><code>maxrow(ANY compare, ...)</code> - Returns a row that has maximum value in the 1st argument</p>
+</li>
+</ul>
+<h2 id="bagging">Bagging</h2>
+<ul>
+<li><p><code>voted_avg(double value)</code> - Returns an averaged value by bagging for classification</p>
+</li>
+<li><p><code>weight_voted_avg(expr)</code> - Returns an averaged value by considering sum of positive/negative weights</p>
+</li>
+</ul>
+<h1 id="dicision-trees-and-randomforest">Dicision trees and RandomForest</h1>
+<ul>
+<li><p><code>train_gradient_tree_boosting_classifier(array&lt;double|string&gt; features, int label [, string options])</code> - Returns a relation consists of &lt;int iteration, int model_type, array&lt;string&gt; pred_models, double intercept, double shrinkage, array&lt;double&gt; var_importance, float oob_error_rate&gt;</p>
+</li>
+<li><p><code>train_randomforest_classifier(array&lt;double|string&gt; features, int label [, const array&lt;double&gt; classWeights, const string options])</code> - Returns a relation consists of &lt;int model_id, int model_type, string pred_model, array&lt;double&gt; var_importance, int oob_errors, int oob_tests, double weight&gt;</p>
+</li>
+<li><p><code>train_randomforest_regression(array&lt;double|string&gt; features, double target [, string options])</code> - Returns a relation consists of &lt;int model_id, int model_type, string pred_model, array&lt;double&gt; var_importance, int oob_errors, int oob_tests&gt;</p>
+</li>
+<li><p><code>guess_attribute_types(ANY, ...)</code> - Returns attribute types</p>
+<pre><code>select guess_attribute_types(*) from train limit 1;
+&gt; Q,Q,C,C,C,C,Q,C,C,C,Q,C,Q,Q,Q,Q,C,Q
+</code></pre></li>
+<li><p><code>rf_ensemble(int yhat [, array&lt;double&gt; proba [, double model_weight=1.0]])</code> - Returns emsebled prediction results in &lt;int label, double probability, array&lt;double&gt; probabilities&gt;</p>
+</li>
+<li><p><code>tree_export(string model, const string options, optional array&lt;string&gt; featureNames=null, optional array&lt;string&gt; classNames=null)</code> - exports a Decision Tree model as javascript/dot]</p>
+</li>
+<li><p><code>tree_predict(string modelId, string model, array&lt;double|string&gt; features [, const string options | const boolean classification=false])</code> - Returns a prediction result of a random forest in &lt;int value, array&lt;double&gt; posteriori&gt; for classification and &lt;double&gt; for regression</p>
+</li>
+</ul>
+<h1 id="xgboost">XGBoost</h1>
+<ul>
+<li><p><code>train_multiclass_xgboost_classifier(string[] features, double target [, string options])</code> - Returns a relation consisting of &lt;string model_id, array&lt;byte&gt; pred_model&gt;</p>
+</li>
+<li><p><code>train_xgboost_classifier(string[] features, double target [, string options])</code> - Returns a relation consisting of &lt;string model_id, array&lt;byte&gt; pred_model&gt;</p>
+</li>
+<li><p><code>train_xgboost_regr(string[] features, double target [, string options])</code> - Returns a relation consisting of &lt;string model_id, array&lt;byte&gt; pred_model&gt;</p>
+</li>
+<li><p><code>xgboost_multiclass_predict(string rowid, string[] features, string model_id, array&lt;byte&gt; pred_model [, string options])</code> - Returns a prediction result as (string rowid, string label, float probability)</p>
+</li>
+<li><p><code>xgboost_predict(string rowid, string[] features, string model_id, array&lt;byte&gt; pred_model [, string options])</code> - Returns a prediction result as (string rowid, float predicted)</p>
+</li>
+</ul>
+<h1 id="others">Others</h1>
+<ul>
+<li><p><code>hivemall_version()</code> - Returns the version of Hivemall</p>
+</li>
+<li><p><code>lr_datagen(options string)</code> - Generates a logistic regression dataset</p>
+<pre><code class="lang-sql">WITH dual AS (<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span>) <span class="hljs-keyword">SELECT</span> lr_datagen(<span class="hljs-string">&apos;-n_examples 1k -n_features 10&apos;</span>) <span class="hljs-keyword">FROM</span> dual;
 </code></pre>
-<p>Download <a href="https://gist.githubusercontent.com/myui/f8b44ab925bc198e6d11b18fdd21269d/raw/bed05f811e4c351ed959e0159405690f2f11e577/hundred_balls.txt" target="_blank">hundred_balls.txt</a> that is originally provides in <a href="http://next.rikunabi.com/tech/docs/ct_s03600.jsp?p=002259" target="_blank">this article</a>.</p>
-<p>In this example, Rowid <code>87</code> is apparently an outlier.</p>
-<pre><code class="lang-sh">awk <span class="hljs-string">&apos;{FS=&quot; &quot;; OFS=&quot; &quot;; print NR,$0}&apos;</span> hundred_balls.txt | \
-hadoop fs -put - /dataset/lof/hundred_balls/hundred_balls.txt
-</code></pre>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> train
-<span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> <span class="hljs-keyword">rowid</span>, <span class="hljs-built_in">array</span>(<span class="hljs-keyword">concat</span>(<span class="hljs-string">&quot;weight:&quot;</span>, weight), <span class="hljs-keyword">concat</span>(<span class="hljs-string">&quot;specific_heat:&quot;</span>, specific_heat), <span class="hljs-keyword">concat</span>(<span class="hljs-string">&quot;reflectance:&quot;</span>, reflectance)) <span class="hljs-keyword">as</span> features
-<span class="hljs-keyword">from</span> hundred_balls;
-</code></pre>
-<h2 id="apply-data-normalization">Apply Data Normalization</h2>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> train_normalized
-<span class="hljs-keyword">as</span>
-<span class="hljs-keyword">WITH</span> fv <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span> 
-  <span class="hljs-keyword">rowid</span>, 
-  extract_feature(feature) <span class="hljs-keyword">as</span> feature,
-  extract_weight(feature) <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
-<span class="hljs-keyword">from</span> 
-  train 
-  LATERAL <span class="hljs-keyword">VIEW</span> explode(features) exploded <span class="hljs-keyword">AS</span> feature
-), 
-stats <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span>
-  feature,
-  <span class="hljs-comment">-- avg(value) as mean, stddev_pop(value) as stddev</span>
-  <span class="hljs-keyword">min</span>(<span class="hljs-keyword">value</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">min</span>, <span class="hljs-keyword">max</span>(<span class="hljs-keyword">value</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">max</span>
-<span class="hljs-keyword">from</span>
-  fv
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  feature
-), 
-norm <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span> 
-  <span class="hljs-keyword">rowid</span>, 
-  t1.feature, 
-  <span class="hljs-comment">-- zscore(t1.value, t2.mean, t2.stddev) as zscore</span>
-  rescale(t1.<span class="hljs-keyword">value</span>, t2.<span class="hljs-keyword">min</span>, t2.<span class="hljs-keyword">max</span>) <span class="hljs-keyword">as</span> minmax
-<span class="hljs-keyword">from</span> 
-  fv t1 <span class="hljs-keyword">JOIN</span>
-  stats t2 <span class="hljs-keyword">ON</span> (t1.feature = t2.feature) 
-),
-norm_fv <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span>
-  <span class="hljs-keyword">rowid</span>, 
-  <span class="hljs-comment">-- concat(feature, &quot;:&quot;, zscore) as feature</span>
-  <span class="hljs-keyword">concat</span>(feature, <span class="hljs-string">&quot;:&quot;</span>, minmax) <span class="hljs-keyword">as</span> feature
-<span class="hljs-keyword">from</span>
-  norm
-)
-<span class="hljs-keyword">select</span> 
-  <span class="hljs-keyword">rowid</span>, 
-  collect_list(feature) <span class="hljs-keyword">as</span> features
-<span class="hljs-keyword">from</span>
-  norm_fv
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  <span class="hljs-keyword">rowid</span>
-;
-</code></pre>
-<pre><code>hive&gt; select * from train_normalized limit 3;
-
-1       [&quot;reflectance:0.5252967&quot;,&quot;specific_heat:0.19863537&quot;,&quot;weight:0.0&quot;]
-2       [&quot;reflectance:0.5950446&quot;,&quot;specific_heat:0.09166764&quot;,&quot;weight:0.052084323&quot;]
-3       [&quot;reflectance:0.6797837&quot;,&quot;specific_heat:0.12567581&quot;,&quot;weight:0.13255163&quot;]
-</code></pre><h1 id="outlier-detection-using-local-outlier-facotor-lof">Outlier Detection using Local Outlier Facotor (LOF)</h1>
-<pre><code class="lang-sql"><span class="hljs-comment">-- workaround to deal with a bug in Hive/Tez</span>
-<span class="hljs-comment">-- https://issues.apache.org/jira/browse/HIVE-10729</span>
-<span class="hljs-comment">-- set hive.auto.convert.join=false;</span>
-<span class="hljs-keyword">set</span> hive.mapjoin.optimized.hashtable=<span class="hljs-literal">false</span>;
-
-<span class="hljs-comment">-- parameter of LoF</span>
-<span class="hljs-keyword">set</span> hivevar:k=<span class="hljs-number">12</span>;
-
-<span class="hljs-comment">-- find topk outliers</span>
-<span class="hljs-keyword">set</span> hivevar:topk=<span class="hljs-number">3</span>;
-</code></pre>
-<pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> list_neighbours
-<span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span>
-  each_top_k(
-    -${k}, t1.<span class="hljs-keyword">rowid</span>, euclid_distance(t1.features, t2.features), 
-    t1.<span class="hljs-keyword">rowid</span>, 
-    t2.<span class="hljs-keyword">rowid</span>
-  ) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rank</span>, distance, target, neighbour)
-<span class="hljs-keyword">from</span> 
-  train_normalized t1
-  <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> train_normalized t2
-<span class="hljs-keyword">where</span>
-  t1.<span class="hljs-keyword">rowid</span> != t2.<span class="hljs-keyword">rowid</span>
-;
-</code></pre>
-<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p><code>list_neighbours</code> table SHOULD be created because <code>list_neighbours</code> is used multiple times.</p></div></div>
-<h1 id="parallelize-top-k-computation">Parallelize Top-k computation</h1>
-<div class="panel panel-info"><div class="panel-heading"><h3 class="panel-title" id="info"><i class="fa fa-info"></i> Info</h3></div><div class="panel-body"><p>To parallelize a top-k computation, break LEFT-hand table into piece as describe in <a href="../misc/topk.html">this page</a>.</p></div></div>
-<pre><code class="lang-sql">WITH k_distance as (
-<span class="hljs-keyword">select</span>
-  target, 
-  <span class="hljs-keyword">max</span>(distance) <span class="hljs-keyword">as</span> k_distance
-<span class="hljs-keyword">from</span>
-  list_neighbours
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  target
-), 
-reach_distance <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span>
-  t1.target,
-  max2(t2.k_distance, t1.distance) <span class="hljs-keyword">as</span> reach_distance
-<span class="hljs-keyword">from</span>
-  list_neighbours t1 <span class="hljs-keyword">JOIN</span> 
-  k_distance t2 <span class="hljs-keyword">ON</span> (t1.neighbour = t2.target)
-), 
-lrd <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span>
-  target,   
-  <span class="hljs-number">1.0</span> / <span class="hljs-keyword">avg</span>(reach_distance) <span class="hljs-keyword">as</span> lrd
-<span class="hljs-keyword">from</span>
-  reach_distance
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  target
-), 
-neighbours_lrd <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span>
-  t1.target, 
-  t2.lrd
-<span class="hljs-keyword">from</span>
-  list_neighbours t1 <span class="hljs-keyword">JOIN</span>
-  lrd t2 <span class="hljs-keyword">on</span> (t1.neighbour = t2.target)
-)
-<span class="hljs-keyword">select</span>
-  t1.target, 
-  <span class="hljs-keyword">sum</span>(t2.lrd / t1.lrd) / <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> lof
-<span class="hljs-keyword">from</span>
-  lrd t1 <span class="hljs-keyword">JOIN</span>
-  neighbours_lrd t2 <span class="hljs-keyword">on</span> (t1.target = t2.target)
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  t1.target
-<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> lof <span class="hljs-keyword">desc</span>
-<span class="hljs-keyword">limit</span> ${topk};
-</code></pre>
-<pre><code>&gt; 87      3.031143749957831
-&gt; 16      1.9755564408378874
-&gt; 1       1.8415763570939774
-</code></pre><p><div id="page-footer" class="localized-footer"><hr><!--
+</li>
+<li><p><code>tf(string text)</code> - Return a term frequency in &lt;string, float&gt;
+<div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -2406,6 +2689,8 @@ neighbours_lrd <span class="hljs-keyword">as</span> (
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
+</li>
+</ul>
 
                                 
                                 </section>
@@ -2439,7 +2724,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Outlier Detection using Local Outlier Factor (LOF)","level":"10.1","depth":1,"next":{"title":"Change-Point Detection using Singular Spectrum Transformation (SST)","level":"10.2","depth":1,"path":"anomaly/sst.md","ref":"anomaly/sst.md","articles":[]},"previous":{"title":"10-fold cross validation (Matrix Factorization)","level":"9.3.6","depth":2,"path":"recommend/movielens_cv.md","ref":"recommend/movielens_cv.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"anomaly/lof.md","mtime":"2017-11-02T05:41:05.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T14:16:24.937Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2018-04-16T14:13:57.884Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T14:16:24.937Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
