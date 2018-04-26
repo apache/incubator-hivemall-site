@@ -2233,7 +2233,7 @@
 </ul>
 </li>
 <li><a href="#evaluation">Evaluation</a></li>
-<li><a href="#graphvis-export">Graphvis export</a></li>
+<li><a href="#graphviz-export">Graphviz export</a></li>
 </ul>
 
 </div><!-- tocstop -->
@@ -2518,7 +2518,7 @@ WITH t1 as (
 <blockquote>
 <p>0.98</p>
 </blockquote>
-<h1 id="graphvis-export">Graphvis export</h1>
+<h1 id="graphviz-export">Graphviz export</h1>
 <div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p><code>tree_export</code> feature is supported from Hivemall v0.5.0 or later.
 Better to limit tree depth on training by <code>-depth</code> option to plot a Decision Tree.</p></div></div>
 <p>Hivemall provide <code>tree_export</code> to export a decision tree into <a href="http://www.graphviz.org/" target="_blank">Graphviz</a> or human-readable Javascript format. You can find the usage by issuing the following query:</p>
@@ -2532,14 +2532,14 @@ usage: tree_export(string model, const string options, optional
  -output_name,--outputName &lt;arg&gt;   output name [default: predicted]
  -r,--regression                   Is regression tree or not
  -t,--type &lt;arg&gt;                   Type of output [default: js,
-                                   javascript/js, graphvis/dot
+                                   javascript/js, graphviz/dot
 </code></pre><pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> model_exported 
   <span class="hljs-keyword">STORED</span> <span class="hljs-keyword">AS</span> ORC tblproperties(<span class="hljs-string">&quot;orc.compress&quot;</span>=<span class="hljs-string">&quot;SNAPPY&quot;</span>)
 <span class="hljs-keyword">AS</span>
 <span class="hljs-keyword">select</span>
   model_id,
   tree_export(<span class="hljs-keyword">model</span>, <span class="hljs-string">&quot;-type javascript&quot;</span>, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;sepal_length&apos;</span>,<span class="hljs-string">&apos;sepal_width&apos;</span>,<span class="hljs-string">&apos;petal_length&apos;</span>,<span class="hljs-string">&apos;petak_width&apos;</span>), <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;Setosa&apos;</span>,<span class="hljs-string">&apos;Versicolour&apos;</span>,<span class="hljs-string">&apos;Virginica&apos;</span>)) <span class="hljs-keyword">as</span> js,
-  tree_export(<span class="hljs-keyword">model</span>, <span class="hljs-string">&quot;-type graphvis&quot;</span>, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;sepal_length&apos;</span>,<span class="hljs-string">&apos;sepal_width&apos;</span>,<span class="hljs-string">&apos;petal_length&apos;</span>,<span class="hljs-string">&apos;petak_width&apos;</span>), <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;Setosa&apos;</span>,<span class="hljs-string">&apos;Versicolour&apos;</span>,<span class="hljs-string">&apos;Virginica&apos;</span>)) <span class="hljs-keyword">as</span> dot
+  tree_export(<span class="hljs-keyword">model</span>, <span class="hljs-string">&quot;-type graphviz&quot;</span>, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;sepal_length&apos;</span>,<span class="hljs-string">&apos;sepal_width&apos;</span>,<span class="hljs-string">&apos;petal_length&apos;</span>,<span class="hljs-string">&apos;petak_width&apos;</span>), <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;Setosa&apos;</span>,<span class="hljs-string">&apos;Versicolour&apos;</span>,<span class="hljs-string">&apos;Virginica&apos;</span>)) <span class="hljs-keyword">as</span> dot
 <span class="hljs-keyword">from</span>
   <span class="hljs-keyword">model</span>
 <span class="hljs-comment">-- limit 1</span>
@@ -2574,7 +2574,7 @@ usage: tree_export(string model, const string options, optional
  12 [label=&lt;predicted = Virginica&gt;, fillcolor=&quot;0.6667,1.000,1.000&quot;, shape=ellipse];
  8 -&gt; 12;
 }
-</code></pre><p><img src="../resources/images/iris.png" alt="Iris Graphvis output"></p>
+</code></pre><p><img src="../resources/images/iris.png" alt="Iris Graphviz output"></p>
 <p>You can draw a graph by <code>dot -Tpng iris.dot -o iris.png</code> or using <a href="http://viz-js.com/" target="_blank">Viz.js</a>.</p>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
@@ -2631,7 +2631,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Random Forest","level":"7.2.3","depth":2,"next":{"title":"Regression","level":"8.1","depth":1,"path":"regression/general.md","ref":"regression/general.md","articles":[]},"previous":{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_randomforest.md","mtime":"2018-03-13T14:17:50.963Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T14:16:24.937Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Random Forest","level":"7.2.3","depth":2,"next":{"title":"Regression","level":"8.1","depth":1,"path":"regression/general.md","ref":"regression/general.md","articles":[]},"previous":{"title":"SCW","level":"7.2.2","depth":2,"path":"multiclass/iris_scw.md","ref":"multiclass/iris_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/iris_randomforest.md","mtime":"2018-04-18T08:28:53.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-26T03:55:31.199Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

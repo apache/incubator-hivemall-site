@@ -2231,7 +2231,6 @@
 <li><a href="#anomaly-detection">Anomaly detection</a></li>
 <li><a href="#topic-modeling">Topic modeling</a></li>
 <li><a href="#preprocessing">Preprocessing</a><ul>
-<li><a href="#feature-creation">Feature creation</a></li>
 <li><a href="#data-amplification">Data amplification</a></li>
 <li><a href="#feature-binning">Feature binning</a></li>
 <li><a href="#feature-format-conversion">Feature format conversion</a></li>
@@ -2250,11 +2249,10 @@
 <li><a href="#evaluation">Evaluation</a></li>
 <li><a href="#sketching">Sketching</a></li>
 <li><a href="#ensemble-learning">Ensemble learning</a><ul>
-<li><a href="#utils">Utils</a></li>
 <li><a href="#bagging">Bagging</a></li>
 </ul>
 </li>
-<li><a href="#dicision-trees-and-randomforest">Dicision trees and RandomForest</a></li>
+<li><a href="#decision-trees-and-randomforest">Decision trees and RandomForest</a></li>
 <li><a href="#xgboost">XGBoost</a></li>
 <li><a href="#others">Others</a></li>
 </ul>
@@ -2395,7 +2393,6 @@
 </li>
 </ul>
 <h1 id="preprocessing">Preprocessing</h1>
-<h2 id="feature-creation">Feature creation</h2>
 <ul>
 <li><p><code>add_bias(feature_vector in array&lt;string&gt;)</code> - Returns features with a bias in array&lt;string&gt;</p>
 </li>
@@ -2423,14 +2420,14 @@
 <ul>
 <li><p><code>build_bins(number weight, const int num_of_bins[, const boolean auto_shrink = false])</code> - Return quantiles representing bins: array&lt;double&gt;</p>
 </li>
-<li><p><code>feature_binning(array&lt;features::string&gt; features, const map&lt;string, array&lt;number&gt;&gt; quantiles_map)</code> / _FUNC(number weight, const array&lt;number&gt; quantiles) - Returns binned features as an array&lt;features::string&gt; / bin ID as int</p>
+<li><p><code>feature_binning(array&lt;features::string&gt; features, const map&lt;string, array&lt;number&gt;&gt; quantiles_map)</code> / <em>FUNC</em>(number weight, const array&lt;number&gt; quantiles) - Returns binned features as an array&lt;features::string&gt; / bin ID as int</p>
 </li>
 </ul>
 <h2 id="feature-format-conversion">Feature format conversion</h2>
 <ul>
 <li><p><code>conv2dense(int feature, float weight, int nDims)</code> - Return a dense model in array&lt;float&gt;</p>
 </li>
-<li><p><code>quantify(boolean outout, col1, col2, ...)</code> - Returns an identified features</p>
+<li><p><code>quantify(boolean output, col1, col2, ...)</code> - Returns an identified features</p>
 </li>
 <li><p><code>to_dense_features(array&lt;string&gt; feature_vector, int dimensions)</code> - Returns a dense feature in array&lt;float&gt;</p>
 </li>
@@ -2454,7 +2451,7 @@
 <ul>
 <li><p><code>feature_pairs(feature_vector in array&lt;string&gt;, [, const string options])</code> - Returns a relation &lt;string i, string j, double xi, double xj&gt;</p>
 </li>
-<li><p><code>polynomial_features(feature_vector in array&lt;string&gt;)</code> - Returns a feature vectorhaving polynominal feature space</p>
+<li><p><code>polynomial_features(feature_vector in array&lt;string&gt;)</code> - Returns a feature vectorhaving polynomial feature space</p>
 </li>
 <li><p><code>powered_features(feature_vector in array&lt;string&gt;, int degree [, boolean truncate])</code> - Returns a feature vector having a powered feature space</p>
 </li>
@@ -2488,13 +2485,13 @@
 </ul>
 <h2 id="feature-transformation-and-vectorization">Feature transformation and vectorization</h2>
 <ul>
-<li><p><code>add_field_indices(array&lt;string&gt; features)</code> - Returns arrays of string that field indices (&lt;field&gt;:&lt;feature&gt;)* are argumented</p>
+<li><p><code>add_field_indices(array&lt;string&gt; features)</code> - Returns arrays of string that field indices (&lt;field&gt;:&lt;feature&gt;)* are augmented</p>
 </li>
 <li><p><code>binarize_label(int/long positive, int/long negative, ...)</code> - Returns positive/negative records that are represented as (..., int label) where label is 0 or 1</p>
 </li>
 <li><p><code>categorical_features(array&lt;string&gt; featureNames, feature1, feature2, .. [, const string options])</code> - Returns a feature vector array&lt;string&gt;</p>
 </li>
-<li><p><code>ffm_features(const array&lt;string&gt; featureNames, feature1, feature2, .. [, const string options])</code> - Takes categroical variables and returns a feature vector array&lt;string&gt; in a libffm format &lt;field&gt;:&lt;index&gt;:&lt;value&gt;</p>
+<li><p><code>ffm_features(const array&lt;string&gt; featureNames, feature1, feature2, .. [, const string options])</code> - Takes categorical variables and returns a feature vector array&lt;string&gt; in a libffm format &lt;field&gt;:&lt;index&gt;:&lt;value&gt;</p>
 </li>
 <li><p><code>indexed_features(double v1, double v2, ...)</code> - Returns a list of features as array&lt;string&gt;: [1:v1, 2:v2, ..]</p>
 </li>
@@ -2510,8 +2507,9 @@
 <h1 id="geospatial-functions">Geospatial functions</h1>
 <ul>
 <li><p><code>haversine_distance(double lat1, double lon1, double lat2, double lon2, [const boolean mile=false])</code>::double - return distance between two locations in km [or miles] using <code>haversine</code> formula</p>
-<pre><code>Usage: select latlon_distance(lat1, lon1, lat2, lon2) from ...
-</code></pre></li>
+<pre><code class="lang-sql">Usage: <span class="hljs-keyword">select</span> latlon_distance(lat1, lon1, lat2, lon2) <span class="hljs-keyword">from</span> ...
+</code></pre>
+</li>
 <li><p><code>lat2tiley(double lat, int zoom)</code>::int - Returns the tile number of the given latitude and zoom level</p>
 </li>
 <li><p><code>lon2tilex(double lon, int zoom)</code>::int - Returns the tile number of the given longitude and zoom level</p>
@@ -2520,8 +2518,8 @@
 <pre><code>OpenStreetMap: http://tile.openstreetmap.org/${zoom}/${xtile}/${ytile}.png
 Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 </code></pre></li>
-<li><p><code>tile(double lat, double lon, int zoom)</code>::bigint - Returns a tile number 2^2n where n is zoom level.</p>
-<pre><code>_FUNC_(lat,lon,zoom) = xtile(lon,zoom) + ytile(lat,zoom) * 2^zoomrefer http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames for detail
+<li><p><code>tile(double lat, double lon, int zoom)</code>::bigint - Returns a tile number 2^2n where n is zoom level. <em>FUNC</em>(lat,lon,zoom) = xtile(lon,zoom) + ytile(lat,zoom) * 2^zoom</p>
+<pre><code>refer http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames for detail
 </code></pre></li>
 <li><p><code>tilex2lon(int x, int zoom)</code>::double - Returns longitude of the given tile x and zoom level</p>
 </li>
@@ -2553,7 +2551,7 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 <ul>
 <li><p><code>bbit_minhash(array&lt;&gt; features [, int numHashes])</code> - Returns a b-bits minhash value</p>
 </li>
-<li><p><code>minhash(ANY item, array&lt;int|bigint|string&gt; features [, constant string options])</code> - Returns n differnce k-depth signatures (i.e., clusteid) for each item &lt;clusteid, item&gt;</p>
+<li><p><code>minhash(ANY item, array&lt;int|bigint|string&gt; features [, constant string options])</code> - Returns n different k-depth signatures (i.e., clusterid) for each item &lt;clusterid, item&gt;</p>
 </li>
 <li><p><code>minhashes(array&lt;&gt; features [, int numHashes, int keyGroup [, boolean noWeight]])</code> - Returns minhash values</p>
 </li>
@@ -2609,7 +2607,6 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 <li><code>approx_count_distinct(expr x [, const string options])</code> - Returns an approximation of count(DISTINCT x) using HyperLogLogPlus algorithm</li>
 </ul>
 <h1 id="ensemble-learning">Ensemble learning</h1>
-<h2 id="utils">Utils</h2>
 <ul>
 <li><p><code>argmin_kld(float mean, float covar)</code> - Returns mean or covar that minimize a KL-distance among distributions</p>
 <pre><code>The returned value is (1.0 / (sum(1.0 / covar))) * (sum(mean / covar)
@@ -2626,23 +2623,24 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 <li><p><code>weight_voted_avg(expr)</code> - Returns an averaged value by considering sum of positive/negative weights</p>
 </li>
 </ul>
-<h1 id="dicision-trees-and-randomforest">Dicision trees and RandomForest</h1>
+<h1 id="decision-trees-and-randomforest">Decision trees and RandomForest</h1>
 <ul>
 <li><p><code>train_gradient_tree_boosting_classifier(array&lt;double|string&gt; features, int label [, string options])</code> - Returns a relation consists of &lt;int iteration, int model_type, array&lt;string&gt; pred_models, double intercept, double shrinkage, array&lt;double&gt; var_importance, float oob_error_rate&gt;</p>
 </li>
-<li><p><code>train_randomforest_classifier(array&lt;double|string&gt; features, int label [, const array&lt;double&gt; classWeights, const string options])</code> - Returns a relation consists of &lt;int model_id, int model_type, string pred_model, array&lt;double&gt; var_importance, int oob_errors, int oob_tests, double weight&gt;</p>
+<li><p><code>train_randomforest_classifier(array&lt;double|string&gt; features, int label [, const string options, const array&lt;double&gt; classWeights])</code>- Returns a relation consists of &lt;string model_id, double model_weight, string model, array&lt;double&gt; var_importance, int oob_errors, int oob_tests&gt;</p>
 </li>
 <li><p><code>train_randomforest_regression(array&lt;double|string&gt; features, double target [, string options])</code> - Returns a relation consists of &lt;int model_id, int model_type, string pred_model, array&lt;double&gt; var_importance, int oob_errors, int oob_tests&gt;</p>
 </li>
 <li><p><code>guess_attribute_types(ANY, ...)</code> - Returns attribute types</p>
-<pre><code>select guess_attribute_types(*) from train limit 1;
+<pre><code class="lang-sql">select guess_attribute_types(*) from train limit 1;
 &gt; Q,Q,C,C,C,C,Q,C,C,C,Q,C,Q,Q,Q,Q,C,Q
-</code></pre></li>
-<li><p><code>rf_ensemble(int yhat [, array&lt;double&gt; proba [, double model_weight=1.0]])</code> - Returns emsebled prediction results in &lt;int label, double probability, array&lt;double&gt; probabilities&gt;</p>
+</code></pre>
+</li>
+<li><p><code>rf_ensemble(int yhat [, array&lt;double&gt; proba [, double model_weight=1.0]])</code> - Returns ensembled prediction results in &lt;int label, double probability, array&lt;double&gt; probabilities&gt;</p>
 </li>
 <li><p><code>tree_export(string model, const string options, optional array&lt;string&gt; featureNames=null, optional array&lt;string&gt; classNames=null)</code> - exports a Decision Tree model as javascript/dot]</p>
 </li>
-<li><p><code>tree_predict(string modelId, string model, array&lt;double|string&gt; features [, const string options | const boolean classification=false])</code> - Returns a prediction result of a random forest in &lt;int value, array&lt;double&gt; posteriori&gt; for classification and &lt;double&gt; for regression</p>
+<li><p><code>tree_predict(string modelId, string model, array&lt;double|string&gt; features [, const string options | const boolean classification=false])</code> - Returns a prediction result of a random forest in &lt;int value, array&lt;double&gt; a posteriori&gt; for classification and &lt;double&gt; for regression</p>
 </li>
 </ul>
 <h1 id="xgboost">XGBoost</h1>
@@ -2661,13 +2659,17 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 <h1 id="others">Others</h1>
 <ul>
 <li><p><code>hivemall_version()</code> - Returns the version of Hivemall</p>
+<pre><code class="lang-sql">Usage: <span class="hljs-keyword">SELECT</span> hivemall_version();
+</code></pre>
 </li>
 <li><p><code>lr_datagen(options string)</code> - Generates a logistic regression dataset</p>
 <pre><code class="lang-sql">WITH dual AS (<span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span>) <span class="hljs-keyword">SELECT</span> lr_datagen(<span class="hljs-string">&apos;-n_examples 1k -n_features 10&apos;</span>) <span class="hljs-keyword">FROM</span> dual;
 </code></pre>
 </li>
-<li><p><code>tf(string text)</code> - Return a term frequency in &lt;string, float&gt;
-<div id="page-footer" class="localized-footer"><hr><!--
+<li><p><code>tf(string text)</code> - Return a term frequency in &lt;string, float&gt;</p>
+</li>
+</ul>
+<p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -2689,8 +2691,6 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
-</li>
-</ul>
 
                                 
                                 </section>
@@ -2724,7 +2724,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2018-04-16T14:13:57.884Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-16T14:16:24.937Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2018-04-25T08:11:03.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-26T03:55:31.199Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
