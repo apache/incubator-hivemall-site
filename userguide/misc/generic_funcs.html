@@ -2220,13 +2220,18 @@
 
 <ul>
 <li><a href="#array">Array</a></li>
-<li><a href="#map">Map</a></li>
 <li><a href="#bitset">Bitset</a></li>
 <li><a href="#compression">Compression</a></li>
+<li><a href="#datetime">Datetime</a></li>
+<li><a href="#json">JSON</a></li>
+<li><a href="#map">Map</a></li>
 <li><a href="#mapreduce">MapReduce</a></li>
 <li><a href="#math">Math</a></li>
 <li><a href="#matrix">Matrix</a></li>
+<li><a href="#sanity-checks">Sanity Checks</a></li>
 <li><a href="#text-processing">Text processing</a></li>
+<li><a href="#timeseries">Timeseries</a></li>
+<li><a href="#vector">Vector</a></li>
 <li><a href="#others">Others</a></li>
 </ul>
 
@@ -2234,80 +2239,167 @@
 <h1 id="array">Array</h1>
 <ul>
 <li><p><code>array_append(array&lt;T&gt; arr, T elem)</code> - Append an element to the end of an array</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> array_append(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>),<span class="hljs-number">3</span>);
+ 1,2,3
+
+<span class="hljs-keyword">SELECT</span> array_append(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;a&apos;</span>,<span class="hljs-string">&apos;b&apos;</span>),<span class="hljs-string">&apos;c&apos;</span>);
+ &quot;a&quot;,&quot;b&quot;,&quot;c&quot;
+</code></pre>
 </li>
 <li><p><code>array_avg(array&lt;number&gt;)</code> - Returns an array&lt;double&gt; in which each element is the mean of a set of numbers</p>
 </li>
 <li><p><code>array_concat(array&lt;ANY&gt; x1, array&lt;ANY&gt; x2, ..)</code> - Returns a concatenated array</p>
-<pre><code class="lang-sql">select array_concat(array(1),array(2,3));
-&gt; [1,2,3]
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> array_concat(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>));
+ [1,2,3]
 </code></pre>
 </li>
 <li><p><code>array_flatten(array&lt;array&lt;ANY&gt;&gt;)</code> - Returns an array with the elements flattened.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> array_flatten(<span class="hljs-built_in">array</span>(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">4</span>,<span class="hljs-number">5</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>)));
+ [1,2,3,4,5,6,7,8]
+</code></pre>
 </li>
 <li><p><code>array_intersect(array&lt;ANY&gt; x1, array&lt;ANY&gt; x2, ..)</code> - Returns an intersect of given arrays</p>
-<pre><code class="lang-sql">select array_intersect(array(1,3,4),array(2,3,4),array(3,5));
-&gt; [3]
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> array_intersect(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">3</span>,<span class="hljs-number">5</span>));
+ [3]
 </code></pre>
 </li>
 <li><p><code>array_remove(array&lt;int|text&gt; original, int|text|array&lt;int&gt; target)</code> - Returns an array that the target is removed from the original array</p>
-<pre><code class="lang-sql">select array_remove(array(1,null,3),array(null));
-&gt; [3]
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-literal">null</span>,<span class="hljs-number">3</span>),<span class="hljs-built_in">array</span>(<span class="hljs-literal">null</span>));
+ [3]
 
-select array_remove(array(&quot;aaa&quot;,&quot;bbb&quot;),&quot;bbb&quot;);
-&gt; [&quot;aaa&quot;]
+<span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;aaa&quot;</span>,<span class="hljs-string">&quot;bbb&quot;</span>),<span class="hljs-string">&quot;bbb&quot;</span>);
+ [&quot;aaa&quot;]
 </code></pre>
 </li>
 <li><p><code>array_slice(array&lt;ANY&gt; values, int offset [, int length])</code> - Slices the given array by the given offset and length parameters.</p>
-<pre><code class="lang-sql">select array_slice(array(1,2,3,4,5,6), 2,4);
-&gt; [3,4]
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+  array_slice(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>), <span class="hljs-number">2</span>,<span class="hljs-number">4</span>),
+  array_slice(
+   <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;zero&quot;</span>, <span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>, <span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>, <span class="hljs-string">&quot;seven&quot;</span>, <span class="hljs-string">&quot;eight&quot;</span>, <span class="hljs-string">&quot;nine&quot;</span>, <span class="hljs-string">&quot;ten&quot;</span>),
+   <span class="hljs-number">0</span>, <span class="hljs-comment">-- offset</span>
+   <span class="hljs-number">2</span> <span class="hljs-comment">-- length</span>
+  ),
+  array_slice(
+   <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;zero&quot;</span>, <span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>, <span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>, <span class="hljs-string">&quot;seven&quot;</span>, <span class="hljs-string">&quot;eight&quot;</span>, <span class="hljs-string">&quot;nine&quot;</span>, <span class="hljs-string">&quot;ten&quot;</span>),
+   <span class="hljs-number">6</span>, <span class="hljs-comment">-- offset</span>
+   <span class="hljs-number">3</span> <span class="hljs-comment">-- length</span>
+  ),
+  array_slice(
+   <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;zero&quot;</span>, <span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>, <span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>, <span class="hljs-string">&quot;seven&quot;</span>, <span class="hljs-string">&quot;eight&quot;</span>, <span class="hljs-string">&quot;nine&quot;</span>, <span class="hljs-string">&quot;ten&quot;</span>),
+   <span class="hljs-number">6</span>, <span class="hljs-comment">-- offset</span>
+   <span class="hljs-number">10</span> <span class="hljs-comment">-- length</span>
+  ),
+  array_slice(
+   <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;zero&quot;</span>, <span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>, <span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>, <span class="hljs-string">&quot;seven&quot;</span>, <span class="hljs-string">&quot;eight&quot;</span>, <span class="hljs-string">&quot;nine&quot;</span>, <span class="hljs-string">&quot;ten&quot;</span>),
+   <span class="hljs-number">6</span> <span class="hljs-comment">-- offset</span>
+  ),
+  array_slice(
+   <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;zero&quot;</span>, <span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>, <span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>, <span class="hljs-string">&quot;seven&quot;</span>, <span class="hljs-string">&quot;eight&quot;</span>, <span class="hljs-string">&quot;nine&quot;</span>, <span class="hljs-string">&quot;ten&quot;</span>),
+   <span class="hljs-number">-3</span> <span class="hljs-comment">-- offset</span>
+  ),
+  array_slice(
+   <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;zero&quot;</span>, <span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>, <span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>, <span class="hljs-string">&quot;seven&quot;</span>, <span class="hljs-string">&quot;eight&quot;</span>, <span class="hljs-string">&quot;nine&quot;</span>, <span class="hljs-string">&quot;ten&quot;</span>),
+   <span class="hljs-number">-3</span>, <span class="hljs-comment">-- offset</span>
+   <span class="hljs-number">2</span> <span class="hljs-comment">-- length</span>
+  );
+
+ [3,4]
+ [&quot;zero&quot;,&quot;one&quot;] 
+ [&quot;six&quot;,&quot;seven&quot;,&quot;eight&quot;]
+ [&quot;six&quot;,&quot;seven&quot;,&quot;eight&quot;,&quot;nine&quot;,&quot;ten&quot;]
+ [&quot;six&quot;,&quot;seven&quot;,&quot;eight&quot;,&quot;nine&quot;,&quot;ten&quot;]
+ [&quot;eight&quot;,&quot;nine&quot;,&quot;ten&quot;]
+ [&quot;eight&quot;,&quot;nine&quot;]
 </code></pre>
 </li>
 <li><p><code>array_sum(array&lt;number&gt;)</code> - Returns an array&lt;double&gt; in which each element is summed up</p>
 </li>
+<li><p><code>array_to_str(array arr [, string sep=&apos;,&apos;])</code> - Convert array to string using a sperator</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> array_to_str(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),<span class="hljs-string">&apos;-&apos;</span>);
+1-2-3
+</code></pre>
+</li>
 <li><p><code>array_union(array1, array2, ...)</code> - Returns the union of a set of arrays</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> array_union(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>));
+[1,2]
+
+<span class="hljs-keyword">SELECT</span> array_union(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">2</span>,<span class="hljs-number">5</span>));
+[1,2,3,5]
+</code></pre>
 </li>
 <li><p><code>conditional_emit(array&lt;boolean&gt; conditions, array&lt;primitive&gt; features)</code> - Emit features of a row according to various conditions</p>
+<pre><code class="lang-sql">WITH input as (
+   <span class="hljs-keyword">select</span> <span class="hljs-built_in">array</span>(<span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>) <span class="hljs-keyword">as</span> conditions, <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;one&quot;</span>, <span class="hljs-string">&quot;two&quot;</span>, <span class="hljs-string">&quot;three&quot;</span>) <span class="hljs-keyword">as</span> features
+   <span class="hljs-keyword">UNION</span> ALL
+   <span class="hljs-keyword">select</span> <span class="hljs-built_in">array</span>(<span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>), <span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;four&quot;</span>, <span class="hljs-string">&quot;five&quot;</span>, <span class="hljs-string">&quot;six&quot;</span>)
+)
+<span class="hljs-keyword">SELECT</span>
+  conditional_emit(
+     conditions, features
+  )
+<span class="hljs-keyword">FROM</span> 
+  <span class="hljs-keyword">input</span>;
+ one
+ three
+ four
+ five
+</code></pre>
 </li>
 <li><p><code>element_at(array&lt;T&gt; list, int pos)</code> - Returns an element at the given position</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> element_at(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>),<span class="hljs-number">0</span>);
+ 1
+
+<span class="hljs-keyword">SELECT</span> element_at(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>),<span class="hljs-number">-2</span>);
+ 3
+</code></pre>
 </li>
-<li><p><code>first_element(x)</code> - Returns the first element in an array </p>
+<li><p><code>first_element(x)</code> - Returns the first element in an array</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> first_element(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;a&apos;</span>,<span class="hljs-string">&apos;b&apos;</span>,<span class="hljs-string">&apos;c&apos;</span>));
+ a
+
+<span class="hljs-keyword">SELECT</span> first_element(<span class="hljs-built_in">array</span>());
+ NULL
+</code></pre>
 </li>
 <li><p><code>float_array(nDims)</code> - Returns an array&lt;float&gt; of nDims elements</p>
 </li>
 <li><p><code>last_element(x)</code> - Return the last element in an array</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> last_element(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;a&apos;</span>,<span class="hljs-string">&apos;b&apos;</span>,<span class="hljs-string">&apos;c&apos;</span>));
+ c
+</code></pre>
 </li>
 <li><p><code>select_k_best(array&lt;number&gt; array, const array&lt;number&gt; importance, const int k)</code> - Returns selected top-k elements as array&lt;double&gt;</p>
 </li>
 <li><p><code>sort_and_uniq_array(array&lt;int&gt;)</code> - Takes array&lt;int&gt; and returns a sorted array with duplicate elements eliminated</p>
-<pre><code class="lang-sql">select sort_and_uniq_array(array(3,1,1,-2,10));
-&gt; [-2,1,3,10]
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> sort_and_uniq_array(<span class="hljs-built_in">array</span>(<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">-2</span>,<span class="hljs-number">10</span>));
+ [-2,1,3,10]
 </code></pre>
 </li>
 <li><p><code>subarray_endwith(array&lt;int|text&gt; original, int|text key)</code> - Returns an array that ends with the specified key</p>
-<pre><code class="lang-sql">select subarray_endwith(array(1,2,3,4), 3);
-&gt; [1,2,3]
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> subarray_endwith(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>), <span class="hljs-number">3</span>);
+ [1,2,3]
 </code></pre>
 </li>
 <li><p><code>subarray_startwith(array&lt;int|text&gt; original, int|text key)</code> - Returns an array that starts with the specified key</p>
-<pre><code class="lang-sql">select subarray_startwith(array(1,2,3,4), 2);
-&gt; [2,3,4]
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> subarray_startwith(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>), <span class="hljs-number">2</span>);
+ [2,3,4]
 </code></pre>
 </li>
 <li><p><code>to_string_array(array&lt;ANY&gt;)</code> - Returns an array of strings</p>
 </li>
 <li><p><code>to_ordered_list(PRIMITIVE value [, PRIMITIVE key, const string options])</code> - Return list of values sorted by value itself or specific key</p>
-<pre><code class="lang-sql">with t as (
-    <span class="hljs-keyword">select</span> <span class="hljs-number">5</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;apple&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
-    <span class="hljs-keyword">union</span> all
-    <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;banana&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
-    <span class="hljs-keyword">union</span> all
-    <span class="hljs-keyword">select</span> <span class="hljs-number">4</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;candy&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
-    <span class="hljs-keyword">union</span> all
-    <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;donut&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
-    <span class="hljs-keyword">union</span> all
-    <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;egg&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+<pre><code class="lang-sql">WITH t as (
+    <span class="hljs-keyword">SELECT</span> <span class="hljs-number">5</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;apple&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+    <span class="hljs-keyword">UNION</span> ALL
+    <span class="hljs-keyword">SELECT</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;banana&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+    <span class="hljs-keyword">UNION</span> ALL
+    <span class="hljs-keyword">SELECT</span> <span class="hljs-number">4</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;candy&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+    <span class="hljs-keyword">UNION</span> ALL
+    <span class="hljs-keyword">SELECT</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;donut&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+    <span class="hljs-keyword">UNION</span> ALL
+    <span class="hljs-keyword">SELECT</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;egg&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
 )
-<span class="hljs-keyword">select</span>                                             <span class="hljs-comment">-- expected output</span>
+<span class="hljs-keyword">SELECT</span>                                             <span class="hljs-comment">-- expected output</span>
     to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-reverse&apos;</span>),       <span class="hljs-comment">-- [apple, candy, (banana, egg | egg, banana), donut] (reverse order)</span>
     to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k 2&apos;</span>),           <span class="hljs-comment">-- [apple, candy] (top-k)</span>
     to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k 100&apos;</span>),         <span class="hljs-comment">-- [apple, candy, (banana, egg | egg, banana), dunut]</span>
@@ -2319,16 +2411,214 @@ select array_remove(array(&quot;aaa&quot;,&quot;bbb&quot;),&quot;bbb&quot;);
     to_ordered_list(<span class="hljs-keyword">value</span>, <span class="hljs-string">&apos;-k 2&apos;</span>),                <span class="hljs-comment">-- [egg, donut] (alphabetically)</span>
     to_ordered_list(<span class="hljs-keyword">key</span>, <span class="hljs-string">&apos;-k -2 -reverse&apos;</span>),        <span class="hljs-comment">-- [5, 4] (top-2 keys)</span>
     to_ordered_list(<span class="hljs-keyword">key</span>)                           <span class="hljs-comment">-- [2, 3, 3, 4, 5] (natural ordered keys)</span>
-<span class="hljs-keyword">from</span>
+<span class="hljs-keyword">FROM</span>
     t
 </code></pre>
 </li>
 </ul>
+<h1 id="bitset">Bitset</h1>
+<ul>
+<li><p><code>bits_collect(int|long x)</code> - Returns a bitset in array&lt;long&gt;</p>
+</li>
+<li><p><code>bits_or(array&lt;long&gt; b1, array&lt;long&gt; b2, ..)</code> - Returns a logical OR given bitsets</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> unbits(bits_or(to_bits(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">4</span>)),to_bits(<span class="hljs-built_in">array</span>(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>))));
+ [1,2,3,4]
+</code></pre>
+</li>
+<li><p><code>to_bits(int[] indexes)</code> - Returns an bitset representation if the given indexes in long[]</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> to_bits(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">128</span>));
+ [14,-9223372036854775808]
+</code></pre>
+</li>
+<li><p><code>unbits(long[] bitset)</code> - Returns an long array of the give bitset representation</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> unbits(to_bits(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>)));
+ [1,2,3,4]
+</code></pre>
+</li>
+</ul>
+<h1 id="compression">Compression</h1>
+<ul>
+<li><p><code>deflate(TEXT data [, const int compressionLevel])</code> - Returns a compressed BINARY object by using Deflater. The compression level must be in range [-1,9]</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> base91(deflate(<span class="hljs-string">&apos;aaaaaaaaaaaaaaaabbbbccc&apos;</span>));
+ AA+=kaIM|WTt!+wbGAA
+</code></pre>
+</li>
+<li><p><code>inflate(BINARY compressedData)</code> - Returns a decompressed STRING by using Inflater</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> inflate(unbase91(base91(deflate(<span class="hljs-string">&apos;aaaaaaaaaaaaaaaabbbbccc&apos;</span>))));
+ aaaaaaaaaaaaaaaabbbbccc
+</code></pre>
+</li>
+</ul>
+<h1 id="datetime">Datetime</h1>
+<ul>
+<li><code>sessionize(long timeInSec, long thresholdInSec [, String subject])</code>- Returns a UUID string of a session.<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+  sessionize(<span class="hljs-keyword">time</span>, <span class="hljs-number">3600</span>, ip_addr) <span class="hljs-keyword">as</span> session_id, 
+  <span class="hljs-keyword">time</span>, ip_addr
+<span class="hljs-keyword">FROM</span> (
+  <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">time</span>, ipaddr 
+  <span class="hljs-keyword">FROM</span> weblog 
+  <span class="hljs-keyword">DISTRIBUTE</span> <span class="hljs-keyword">BY</span> ip_addr, <span class="hljs-keyword">time</span> <span class="hljs-keyword">SORT</span> <span class="hljs-keyword">BY</span> ip_addr, <span class="hljs-keyword">time</span> <span class="hljs-keyword">DESC</span>
+) t1
+</code></pre>
+</li>
+</ul>
+<h1 id="json">JSON</h1>
+<ul>
+<li><p><code>from_json(string jsonString, const string returnTypes [, const array&lt;string&gt;|const string columnNames])</code> - Return Hive object.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span>
+  from_json(
+    <span class="hljs-string">&apos;{ &quot;person&quot; : { &quot;name&quot; : &quot;makoto&quot; , &quot;age&quot; : 37 } }&apos;</span>,
+    <span class="hljs-string">&apos;struct&lt;name:string,age:int&gt;&apos;</span>, 
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;person&apos;</span>)
+  ),
+  from_json(
+    <span class="hljs-string">&apos;[0.1,1.1,2.2]&apos;</span>,
+    <span class="hljs-string">&apos;array&lt;double&gt;&apos;</span>
+  ),
+  from_json(to_json(
+    <span class="hljs-built_in">ARRAY</span>(
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;tokyo&quot;</span>), 
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;osaka&quot;</span>)
+    )
+  ),<span class="hljs-string">&apos;array&lt;struct&lt;country:string,city:string&gt;&gt;&apos;</span>),
+  from_json(to_json(
+    <span class="hljs-built_in">ARRAY</span>(
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;tokyo&quot;</span>), 
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;osaka&quot;</span>)
+    ),
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;city&apos;</span>)
+  ), <span class="hljs-string">&apos;array&lt;struct&lt;country:string,city:string&gt;&gt;&apos;</span>),
+  from_json(to_json(
+    <span class="hljs-built_in">ARRAY</span>(
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;tokyo&quot;</span>), 
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;osaka&quot;</span>)
+    )
+  ),<span class="hljs-string">&apos;array&lt;struct&lt;city:string&gt;&gt;&apos;</span>);
+</code></pre>
+<pre><code> {&quot;name&quot;:&quot;makoto&quot;,&quot;age&quot;:37}
+ [0.1,1.1,2.2]
+ [{&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;tokyo&quot;},{&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;osaka&quot;}]
+ [{&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;tokyo&quot;},{&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;osaka&quot;}]
+ [{&quot;city&quot;:&quot;tokyo&quot;},{&quot;city&quot;:&quot;osaka&quot;}]
+</code></pre></li>
+<li><p><code>to_json(ANY object [, const array&lt;string&gt;|const string columnNames])</code> - Returns Json string</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+  NAMED_STRUCT(<span class="hljs-string">&quot;Name&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-string">&quot;age&quot;</span>, <span class="hljs-number">31</span>),
+  to_json(
+     NAMED_STRUCT(<span class="hljs-string">&quot;Name&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-string">&quot;age&quot;</span>, <span class="hljs-number">31</span>)
+  ),
+  to_json(
+     NAMED_STRUCT(<span class="hljs-string">&quot;Name&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-string">&quot;age&quot;</span>, <span class="hljs-number">31</span>),
+     <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;Name&apos;</span>, <span class="hljs-string">&apos;age&apos;</span>)
+  ),
+  to_json(
+     NAMED_STRUCT(<span class="hljs-string">&quot;Name&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-string">&quot;age&quot;</span>, <span class="hljs-number">31</span>),
+     <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;name&apos;</span>, <span class="hljs-string">&apos;age&apos;</span>)
+  ),
+  to_json(
+     NAMED_STRUCT(<span class="hljs-string">&quot;Name&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-string">&quot;age&quot;</span>, <span class="hljs-number">31</span>),
+     <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;age&apos;</span>)
+  ),
+  to_json(
+     NAMED_STRUCT(<span class="hljs-string">&quot;Name&quot;</span>, <span class="hljs-string">&quot;John&quot;</span>, <span class="hljs-string">&quot;age&quot;</span>, <span class="hljs-number">31</span>),
+     <span class="hljs-built_in">array</span>()
+  ),
+  to_json(
+     <span class="hljs-literal">null</span>,
+     <span class="hljs-built_in">array</span>()
+  ),
+  to_json(
+    <span class="hljs-keyword">struct</span>(<span class="hljs-string">&quot;123&quot;</span>, <span class="hljs-string">&quot;456&quot;</span>, <span class="hljs-number">789</span>, <span class="hljs-built_in">array</span>(<span class="hljs-number">314</span>,<span class="hljs-number">007</span>)),
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;ti&apos;</span>,<span class="hljs-string">&apos;si&apos;</span>,<span class="hljs-string">&apos;i&apos;</span>,<span class="hljs-string">&apos;bi&apos;</span>)
+  ),
+  to_json(
+    <span class="hljs-keyword">struct</span>(<span class="hljs-string">&quot;123&quot;</span>, <span class="hljs-string">&quot;456&quot;</span>, <span class="hljs-number">789</span>, <span class="hljs-built_in">array</span>(<span class="hljs-number">314</span>,<span class="hljs-number">007</span>)),
+    <span class="hljs-string">&apos;ti,si,i,bi&apos;</span>
+  ),
+  to_json(
+    <span class="hljs-keyword">struct</span>(<span class="hljs-string">&quot;123&quot;</span>, <span class="hljs-string">&quot;456&quot;</span>, <span class="hljs-number">789</span>, <span class="hljs-built_in">array</span>(<span class="hljs-number">314</span>,<span class="hljs-number">007</span>))
+  ),
+  to_json(
+    NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;tokyo&quot;</span>)
+  ),
+  to_json(
+    NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;tokyo&quot;</span>), 
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;city&apos;</span>)
+  ),
+  to_json(
+    <span class="hljs-built_in">ARRAY</span>(
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;tokyo&quot;</span>), 
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;osaka&quot;</span>)
+    )
+  ),
+  to_json(
+    <span class="hljs-built_in">ARRAY</span>(
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;tokyo&quot;</span>), 
+      NAMED_STRUCT(<span class="hljs-string">&quot;country&quot;</span>, <span class="hljs-string">&quot;japan&quot;</span>, <span class="hljs-string">&quot;city&quot;</span>, <span class="hljs-string">&quot;osaka&quot;</span>)
+    ),
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;city&apos;</span>)
+  );
+</code></pre>
+<pre><code> {&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:31}
+ {&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:31}
+ {&quot;Name&quot;:&quot;John&quot;,&quot;age&quot;:31}
+ {&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:31}
+ {&quot;age&quot;:31}
+ {}
+ NULL
+ {&quot;ti&quot;:&quot;123&quot;,&quot;si&quot;:&quot;456&quot;,&quot;i&quot;:789,&quot;bi&quot;:[314,7]}
+ {&quot;ti&quot;:&quot;123&quot;,&quot;si&quot;:&quot;456&quot;,&quot;i&quot;:789,&quot;bi&quot;:[314,7]}
+ {&quot;col1&quot;:&quot;123&quot;,&quot;col2&quot;:&quot;456&quot;,&quot;col3&quot;:789,&quot;col4&quot;:[314,7]}
+ {&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;tokyo&quot;}
+ {&quot;city&quot;:&quot;tokyo&quot;}
+ [{&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;tokyo&quot;},{&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;osaka&quot;}]
+ [{&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;tokyo&quot;},{&quot;country&quot;:&quot;japan&quot;,&quot;city&quot;:&quot;osaka&quot;}]
+</code></pre></li>
+</ul>
 <h1 id="map">Map</h1>
 <ul>
+<li><p><code>map_exclude_keys(Map&lt;K,V&gt; map, array&lt;K&gt; filteringKeys)</code> - Returns the filtered entries of a map not having specified keys</p>
+<pre><code class="lang-sql">SELECT map_exclude_keys(map(1,&apos;one&apos;,2,&apos;two&apos;,3,&apos;three&apos;),array(2,3));
+{1:&quot;one&quot;}
+</code></pre>
+</li>
 <li><p><code>map_get_sum(map&lt;int,float&gt; src, array&lt;int&gt; keys)</code> - Returns sum of values that are retrieved by keys</p>
 </li>
+<li><p><code>map_include_keys(Map&lt;K,V&gt; map, array&lt;K&gt; filteringKeys)</code> - Returns the filtered entries of a map having specified keys</p>
+<pre><code class="lang-sql">SELECT map_include_keys(map(1,&apos;one&apos;,2,&apos;two&apos;,3,&apos;three&apos;),array(2,3));
+{2:&quot;two&quot;,3:&quot;three&quot;}
+</code></pre>
+</li>
+<li><p><code>map_index(a, n)</code> - Returns the n-th element of the given array</p>
+<pre><code class="lang-sql">WITH tmp as (
+  <span class="hljs-keyword">SELECT</span> <span class="hljs-string">&quot;one&quot;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>
+  <span class="hljs-keyword">UNION</span> ALL
+  <span class="hljs-keyword">SELECT</span> <span class="hljs-string">&quot;two&quot;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">key</span>
+)
+<span class="hljs-keyword">SELECT</span> map_index(<span class="hljs-keyword">map</span>(<span class="hljs-string">&quot;one&quot;</span>,<span class="hljs-number">1</span>,<span class="hljs-string">&quot;two&quot;</span>,<span class="hljs-number">2</span>),<span class="hljs-keyword">key</span>)
+<span class="hljs-keyword">FROM</span> tmp;
+
+1
+2
+</code></pre>
+</li>
+<li><p><code>map_key_values(map)</code> - Returns a array of key-value pairs.</p>
+<pre><code class="lang-sql">SELECT map_key_values(map(&quot;one&quot;,1,&quot;two&quot;,2));
+
+[{&quot;key&quot;:&quot;one&quot;,&quot;value&quot;:1},{&quot;key&quot;:&quot;two&quot;,&quot;value&quot;:2}]
+</code></pre>
+</li>
 <li><p><code>map_tail_n(map SRC, int N)</code> - Returns the last N elements from a sorted array of SRC</p>
+</li>
+<li><p><code>merge_maps(x)</code> - Returns a map which contains the union of an aggregation of maps. Note that an existing value of a key can be replaced with the other duplicate key entry.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+  merge_maps(m) 
+<span class="hljs-keyword">FROM</span> (
+  <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">map</span>(<span class="hljs-string">&apos;A&apos;</span>,<span class="hljs-number">10</span>,<span class="hljs-string">&apos;B&apos;</span>,<span class="hljs-number">20</span>,<span class="hljs-string">&apos;C&apos;</span>,<span class="hljs-number">30</span>) 
+  <span class="hljs-keyword">UNION</span> ALL 
+  <span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">map</span>(<span class="hljs-string">&apos;A&apos;</span>,<span class="hljs-number">10</span>,<span class="hljs-string">&apos;B&apos;</span>,<span class="hljs-number">20</span>,<span class="hljs-string">&apos;C&apos;</span>,<span class="hljs-number">30</span>)
+) t
+</code></pre>
 </li>
 <li><p><code>to_map(key, value)</code> - Convert two aggregated columns into a key-value map</p>
 </li>
@@ -2355,39 +2645,6 @@ select array_remove(array(&quot;aaa&quot;,&quot;bbb&quot;),&quot;bbb&quot;);
 </code></pre>
 </li>
 </ul>
-<h1 id="bitset">Bitset</h1>
-<ul>
-<li><p><code>bits_collect(int|long x)</code> - Returns a bitset in array&lt;long&gt;</p>
-</li>
-<li><p><code>bits_or(array&lt;long&gt; b1, array&lt;long&gt; b2, ..)</code> - Returns a logical OR given bitsets</p>
-<pre><code class="lang-sql">select unbits(bits_or(to_bits(array(1,4)),to_bits(array(2,3))));
-&gt; [1,2,3,4]
-</code></pre>
-</li>
-<li><p><code>to_bits(int[] indexes)</code> - Returns an bitset representation if the given indexes in long[]</p>
-<pre><code class="lang-sql">select to_bits(array(1,2,3,128));
-&gt; [14,-9223372036854775808]
-</code></pre>
-</li>
-<li><p><code>unbits(long[] bitset)</code> - Returns an long array of the give bitset representation</p>
-<pre><code class="lang-sql">select unbits(to_bits(array(1,4,2,3)));
-&gt; [1,2,3,4]
-</code></pre>
-</li>
-</ul>
-<h1 id="compression">Compression</h1>
-<ul>
-<li><p><code>deflate(TEXT data [, const int compressionLevel])</code> - Returns a compressed BINARY object by using Deflater. The compression level must be in range [-1,9]</p>
-<pre><code class="lang-sql">select base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;));
-&gt; AA+=kaIM|WTt!+wbGAA
-</code></pre>
-</li>
-<li><p><code>inflate(BINARY compressedData)</code> - Returns a decompressed STRING by using Inflater</p>
-<pre><code class="lang-sql">select inflate(unbase91(base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;))));
-&gt; aaaaaaaaaaaaaaaabbbbccc
-</code></pre>
-</li>
-</ul>
 <h1 id="mapreduce">MapReduce</h1>
 <ul>
 <li><p><code>distcache_gets(filepath, key, default_value [, parseKey])</code> - Returns map&lt;key_type, value_type&gt;|value_type</p>
@@ -2398,9 +2655,10 @@ select array_remove(array(&quot;aaa&quot;,&quot;bbb&quot;),&quot;bbb&quot;);
 </li>
 <li><p><code>rowid()</code> - Returns a generated row id of a form {TASK_ID}-{SEQUENCE_NUMBER}</p>
 </li>
-<li><p><code>rownum()</code> - Returns a generated row number in long</p>
-<pre><code>returns sprintf(`%d%04d`,sequence,taskId) as long
-</code></pre></li>
+<li><p><code>rownum()</code> - Returns a generated row number <code>sprintf(</code>%d%04d<code>,sequence,taskId)</code> in long</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">rownum</span>() <span class="hljs-keyword">as</span> <span class="hljs-keyword">rownum</span>, xxx <span class="hljs-keyword">from</span> ...
+</code></pre>
+</li>
 <li><p><code>taskid()</code> - Returns the value of mapred.task.partition</p>
 </li>
 </ul>
@@ -2415,42 +2673,83 @@ select array_remove(array(&quot;aaa&quot;,&quot;bbb&quot;),&quot;bbb&quot;);
 <ul>
 <li><code>transpose_and_dot(array&lt;number&gt; matrix0_row, array&lt;number&gt; matrix1_row)</code> - Returns dot(matrix0.T, matrix1) as array&lt;array&lt;double&gt;&gt;, shape = (matrix0.#cols, matrix1.#cols)</li>
 </ul>
+<h1 id="sanity-checks">Sanity Checks</h1>
+<ul>
+<li><p><code>assert(boolean condition)</code> or <em>FUNC</em>(boolean condition, string errMsg)- Throws HiveException if condition is not met</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">FROM</span> stock_price <span class="hljs-keyword">WHERE</span> assert(price &gt; <span class="hljs-number">0.0</span>);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">FROM</span> stock_price <span class="hljs-keyword">WHERE</span> assert(price &gt; <span class="hljs-number">0.0</span>, <span class="hljs-string">&apos;price MUST be more than 0.0&apos;</span>)
+</code></pre>
+</li>
+<li><p><code>raise_error()</code> or <em>FUNC</em>(string msg) - Throws an error</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> product_id, price, raise_error(<span class="hljs-string">&apos;Found an invalid record&apos;</span>) <span class="hljs-keyword">FROM</span> xxx <span class="hljs-keyword">WHERE</span> price &lt; <span class="hljs-number">0.0</span>
+</code></pre>
+</li>
+</ul>
 <h1 id="text-processing">Text processing</h1>
 <ul>
 <li><p><code>base91(BINARY bin)</code> - Convert the argument from binary to a BASE91 string</p>
-<pre><code class="lang-sql">select base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;));
-&gt; AA+=kaIM|WTt!+wbGAA
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> base91(deflate(<span class="hljs-string">&apos;aaaaaaaaaaaaaaaabbbbccc&apos;</span>));
+ AA+=kaIM|WTt!+wbGAA
 </code></pre>
 </li>
 <li><p><code>is_stopword(string word)</code> - Returns whether English stopword or not</p>
 </li>
 <li><p><code>normalize_unicode(string str [, string form])</code> - Transforms <code>str</code> with the specified normalization form. The <code>form</code> takes one of NFC (default), NFD, NFKC, or NFKD</p>
-<pre><code class="lang-sql">select normalize_unicode(&apos;&#xFF8A;&#xFF9D;&#xFF76;&#xFF78;&#xFF76;&#xFF85;&apos;,&apos;NFKC&apos;);
-&gt; &#x30CF;&#x30F3;&#x30AB;&#x30AF;&#x30AB;&#x30CA;
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> normalize_unicode(<span class="hljs-string">&apos;&#xFF8A;&#xFF9D;&#xFF76;&#xFF78;&#xFF76;&#xFF85;&apos;</span>,<span class="hljs-string">&apos;NFKC&apos;</span>);
+ &#x30CF;&#x30F3;&#x30AB;&#x30AF;&#x30AB;&#x30CA;
 
-select normalize_unicode(&apos;&#x3231;&#x3327;&#x3326;&#x2162;&apos;,&apos;NFKC&apos;);
-&gt; (&#x682A;)&#x30C8;&#x30F3;&#x30C9;&#x30EB;III
+<span class="hljs-keyword">SELECT</span> normalize_unicode(<span class="hljs-string">&apos;&#x3231;&#x3327;&#x3326;&#x2162;&apos;</span>,<span class="hljs-string">&apos;NFKC&apos;</span>);
+ (&#x682A;)&#x30C8;&#x30F3;&#x30C9;&#x30EB;III
 </code></pre>
 </li>
 <li><p><code>singularize(string word)</code> - Returns singular form of a given English word</p>
-<pre><code class="lang-sql">select singularize(lower(&quot;Apples&quot;));
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> singularize(<span class="hljs-keyword">lower</span>(<span class="hljs-string">&quot;Apples&quot;</span>));
 
-&gt; &quot;apple&quot;
+ &quot;apple&quot;
 </code></pre>
 </li>
-<li><p><code>split_words(string query [, string regex])</code> - Returns an array&lt;text&gt; containing split strings</p>
+<li><p><code>split_words(string query [, string regex])</code> - Returns an array&lt;text&gt; containing splitted strings</p>
 </li>
 <li><p><code>tokenize(string englishText [, boolean toLowerCase])</code> - Returns tokenized words in array&lt;string&gt;</p>
 </li>
 <li><p><code>unbase91(string)</code> - Convert a BASE91 string to a binary</p>
-<pre><code class="lang-sql">select inflate(unbase91(base91(deflate(&apos;aaaaaaaaaaaaaaaabbbbccc&apos;))));
-&gt; aaaaaaaaaaaaaaaabbbbccc
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> inflate(unbase91(base91(deflate(<span class="hljs-string">&apos;aaaaaaaaaaaaaaaabbbbccc&apos;</span>))));
+ aaaaaaaaaaaaaaaabbbbccc
 </code></pre>
 </li>
 <li><p><code>word_ngrams(array&lt;string&gt; words, int minSize, int maxSize])</code> - Returns list of n-grams for given words, where <code>minSize &amp;lt;= n &amp;lt;= maxSize</code></p>
-<pre><code class="lang-sql">select word_ngrams(tokenize(&apos;Machine learning is fun!&apos;, true), 1, 2);
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> word_ngrams(tokenize(<span class="hljs-string">&apos;Machine learning is fun!&apos;</span>, <span class="hljs-literal">true</span>), <span class="hljs-number">1</span>, <span class="hljs-number">2</span>);
 
-&gt; [&quot;machine&quot;,&quot;machine learning&quot;,&quot;learning&quot;,&quot;learning is&quot;,&quot;is&quot;,&quot;is fun&quot;,&quot;fun&quot;]
+ [&quot;machine&quot;,&quot;machine learning&quot;,&quot;learning&quot;,&quot;learning is&quot;,&quot;is&quot;,&quot;is fun&quot;,&quot;fun&quot;]
+</code></pre>
+</li>
+</ul>
+<h1 id="timeseries">Timeseries</h1>
+<ul>
+<li><code>moving_avg(NUMBER value, const int windowSize)</code> - Returns moving average of a time series using a given window<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> moving_avg(x, <span class="hljs-number">3</span>) <span class="hljs-keyword">FROM</span> (<span class="hljs-keyword">SELECT</span> explode(<span class="hljs-built_in">array</span>(<span class="hljs-number">1.0</span>,<span class="hljs-number">2.0</span>,<span class="hljs-number">3.0</span>,<span class="hljs-number">4.0</span>,<span class="hljs-number">5.0</span>,<span class="hljs-number">6.0</span>,<span class="hljs-number">7.0</span>)) <span class="hljs-keyword">as</span> x) series;
+ 1.0
+ 1.5
+ 2.0
+ 3.0
+ 4.0
+ 5.0
+ 6.0
+</code></pre>
+</li>
+</ul>
+<h1 id="vector">Vector</h1>
+<ul>
+<li><p><code>vector_add(array&lt;NUMBER&gt; x, array&lt;NUMBER&gt; y)</code> - Perform vector ADD operation.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> vector_add(<span class="hljs-built_in">array</span>(<span class="hljs-number">1.0</span>,<span class="hljs-number">2.0</span>,<span class="hljs-number">3.0</span>), <span class="hljs-built_in">array</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>));
+[3.0,5.0,7.0]
+</code></pre>
+</li>
+<li><p><code>vector_dot(array&lt;NUMBER&gt; x, array&lt;NUMBER&gt; y)</code> - Performs vector dot product.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> vector_dot(<span class="hljs-built_in">array</span>(<span class="hljs-number">1.0</span>,<span class="hljs-number">2.0</span>,<span class="hljs-number">3.0</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">2.0</span>,<span class="hljs-number">3.0</span>,<span class="hljs-number">4.0</span>));
+20
+
+<span class="hljs-keyword">SELECT</span> vector_dot(<span class="hljs-built_in">array</span>(<span class="hljs-number">1.0</span>,<span class="hljs-number">2.0</span>,<span class="hljs-number">3.0</span>),<span class="hljs-number">2</span>);
+[2.0,4.0,6.0]
 </code></pre>
 </li>
 </ul>
@@ -2460,23 +2759,49 @@ select normalize_unicode(&apos;&#x3231;&#x3327;&#x3326;&#x2162;&apos;,&apos;NFKC
 </li>
 <li><p><code>each_top_k(int K, Object group, double cmpKey, *)</code> - Returns top-K values (or tail-K values when k is less than 0)</p>
 </li>
-<li><p><code>generate_series(const int|bigint start, const int|bigint end)</code> - Generate a series of values, from start to end. A similar function to PostgreSQL&apos;s <code>generate_serics</code>. <a href="http://www.postgresql.org/docs/current/static/functions-srf.html" target="_blank">http://www.postgresql.org/docs/current/static/functions-srf.html</a></p>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> generate_series(<span class="hljs-number">1</span>,<span class="hljs-number">9</span>);
+<li><p><code>generate_series(const int|bigint start, const int|bigint end)</code> - Generate a series of values, from start to end. A similar function to PostgreSQL&apos;s <a href="http://www.postgresql.org/docs/current/static/functions-srf.html" target="_blank">generate_serics</a></p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> generate_series(<span class="hljs-number">2</span>,<span class="hljs-number">4</span>);
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
+ 2
+ 3
+ 4
+
+<span class="hljs-keyword">SELECT</span> generate_series(<span class="hljs-number">5</span>,<span class="hljs-number">1</span>,<span class="hljs-number">-2</span>);
+
+ 5
+ 3
+ 1
+
+<span class="hljs-keyword">SELECT</span> generate_series(<span class="hljs-number">4</span>,<span class="hljs-number">3</span>);
+
+ (no return)
+
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">date_add</span>(<span class="hljs-keyword">current_date</span>(),<span class="hljs-keyword">value</span>),<span class="hljs-keyword">value</span> <span class="hljs-keyword">from</span> (<span class="hljs-keyword">SELECT</span> generate_series(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>)) t;
+
+ 2018-04-21      1
+ 2018-04-22      2
+ 2018-04-23      3
+
+WITH input as (
+ <span class="hljs-keyword">SELECT</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> c1, <span class="hljs-number">10</span> <span class="hljs-keyword">as</span> c2, <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> step
+ <span class="hljs-keyword">UNION</span> ALL
+ <span class="hljs-keyword">SELECT</span> <span class="hljs-number">10</span>, <span class="hljs-number">2</span>, <span class="hljs-number">-3</span>
+)
+<span class="hljs-keyword">SELECT</span> generate_series(c1, c2, step) <span class="hljs-keyword">as</span> series
+<span class="hljs-keyword">FROM</span> <span class="hljs-keyword">input</span>;
+
+ 1
+ 4
+ 7
+ 10
+ 10
+ 7
+ 4
 </code></pre>
 </li>
 <li><p><code>try_cast(ANY src, const string typeName)</code> - Explicitly cast a value as a type. Returns null if cast fails.</p>
-<pre><code class="lang-sql">Usage: <span class="hljs-keyword">select</span> <span class="hljs-keyword">try_cast</span>(<span class="hljs-built_in">array</span>(<span class="hljs-number">1.0</span>,<span class="hljs-number">2.0</span>,<span class="hljs-number">3.0</span>), <span class="hljs-string">&apos;array&lt;string&gt;&apos;</span>)
-     <span class="hljs-keyword">select</span> <span class="hljs-keyword">try_cast</span>(<span class="hljs-keyword">map</span>(<span class="hljs-string">&apos;A&apos;</span>,<span class="hljs-number">10</span>,<span class="hljs-string">&apos;B&apos;</span>,<span class="hljs-number">20</span>,<span class="hljs-string">&apos;C&apos;</span>,<span class="hljs-number">30</span>), <span class="hljs-string">&apos;map&lt;string,double&gt;&apos;</span>)
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">try_cast</span>(<span class="hljs-built_in">array</span>(<span class="hljs-number">1.0</span>,<span class="hljs-number">2.0</span>,<span class="hljs-number">3.0</span>), <span class="hljs-string">&apos;array&lt;string&gt;&apos;</span>)
+<span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">try_cast</span>(<span class="hljs-keyword">map</span>(<span class="hljs-string">&apos;A&apos;</span>,<span class="hljs-number">10</span>,<span class="hljs-string">&apos;B&apos;</span>,<span class="hljs-number">20</span>,<span class="hljs-string">&apos;C&apos;</span>,<span class="hljs-number">30</span>), <span class="hljs-string">&apos;map&lt;string,double&gt;&apos;</span>)
 </code></pre>
 </li>
 <li><p><code>x_rank(KEY)</code> - Generates a pseudo sequence number starting from 1 for each key</p>
@@ -2537,7 +2862,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List of Generic Hivemall Functions","level":"2.1","depth":1,"next":{"title":"Efficient Top-K Query Processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"previous":{"title":"Map-side join causes ClassCastException on Tez","level":"1.6.5","depth":2,"path":"troubleshooting/mapjoin_classcastex.md","ref":"troubleshooting/mapjoin_classcastex.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/generic_funcs.md","mtime":"2018-04-25T08:11:03.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-26T03:55:31.199Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of Generic Hivemall Functions","level":"2.1","depth":1,"next":{"title":"Efficient Top-K Query Processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"previous":{"title":"Map-side join causes ClassCastException on Tez","level":"1.6.5","depth":2,"path":"troubleshooting/mapjoin_classcastex.md","ref":"troubleshooting/mapjoin_classcastex.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/generic_funcs.md","mtime":"2018-06-06T08:56:30.932Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-06T09:01:20.330Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

@@ -2604,7 +2604,80 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 </ul>
 <h1 id="sketching">Sketching</h1>
 <ul>
-<li><code>approx_count_distinct(expr x [, const string options])</code> - Returns an approximation of count(DISTINCT x) using HyperLogLogPlus algorithm</li>
+<li><p><code>approx_count_distinct(expr x [, const string options])</code> - Returns an approximation of count(DISTINCT x) using HyperLogLogPlus algorithm</p>
+</li>
+<li><p><code>bloom(string key)</code> - Constructs a BloomFilter by aggregating a set of keys</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> satisfied_movies <span class="hljs-keyword">AS</span> 
+  <span class="hljs-keyword">SELECT</span> bloom(movieid) <span class="hljs-keyword">as</span> movies
+  <span class="hljs-keyword">FROM</span> (
+    <span class="hljs-keyword">SELECT</span> movieid
+    <span class="hljs-keyword">FROM</span> ratings
+    <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> movieid
+    <span class="hljs-keyword">HAVING</span> <span class="hljs-keyword">avg</span>(rating) &gt;= <span class="hljs-number">4.0</span>
+  ) t;
+</code></pre>
+</li>
+<li><p><code>bloom_and(string bloom1, string bloom2)</code> - Returns the logical AND of two bloom filters</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> bloom_and(bf1, bf2) <span class="hljs-keyword">FROM</span> xxx;
+</code></pre>
+</li>
+<li><p><code>bloom_contains(string bloom, string key)</code> or <em>FUNC</em>(string bloom, array&lt;string&gt; keys) - Returns true if the bloom filter contains all the given key(s). Returns false if key is null.</p>
+<pre><code class="lang-sql">WITH satisfied_movies as (
+  <span class="hljs-keyword">SELECT</span> bloom(movieid) <span class="hljs-keyword">as</span> movies
+  <span class="hljs-keyword">FROM</span> (
+    <span class="hljs-keyword">SELECT</span> movieid
+    <span class="hljs-keyword">FROM</span> ratings
+    <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> movieid
+    <span class="hljs-keyword">HAVING</span> <span class="hljs-keyword">avg</span>(rating) &gt;= <span class="hljs-number">4.0</span>
+  ) t
+)
+<span class="hljs-keyword">SELECT</span>
+  l.rating,
+  <span class="hljs-keyword">count</span>(<span class="hljs-keyword">distinct</span> l.userid) <span class="hljs-keyword">as</span> cnt
+<span class="hljs-keyword">FROM</span>
+  ratings l 
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> satisfied_movies r
+<span class="hljs-keyword">WHERE</span>
+  bloom_contains(r.movies, l.movieid) <span class="hljs-comment">-- includes false positive</span>
+<span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> 
+  l.rating;
+
+l.rating        cnt
+1       1296
+2       2770
+3       5008
+4       5824
+5       5925
+</code></pre>
+</li>
+<li><p><code>bloom_contains_any(string bloom, string key)</code> or <em>FUNC</em>(string bloom, array&lt;string&gt; keys)- Returns true if the bloom filter contains any of the given key</p>
+<pre><code class="lang-sql">WITH data1 as (
+  <span class="hljs-keyword">SELECT</span> explode(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>)) <span class="hljs-keyword">as</span> <span class="hljs-keyword">id</span>
+),
+data2 <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">SELECT</span> explode(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">8</span>)) <span class="hljs-keyword">as</span> <span class="hljs-keyword">id</span>
+),
+bloom <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">SELECT</span> bloom(<span class="hljs-keyword">id</span>) <span class="hljs-keyword">as</span> bf
+  <span class="hljs-keyword">FROM</span> data1
+)
+<span class="hljs-keyword">SELECT</span> 
+  l.* 
+<span class="hljs-keyword">FROM</span> 
+  data2 l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> bloom r
+<span class="hljs-keyword">WHERE</span>
+  bloom_contains_any(r.bf, <span class="hljs-built_in">array</span>(l.<span class="hljs-keyword">id</span>))
+</code></pre>
+</li>
+<li><p><code>bloom_not(string bloom)</code> - Returns the logical NOT of a bloom filters</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> bloom_not(bf) <span class="hljs-keyword">FROM</span> xxx;
+</code></pre>
+</li>
+<li><p><code>bloom_or(string bloom1, string bloom2)</code> - Returns the logical OR of two bloom filters</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> bloom_or(bf1, bf2) <span class="hljs-keyword">FROM</span> xxx;
+</code></pre>
+</li>
 </ul>
 <h1 id="ensemble-learning">Ensemble learning</h1>
 <ul>
@@ -2659,7 +2732,7 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 <h1 id="others">Others</h1>
 <ul>
 <li><p><code>hivemall_version()</code> - Returns the version of Hivemall</p>
-<pre><code class="lang-sql">Usage: <span class="hljs-keyword">SELECT</span> hivemall_version();
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> hivemall_version();
 </code></pre>
 </li>
 <li><p><code>lr_datagen(options string)</code> - Generates a logistic regression dataset</p>
@@ -2724,7 +2797,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2018-04-25T08:11:03.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-04-26T03:55:31.199Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2018-06-06T08:56:31.022Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-06-06T09:01:20.330Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
