@@ -2279,23 +2279,24 @@
   specific language governing permissions and limitations
   under the License.
 -->
+<h1 id="getting-started-with-hivemall-on-docker">Getting started with Hivemall on Docker</h1>
 <p>This page introduces how to run Hivemall on Docker.</p>
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
 <li><a href="#requirements">Requirements</a></li>
-<li><a href="#1-build-image">1. Build image</a><ul>
+<li><a href="#build-image">Build image</a><ul>
 <li><a href="#using-docker-compose">Using <code>docker-compose</code></a></li>
 <li><a href="#using-docker-command">Using <code>docker</code> command</a></li>
 </ul>
 </li>
-<li><a href="#2-run-container">2. Run container</a><ul>
+<li><a href="#run-container">Run container</a><ul>
 <li><a href="#by-docker-compose">By <code>docker-compose</code></a></li>
 <li><a href="#by-docker-command">By <code>docker</code> command</a></li>
 <li><a href="#running-pre-built-docker-image-in-docker-hub">Running pre-built Docker image in Docker Hub</a></li>
 </ul>
 </li>
-<li><a href="#3-run-hivemall-on-docker">3. Run Hivemall on Docker</a><ul>
+<li><a href="#run-hivemall-on-docker">Run Hivemall on Docker</a><ul>
 <li><a href="#accessing-hadoop-management-guis">Accessing Hadoop management GUIs</a></li>
 <li><a href="#load-data-into-hdfs-optional">Load data into HDFS (optional)</a></li>
 <li><a href="#build-hivemall-optional">Build Hivemall (optional)</a></li>
@@ -2305,21 +2306,21 @@
 
 </div><!-- tocstop -->
 <div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>This docker image contains a single-node Hadoop enviroment for evaluating Hivemall. Not suited for production uses.</p></div></div>
-<h1 id="requirements">Requirements</h1>
+<h2 id="requirements">Requirements</h2>
 <ul>
 <li>Docker Engine 1.6+</li>
 <li>Docker Compose 1.10+</li>
 </ul>
-<h1 id="1-build-image">1. Build image</h1>
+<h2 id="build-image">Build image</h2>
 <p>You have two options in order to build a <strong>hivemall</strong> docker image:</p>
-<h2 id="using-docker-compose">Using <code>docker-compose</code></h2>
+<h3 id="using-docker-compose">Using <code>docker-compose</code></h3>
 <pre><code>$ docker-compose -f resources/docker/docker-compose.yml build
-</code></pre><h2 id="using-docker-command">Using <code>docker</code> command</h2>
+</code></pre><h3 id="using-docker-command">Using <code>docker</code> command</h3>
 <pre><code>$ docker build -f resources/docker/Dockerfile .
 </code></pre><div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>You can <a href="getting_started.html#running-pre-built-docker-image-in-docker-hub">skip</a> building images if you try to use a pre-build docker image from Docker Hub. However, since the Docker Hub repository is experimental one, the distributed image is NOT built on the &quot;latest&quot; commit in <a href="https://github.com/apache/incubator-hivemall" target="_blank">our master branch</a>.</p></div></div>
-<h1 id="2-run-container">2. Run container</h1>
+<h2 id="run-container">Run container</h2>
 <p>If you built an image by yourself, it can be launched by either <code>docker-compose</code> or <code>docker</code> command:</p>
-<h2 id="by-docker-compose">By <code>docker-compose</code></h2>
+<h3 id="by-docker-compose">By <code>docker-compose</code></h3>
 <pre><code>$ docker-compose -f resources/docker/docker-compose.yml up -d &amp;&amp; docker attach hivemall
 </code></pre><p>You can edit <code>resources/docker/docker-compose.yml</code> as needed.</p>
 <p>For example, setting <code>volumes</code> options enables to mount your local directories to the container as follows:</p>
@@ -2327,13 +2328,13 @@
 <span class="hljs-bullet">  -</span> <span class="hljs-string">&quot;../../:/opt/hivemall/&quot;</span> <span class="hljs-comment"># mount current hivemall dir to `/opt/hivemall` ($HIVEMALL_PATH) on the container</span>
 <span class="hljs-bullet">  -</span> <span class="hljs-string">&quot;/path/to/data/:/root/data/&quot;</span> <span class="hljs-comment"># mount resources to container-side  `/root/data` directory</span>
 </code></pre>
-<h2 id="by-docker-command">By <code>docker</code> command</h2>
+<h3 id="by-docker-command">By <code>docker</code> command</h3>
 <p>Find a local docker image by <code>docker images</code>, and hit:</p>
 <pre><code>$ docker run -p 8088:8088 -p 50070:50070 -p 19888:19888 -it ${docker_image_id}
 </code></pre><p>Refer <a href="https://docs.docker.com/engine/reference/run/" target="_blank">Docker reference</a> for the command detail.</p>
 <p>Similarly to the <code>volumes</code> option in the <code>docker-compose</code> file, <code>docker run</code> has <code>--volume</code> (<code>-v</code>) option: </p>
 <pre><code>$ docker run ... -v /path/to/local/hivemall:/opt/hivemall
-</code></pre><h2 id="running-pre-built-docker-image-in-docker-hub">Running pre-built Docker image in Docker Hub</h2>
+</code></pre><h3 id="running-pre-built-docker-image-in-docker-hub">Running pre-built Docker image in Docker Hub</h3>
 <div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>This part is experimental. Hivemall in the pre-built image might be out-of-date compared to the latest version in <a href="https://github.com/apache/incubator-hivemall" target="_blank">our master branch</a>.</p></div></div>
 <p>You can find pre-built Hivemall docker images in <a href="https://hub.docker.com/r/hivemall/latest/" target="_blank">this repository</a>.</p>
 <ol>
@@ -2343,19 +2344,19 @@
 <li>Launch the pre-build image:<pre><code>$ docker run -p 8088:8088 -p 50070:50070 -p 19888:19888 -it hivemall/latest:20170517
 </code></pre></li>
 </ol>
-<h1 id="3-run-hivemall-on-docker">3. Run Hivemall on Docker</h1>
+<h2 id="run-hivemall-on-docker">Run Hivemall on Docker</h2>
 <ol>
 <li>Type <code>hive</code> to run (<code>.hiverc</code> automatically loads Hivemall functions)</li>
 <li>Try your Hivemall queries!</li>
 </ol>
-<h2 id="accessing-hadoop-management-guis">Accessing Hadoop management GUIs</h2>
+<h3 id="accessing-hadoop-management-guis">Accessing Hadoop management GUIs</h3>
 <ul>
 <li>YARN <a href="http://localhost:8088/" target="_blank">http://localhost:8088/</a></li>
 <li>HDFS <a href="http://localhost:50070/" target="_blank">http://localhost:50070/</a></li>
 <li>MR jobhistory server <a href="http://localhost:19888/" target="_blank">http://localhost:19888/</a></li>
 </ul>
 <p>Note that you need to expose local ports e.g., by <code>-p 8088:8088 -p 50070:50070 -p 19888:19888</code> on running docker image.</p>
-<h2 id="load-data-into-hdfs-optional">Load data into HDFS (optional)</h2>
+<h3 id="load-data-into-hdfs-optional">Load data into HDFS (optional)</h3>
 <p>You can find an example script to load data into HDFS in <code>$HOME/bin/prepare_iris.sh</code>.
   The script loads iris dataset into <code>iris</code> database:</p>
 <pre><code># cd $HOME &amp;&amp; ./bin/prepare_iris.sh
@@ -2369,7 +2370,7 @@ OK
 4       Iris-setosa     [4.6,3.1,1.5,0.2]
 5       Iris-setosa     [5.0,3.6,1.4,0.2]
 </code></pre><p>Once you prepared the <code>iris</code> database, you are ready to move on to <a href="../multiclass/iris_dataset.html">our multi-class classification tutorial</a>.</p>
-<h2 id="build-hivemall-optional">Build Hivemall (optional)</h2>
+<h3 id="build-hivemall-optional">Build Hivemall (optional)</h3>
 <p>In the container, Hivemall resource is stored in <code>$HIVEMALL_PATH</code>.
 You can build Hivemall package by <code>cd $HIVEMALL_PATH &amp;&amp; ./bin/build.sh</code>.</p>
 <p><div id="page-footer" class="localized-footer"><hr><!--
@@ -2427,7 +2428,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"14.1","depth":1,"next":{"title":"Hivemall on Apache Pig","level":"15.1","depth":1,"url":"https://github.com/daijyc/hivemall/wiki/PigHome","ref":"https://github.com/daijyc/hivemall/wiki/PigHome","articles":[]},"previous":{"title":"Other utility functions","level":"13.4.2","depth":2,"path":"spark/misc/functions.md","ref":"spark/misc/functions.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"docker/getting_started.md","mtime":"2018-08-29T08:55:00.270Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-08-31T06:54:21.013Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"14.1","depth":1,"next":{"title":"Hivemall on Apache Pig","level":"15.1","depth":1,"url":"https://github.com/daijyc/hivemall/wiki/PigHome","ref":"https://github.com/daijyc/hivemall/wiki/PigHome","articles":[]},"previous":{"title":"Other utility functions","level":"13.4.2","depth":2,"path":"spark/misc/functions.md","ref":"spark/misc/functions.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"http://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"http://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"docker/getting_started.md","mtime":"2018-09-05T04:19:01.627Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-09-05T09:13:37.462Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
