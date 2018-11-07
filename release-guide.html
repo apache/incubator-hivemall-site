@@ -84,7 +84,7 @@
 
       <div id="breadcrumbs">
         <ul class="breadcrumb">
-        <li id="publishDate">Last Published: 2018-03-14<span class="divider">|</span>
+        <li id="publishDate">Last Published: 2018-11-07<span class="divider">|</span>
 </li>
           <li id="projectVersion">Version: 0.5.1-incubating-SNAPSHOT</li>
         </ul>
@@ -151,6 +151,9 @@ export JAVA8_HOME=`/usr/libexec/java_home -v 1.8`
 
 # Try to create artifacts
 export MAVEN_OPTS=-XX:MaxPermSize=256m
+
+# (Optional) Workaround for SSL error `Received fatal alert: protocol_version`
+export MAVEN_OPTS=-Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2
 
 mvn -Papache-release clean install
 </pre></div></div>
@@ -670,7 +673,7 @@ it does indicate that the project has yet to be fully endorsed by the ASF.
 			  </small>
 			</p>
         </div>
-        <p id="poweredBy" class="pull-right">  <a href="http://incubator.apache.org/projects/hivemall.html" title="Apache Incubator" class="builtBy"><img class="builtBy"  alt="Apache Incubator" src="http://incubator.apache.org/images/egg-logo.png"    /></a>
+        <p id="poweredBy" class="pull-right">  <a href="http://incubator.apache.org/projects/hivemall.html" title="Apache Incubator" class="builtBy"><img class="builtBy"  alt="Apache Incubator" src="images/apache-incubator-logo.png"    /></a>
   </p>
         </div>
     </footer>
