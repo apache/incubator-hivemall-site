@@ -84,9 +84,9 @@
 
       <div id="breadcrumbs">
         <ul class="breadcrumb">
-        <li id="publishDate">Last Published: 2018-03-14<span class="divider">|</span>
+        <li id="publishDate">Last Published: 2018-11-15<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 0.5.1-incubating-SNAPSHOT</li>
+          <li id="projectVersion">Version: 0.5.2-incubating-SNAPSHOT</li>
         </ul>
       </div>
         <div id="bodyColumn" >
@@ -138,31 +138,20 @@ wget -e robots=off --no-check-certificate \
  -r -np --reject=html,txt,tmp -nH --cut-dirs=5 \
  https://dist.apache.org/repos/dist/dev/incubator/hivemall/${VERSION}-incubating-rc${RC_NUMBER}/
 </pre></div></div>
-<h1>3. Verify SHA1, MD5, and GPG signatures.</h1>
+<h1>3. Verify SHA512, and GPG signatures.</h1>
 
 <div class="source">
 <div class="source"><pre class="prettyprint">cd ${VERSION}-incubating-rc${RC_NUMBER}/
 
-for f in `find . -type f -iname '*.sha1'`; do
+for f in `find . -type f -iname '*.sha512'`; do
   echo -n &quot;Verifying ${f%.*} ... &quot;
-  sha1sum ${f%.*} | cut -f1 -d' ' | diff -Bw - ${f}
+  shasum -a 512 ${f%.*} | cut -f1 -d' ' | diff -Bw - ${f}
   if [ $? -eq 0 ]; then
     echo 'Valid'
   else 
-    echo &quot;SHA1 is Invalid: ${f}&quot; &gt;&amp;2
+    echo &quot;SHA512 is Invalid: ${f}&quot; &gt;&amp;2
     exit 1
   fi  
-done
-echo
-for f in `find . -type f -iname '*.md5'`; do
-  echo -n &quot;Verifying ${f%.*} ... &quot;
-  md5sum ${f%.*} | cut -f1 -d' ' | diff -Bw - ${f}
-  if [ $? -eq 0 ]; then
-    echo 'Valid'
-  else
-    echo &quot;MD5 is Invalid: ${f%.*}&quot; &gt;&amp;2
-	exit 1
-  fi
 done
 echo
 for f in `find . -type f -iname '*.asc'`; do
@@ -220,7 +209,7 @@ done
 			  </small>
 			</p>
         </div>
-        <p id="poweredBy" class="pull-right">  <a href="http://incubator.apache.org/projects/hivemall.html" title="Apache Incubator" class="builtBy"><img class="builtBy"  alt="Apache Incubator" src="http://incubator.apache.org/images/egg-logo.png"    /></a>
+        <p id="poweredBy" class="pull-right">  <a href="http://incubator.apache.org/projects/hivemall.html" title="Apache Incubator" class="builtBy"><img class="builtBy"  alt="Apache Incubator" src="images/apache-incubator-logo.png"    /></a>
   </p>
         </div>
     </footer>
