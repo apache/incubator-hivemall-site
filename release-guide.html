@@ -84,9 +84,9 @@
 
       <div id="breadcrumbs">
         <ul class="breadcrumb">
-        <li id="publishDate">Last Published: 2018-11-13<span class="divider">|</span>
+        <li id="publishDate">Last Published: 2018-11-15<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 0.5.1-incubating-SNAPSHOT</li>
+          <li id="projectVersion">Version: 0.5.2-incubating-SNAPSHOT</li>
         </ul>
       </div>
         <div id="bodyColumn" >
@@ -307,7 +307,7 @@ git push asf v${version}-rc${rc}
   
 <li>In the <tt>Staging Repositories</tt> tab there should be a line with profile <tt>org.apache.hivemall</tt></li>
   
-<li>Navigate through the artifact tree and make sure that all javadoc, sources, tests, and jars have .asc (GPG signature) and .md5 files. Refer <a class="externalLink" href="http://www.apache.org/dev/release-signing.html#verifying-signature">the ASF page</a> for artifacts verification.</li>
+<li>Navigate through the artifact tree and make sure that all javadoc, sources, tests, and jars have .asc (GPG signature). Refer <a class="externalLink" href="http://www.apache.org/dev/release-signing.html#verifying-signature">the ASF page</a> for artifacts verification.</li>
 </ul>
 
 <ol style="list-style-type: decimal">
@@ -329,8 +329,7 @@ git push asf v${version}-rc${rc}
 # Sign to the artifacts created by maven-shade-plugin
 for f in `ls hivemall-*-with-dependencies*.jar`; do
   gpg --armor --output ${f}.asc --detach-sig ${f}
-  md5sum ${f} | cut -f1 -d' ' &gt; ${f}.md5
-  sha1sum ${f} | cut -f1 -d' '  &gt; ${f}.sha1
+  shasum -a 512 ${f} | cut -f1 -d' '  &gt; ${f}.sha512
 done
 
 # Verify GPG sign
@@ -413,7 +412,7 @@ Links to various release artifacts are given below. Please review and cast your 
 	- Sources for the release:
 	  https://dist.apache.org/repos/dist/dev/incubator/hivemall/0.5.0-incubating-rc1/hivemall-0.5.0-incubating-rc1-source-release.zip
 	  https://dist.apache.org/repos/dist/dev/incubator/hivemall/0.5.0-incubating-rc1/hivemall-0.5.0-incubating-rc1-source-release.zip.asc (PGP Signature)
-	  https://dist.apache.org/repos/dist/dev/incubator/hivemall/0.5.0-incubating-rc1/hivemall-0.5.0-incubating-rc1-source-release.zip.md5 (MD5 Hash)
+	  https://dist.apache.org/repos/dist/dev/incubator/hivemall/0.5.0-incubating-rc1/hivemall-0.5.0-incubating-rc1-source-release.zip.sha512 (SHA512 Hash)
     - Git tag for the release:
       https://git-wip-us.apache.org/repos/asf?p=incubator-hivemall.git;a=shortlog;h=refs/tags/v0.5.0-rc1
     - The Nexus Staging URL:
