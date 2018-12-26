@@ -50,12 +50,14 @@
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/general.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/a9a.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/a9a_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://hivemall.incubator.apache.org/binaryclass/a9a_generic.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/a9a_lr.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/a9a_minibatch.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_pa.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_scw.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_generic.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_adagrad.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_rf.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/kdd2010a.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -85,6 +87,7 @@
 <url> <loc>https://hivemall.incubator.apache.org/regression/general.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/e2006.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/e2006_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://hivemall.incubator.apache.org/regression/e2006_generic.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/e2006_arow.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/kddcup12tr2.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/kddcup12tr2_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
