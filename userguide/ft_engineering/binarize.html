@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Feature Hashing · Hivemall User Manual</title>
+        <title>Binarize label · Hivemall User Manual</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -97,10 +97,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="selection.html" />
+    <link rel="next" href="term_vector.html" />
     
     
-    <link rel="prev" href="scaling.html" />
+    <link rel="prev" href="quantify.html" />
     
 
     </head>
@@ -583,7 +583,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="3.2" data-path="hashing.html">
+        <li class="chapter " data-level="3.2" data-path="hashing.html">
             
                 <a href="hashing.html">
             
@@ -710,7 +710,7 @@
             
         </li>
     
-        <li class="chapter " data-level="3.6.3" data-path="binarize.html">
+        <li class="chapter active" data-level="3.6.3" data-path="binarize.html">
             
                 <a href="binarize.html">
             
@@ -2344,7 +2344,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >Feature Hashing</a>
+        <a href=".." >Binarize label</a>
     </h1>
 </div>
 
@@ -2359,135 +2359,112 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <!--
-  Licensed to the Apache Software Foundation (ASF) under one
-  or more contributor license agreements.  See the NOTICE file
-  distributed with this work for additional information
-  regarding copyright ownership.  The ASF licenses this file
-  to you under the Apache License, Version 2.0 (the
-  "License"); you may not use this file except in compliance
-  with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing,
-  software distributed under the License is distributed on an
-  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  KIND, either express or implied.  See the License for the
-  specific language governing permissions and limitations
-  under the License.
--->
-<p>Hivemall supports <a href="https://en.wikipedia.org/wiki/Feature_hashing" target="_blank">Feature Hashing</a> (a.k.a. hashing trick) through <code>feature_hashing</code> and <code>mhash</code> functions. 
-Find the differences in the following examples.</p>
-<!-- toc --><div id="toc" class="toc">
-
-<h2 id="featurehashing-function"><code>feature_hashing</code> function</h2>
-<p><code>feature_hashing</code> applies <a href="https://github.com/aappleby/smhasher" target="_blank">MurmurHash3</a> hashing to features. </p>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-string">&apos;aaa&apos;</span>);
+                                <h2 id="introduction">Introduction</h2>
+<p>Expanding numeric labels to actual count of samples can contribute to accuracy improvement in some cases. <code>binarize_label</code> explode a record that keeps the count of positive/negative labeled samples into corresponding actual count of samples. For example,</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">positive</th>
+<th style="text-align:left">negative</th>
+<th style="text-align:left">features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">&quot;[a:1, b:2]&quot;</td>
+</tr>
+</tbody>
+</table>
+<p>is converted into </p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">features</th>
+<th style="text-align:left">label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">&quot;[a:1, b:2]&quot;</td>
+<td style="text-align:left">0</td>
+</tr>
+<tr>
+<td style="text-align:left">&quot;[a:1, b:2]&quot;</td>
+<td style="text-align:left">0</td>
+</tr>
+<tr>
+<td style="text-align:left">&quot;[a:1, b:2]&quot;</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">&quot;[a:1, b:2]&quot;</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">&quot;[a:1, b:2]&quot;</td>
+<td style="text-align:left">1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="function-signature">Function signature</h2>
+<p><code>binarize_label(int/long positive, int/long negative, ANY arg1, ANY arg2, ..., ANY argN)</code> 
+returns (ANY arg1, ANY arg2, ..., ANY argN, int label) where label is 0 or 1.</p>
+<h2 id="usage">Usage</h2>
+<pre><code class="lang-sql">WITH input as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> positive, <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> negative, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;a:1&apos;</span>,<span class="hljs-string">&apos;b:2&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">UNION</span> ALL
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> positive, <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> negative, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;c:3&apos;</span>,<span class="hljs-string">&apos;d:4&apos;</span>) <span class="hljs-keyword">as</span> features
+)
+<span class="hljs-keyword">SELECT</span>
+  binarize_label(positive, negative, features)
+<span class="hljs-keyword">from</span> 
+  <span class="hljs-keyword">input</span>;
 </code></pre>
-<blockquote>
-<p>4063537</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;-features 3&apos;</span>);
-</code></pre>
-<blockquote>
-<p>2</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb&apos;</span>));
-</code></pre>
-<blockquote>
-<p>[&quot;4063537&quot;,&quot;8459207&quot;]</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb&apos;</span>),<span class="hljs-string">&apos;-features 10&apos;</span>);
-</code></pre>
-<blockquote>
-<p>[&quot;7&quot;,&quot;1&quot;]</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa:1.0&apos;</span>,<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb:2.0&apos;</span>));
-</code></pre>
-<blockquote>
-<p>[&quot;4063537:1.0&quot;,&quot;4063537&quot;,&quot;8459207:2.0&quot;]</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>));
-</code></pre>
-<blockquote>
-<p>[&quot;11293631&quot;,&quot;3322224&quot;,&quot;4331412&quot;]</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;1&apos;</span>,<span class="hljs-string">&apos;2&apos;</span>,<span class="hljs-string">&apos;3&apos;</span>));
-</code></pre>
-<blockquote>
-<p>[&quot;11293631&quot;,&quot;3322224&quot;,&quot;4331412&quot;]</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;1:0.1&apos;</span>,<span class="hljs-string">&apos;2:0.2&apos;</span>,<span class="hljs-string">&apos;3:0.3&apos;</span>));
-</code></pre>
-<blockquote>
-<p>[&quot;11293631:0.1&quot;,&quot;3322224:0.2&quot;,&quot;4331412:0.3&quot;]</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(features), features <span class="hljs-keyword">from</span> training_fm <span class="hljs-keyword">limit</span> <span class="hljs-number">2</span>;
-</code></pre>
-<blockquote>
-<p>[&quot;1803454&quot;,&quot;6630176&quot;]   [&quot;userid#5689&quot;,&quot;movieid#3072&quot;]
-[&quot;1828616&quot;,&quot;6238429&quot;]   [&quot;userid#4505&quot;,&quot;movieid#2331&quot;]</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;userid#4505:3.3&quot;</span>,<span class="hljs-string">&quot;movieid#2331:4.999&quot;</span>, <span class="hljs-string">&quot;movieid#2331&quot;</span>));
-</code></pre>
-<blockquote>
-<p>[&quot;1828616:3.3&quot;,&quot;6238429:4.999&quot;,&quot;6238429&quot;]</p>
-</blockquote>
-<pre><code class="lang-sql">select feature_hashing(null,&apos;-help&apos;);
-
-usage: feature_hashing(array&lt;string&gt; features [, const string options]) -
-       returns a hashed feature vector in array&lt;string&gt; [-features &lt;arg&gt;]
-       [-help]
- -features,--num_features &lt;arg&gt;   The number of features [default:
-                                  16777217 (2^24)]
- -help                            Show function help
-</code></pre>
-<div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>The hash value is starting from 1 and 0 is system reserved for a bias clause. The default number of features are 16777217 (2^24). 
-You can control the number of features by <code>-num_features</code> (or <code>-features</code>) option.</p></div></div>
-<h2 id="mhash-function"><code>mhash</code> function</h2>
-<pre><code class="lang-sql"><span class="hljs-keyword">describe</span> <span class="hljs-keyword">function</span> <span class="hljs-keyword">extended</span> mhash;
-</code></pre>
-<blockquote>
-<p>mhash(string word) returns a murmurhash3 INT value starting from 1</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> mhash(<span class="hljs-string">&apos;aaa&apos;</span>);
-</code></pre>
-<blockquote>
-<p>4063537</p>
-</blockquote>
-<p><em>Note: The default number of features are <code>16777216 (2^24)</code>.</em></p>
-<pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:num_features=<span class="hljs-number">16777216</span>;
-<span class="hljs-keyword">select</span> mhash(<span class="hljs-string">&apos;aaa&apos;</span>,${num_features});
-</code></pre>
-<blockquote>
-<p>4063537</p>
-</blockquote>
-<p><em>Note: <code>mhash</code> returns a <code>+1&apos;d</code> murmurhash3 value starting from 1. Never returns 0 (It&apos;s a system reserved number).</em></p>
-<pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:num_features=<span class="hljs-number">1</span>;
-<span class="hljs-keyword">select</span> mhash(<span class="hljs-string">&apos;aaa&apos;</span>,${num_features});
-</code></pre>
-<blockquote>
-<p>1</p>
-</blockquote>
-<p><em>Note: <code>mhash</code> does not considers feature values.</em></p>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> mhash(<span class="hljs-string">&apos;aaa:2.0&apos;</span>);
-</code></pre>
-<blockquote>
-<p>2746618</p>
-</blockquote>
-<p><em>Note: <code>mhash</code> always returns a scalar INT value.</em></p>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> mhash(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb&apos;</span>));
-</code></pre>
-<blockquote>
-<p>9566153</p>
-</blockquote>
-<p><em>Note: <code>mhash</code> value of an array is element order-sentitive.</em></p>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> mhash(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;bbb&apos;</span>,<span class="hljs-string">&apos;aaa&apos;</span>));
-</code></pre>
-<blockquote>
-<p>3874068</p>
-</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">features</th>
+<th style="text-align:left">label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">[&quot;a:1&quot;,&quot;b:2&quot;]</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;a:1&quot;,&quot;b:2&quot;]</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;a:1&quot;,&quot;b:2&quot;]</td>
+<td style="text-align:left">0</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;a:1&quot;,&quot;b:2&quot;]</td>
+<td style="text-align:left">0</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;a:1&quot;,&quot;b:2&quot;]</td>
+<td style="text-align:left">0</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;c:3&quot;,&quot;d:4&quot;]</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;c:3&quot;,&quot;d:4&quot;]</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;c:3&quot;,&quot;d:4&quot;]</td>
+<td style="text-align:left">0</td>
+</tr>
+</tbody>
+</table>
+<div class="panel panel-warning"><div class="panel-heading"><h3 class="panel-title" id="caution"><i class="fa fa-exclamation-triangle"></i> Caution</h3></div><div class="panel-body"><p>Don&apos;t forget to shuffle converted training instances in a random order, e.g., by <code>CLUSTER BY rand()</code>.</p></div></div>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2510,7 +2487,7 @@ You can control the number of features by <code>-num_features</code> (or <code>-
 Apache Hivemall is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator.
 </font></sub></p>
 </div></p>
-</div>
+
                                 
                                 </section>
                             
@@ -2543,7 +2520,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Feature Hashing","level":"3.2","depth":1,"next":{"title":"Feature Selection","level":"3.3","depth":1,"path":"ft_engineering/selection.md","ref":"ft_engineering/selection.md","articles":[]},"previous":{"title":"Feature Scaling","level":"3.1","depth":1,"path":"ft_engineering/scaling.md","ref":"ft_engineering/scaling.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"ft_engineering/hashing.md","mtime":"2019-03-13T08:32:16.809Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-12T06:40:57.822Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Binarize label","level":"3.6.3","depth":2,"next":{"title":"Term Vector Model","level":"3.7","depth":1,"path":"ft_engineering/term_vector.md","ref":"ft_engineering/term_vector.md","articles":[{"title":"TF-IDF Term Weighting","level":"3.7.1","depth":2,"path":"ft_engineering/tfidf.md","ref":"ft_engineering/tfidf.md","articles":[]},{"title":"Okapi BM25 Term Weighting","level":"3.7.2","depth":2,"path":"ft_engineering/bm25.md","ref":"ft_engineering/bm25.md","articles":[]}]},"previous":{"title":"Quantify non-number features","level":"3.6.2","depth":2,"path":"ft_engineering/quantify.md","ref":"ft_engineering/quantify.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"ft_engineering/binarize.md","mtime":"2019-04-12T06:39:12.586Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-12T06:40:57.822Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
