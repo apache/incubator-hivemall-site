@@ -2383,6 +2383,7 @@
 <li><a href="#tokenizer-for-english-texts">Tokenizer for English Texts</a></li>
 <li><a href="#tokenizer-for-non-english-texts">Tokenizer for Non-English Texts</a><ul>
 <li><a href="#japanese-tokenizer">Japanese Tokenizer</a></li>
+<li><a href="#part-of-speech">Part-of-speech</a></li>
 <li><a href="#chinese-tokenizer">Chinese Tokenizer</a></li>
 </ul>
 </li>
@@ -2458,7 +2459,46 @@
 <blockquote>
 <p>[&quot;&#x65E5;&#x672C;&quot;,&quot;&#x7D4C;&#x6E08;&quot;,&quot;&#x65B0;&#x805E;&quot;,&quot;&#x95A2;&#x897F;&quot;,&quot;&#x56FD;&#x969B;&quot;,&quot;&#x7A7A;&#x6E2F;&quot;]</p>
 </blockquote>
+<p>Dictionary SHOULD be accessible through http/https protocol. And, it SHOULD be compressed using gzip with <code>.gz</code> suffix because the maximum dictionary size is limited to 32MB and read timeout is set to 60 sec. Also, connection must be established in 10 sec.</p>
+<p>If you want to use HTTP Basic Authentication, please use the following form: <code>https://user:password@www.sitreurl.com/my_dict.txt.gz</code> (see Sec 3.1 of <a href="https://www.ietf.org/rfc/rfc1738.txt" target="_blank">rfc1738</a>)</p>
 <p>For detailed APIs, please refer Javadoc of <a href="https://lucene.apache.org/core/5_3_1/analyzers-kuromoji/org/apache/lucene/analysis/ja/JapaneseAnalyzer.html" target="_blank">JapaneseAnalyzer</a> as well.</p>
+<h2 id="part-of-speech">Part-of-speech</h2>
+<p>From Hivemall v0.6.0, the second argument can also accept the following option format:</p>
+<pre><code> -mode &lt;arg&gt;   The tokenization mode. One of [&apos;normal&apos;, &apos;search&apos;,
+               &apos;extended&apos;, &apos;default&apos; (normal)]
+ -pos          Return part-of-speech information
+</code></pre><p>Then, you can get part-of-speech information as follows:</p>
+<pre><code class="lang-sql">WITH tmp as (
+  <span class="hljs-keyword">select</span>
+    tokenize_ja(<span class="hljs-string">&apos;kuromoji&#x3092;&#x4F7F;&#x3063;&#x305F;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&#x306E;&#x30C6;&#x30B9;&#x30C8;&#x3067;&#x3059;&#x3002;&apos;</span>,<span class="hljs-string">&apos;-mode search -pos&apos;</span>) <span class="hljs-keyword">as</span> r
+)
+<span class="hljs-keyword">select</span>
+  r.tokens,
+  r.pos,
+  r.tokens[<span class="hljs-number">0</span>] <span class="hljs-keyword">as</span> token0,
+  r.pos[<span class="hljs-number">0</span>] <span class="hljs-keyword">as</span> pos0
+<span class="hljs-keyword">from</span>
+  tmp;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">tokens</th>
+<th style="text-align:center">pos</th>
+<th style="text-align:center">token0</th>
+<th style="text-align:center">pos0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">[&quot;kuromoji&quot;,&quot;&#x4F7F;&#x3046;&quot;,&quot;&#x5206;&#x304B;&#x3061;&#x66F8;&#x304D;&quot;,&quot;&#x30C6;&#x30B9;&#x30C8;&quot;]</td>
+<td style="text-align:center">[&quot;&#x540D;&#x8A5E;-&#x4E00;&#x822C;&quot;,&quot;&#x52D5;&#x8A5E;-&#x81EA;&#x7ACB;&quot;,&quot;&#x540D;&#x8A5E;-&#x4E00;&#x822C;&quot;,&quot;&#x540D;&#x8A5E;-&#x30B5;&#x5909;&#x63A5;&#x7D9A;&quot;]</td>
+<td style="text-align:center">kuromoji</td>
+<td style="text-align:center">&#x540D;&#x8A5E;-&#x4E00;&#x822C;</td>
+</tr>
+</tbody>
+</table>
+<p>Note that when <code>-pos</code> option is specified, <code>tokenize_ja</code> returns a struct record containing <code>array&lt;string&gt; tokens</code> and <code>array&lt;string&gt; pos</code> as the elements.</p>
 <h2 id="chinese-tokenizer">Chinese Tokenizer</h2>
 <p>Chinese text tokenizer UDF uses <a href="https://lucene.apache.org/core/5_3_1/analyzers-smartcn/org/apache/lucene/analysis/cn/smart/SmartChineseAnalyzer.html" target="_blank">SmartChineseAnalyzer</a>. </p>
 <p>The signature of the UDF is as follows:</p>
@@ -2526,7 +2566,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Text Tokenizer","level":"2.3","depth":1,"next":{"title":"Approximate Aggregate Functions","level":"2.4","depth":1,"path":"misc/approx.md","ref":"misc/approx.md","articles":[]},"previous":{"title":"Efficient Top-K Query Processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/tokenizer.md","mtime":"2019-04-19T07:04:09.491Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-19T07:09:48.951Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Text Tokenizer","level":"2.3","depth":1,"next":{"title":"Approximate Aggregate Functions","level":"2.4","depth":1,"path":"misc/approx.md","ref":"misc/approx.md","articles":[]},"previous":{"title":"Efficient Top-K Query Processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/tokenizer.md","mtime":"2019-04-19T07:16:06.857Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-19T07:18:01.378Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
