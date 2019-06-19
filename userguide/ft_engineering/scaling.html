@@ -2401,10 +2401,16 @@
 <p>[&quot;apple:0.8944272&quot;,&quot;banana:0.4472136&quot;]</p>
 </blockquote>
 <h1 id="min-max-normalization">Min-Max Normalization</h1>
-<p><a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling" target="_blank">https://en.wikipedia.org/wiki/Feature_scaling#Rescaling</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Feature_scaling#Rescaling" target="_blank">Min-max normalization</a> converts values to range <code>[0.0,1.0]</code>.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> 
+  rescale(target, <span class="hljs-keyword">min</span>(target) <span class="hljs-keyword">over</span> (), <span class="hljs-keyword">max</span>(target) <span class="hljs-keyword">over</span> ()) <span class="hljs-keyword">as</span> target
+<span class="hljs-keyword">from</span>
+  e2006tfidf_train
+</code></pre>
+<p>It can also expressed without Windowing function as follows:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">select</span> <span class="hljs-keyword">min</span>(target), <span class="hljs-keyword">max</span>(target)
 <span class="hljs-keyword">from</span> (
-<span class="hljs-keyword">select</span> target <span class="hljs-keyword">from</span> e2006tfidf_train 
+  <span class="hljs-keyword">select</span> target <span class="hljs-keyword">from</span> e2006tfidf_train 
 <span class="hljs-comment">-- union all</span>
 <span class="hljs-comment">-- select target from e2006tfidf_test </span>
 ) t;
@@ -2425,26 +2431,9 @@
   e2006tfidf_train;
 </code></pre>
 <h1 id="feature-scaling-by-zscore">Feature scaling by zscore</h1>
-<p><a href="https://en.wikipedia.org/wiki/Standard_score" target="_blank">https://en.wikipedia.org/wiki/Standard_score</a></p>
-<pre><code class="lang-sql"><span class="hljs-keyword">select</span> <span class="hljs-keyword">avg</span>(target), <span class="hljs-keyword">stddev_pop</span>(target)
-<span class="hljs-keyword">from</span> (
-<span class="hljs-keyword">select</span> target <span class="hljs-keyword">from</span> e2006tfidf_train 
-<span class="hljs-comment">-- union all</span>
-<span class="hljs-comment">-- select target from e2006tfidf_test </span>
-) t;
-</code></pre>
-<blockquote>
-<p>-3.566241460963296      0.6278076335455348</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:mean_target=<span class="hljs-number">-3.566241460963296</span>;
-<span class="hljs-keyword">set</span> hivevar:stddev_target=<span class="hljs-number">0.6278076335455348</span>;
-
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> e2006tfidf_train_scaled 
-<span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> 
-  <span class="hljs-keyword">rowid</span>,
-  zscore(target, ${mean_target}, ${stddev_target}) <span class="hljs-keyword">as</span> target, 
-  features
+<p>Refer <a href="https://en.wikipedia.org/wiki/Standard_score" target="_blank">this article</a> to get details about Zscore.</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> 
+  zscore(target, <span class="hljs-keyword">avg</span>(target) <span class="hljs-keyword">over</span> (), <span class="hljs-keyword">stddev_pop</span>(target) <span class="hljs-keyword">over</span> ()) <span class="hljs-keyword">as</span> target
 <span class="hljs-keyword">from</span> 
   e2006tfidf_train;
 </code></pre>
@@ -2458,49 +2447,29 @@
 </code></pre><p>We can create a normalized table as follows:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> train_normalized
 <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">WITH</span> fv <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span> 
-  <span class="hljs-keyword">rowid</span>, 
-  extract_feature(feature) <span class="hljs-keyword">as</span> feature,
-  extract_weight(feature) <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
-<span class="hljs-keyword">from</span> 
-  train 
-  LATERAL <span class="hljs-keyword">VIEW</span> explode(features) exploded <span class="hljs-keyword">AS</span> feature
+<span class="hljs-keyword">WITH</span> exploded <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span> 
+    <span class="hljs-keyword">rowid</span>, 
+    extract_feature(feature) <span class="hljs-keyword">as</span> feature,
+    extract_weight(feature) <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+  <span class="hljs-keyword">from</span> 
+    train 
+    LATERAL <span class="hljs-keyword">VIEW</span> explode(features) exploded <span class="hljs-keyword">AS</span> feature
 ), 
-stats <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span>
-  feature,
-  <span class="hljs-comment">-- avg(value) as mean, stddev_pop(value) as stddev</span>
-  <span class="hljs-keyword">min</span>(<span class="hljs-keyword">value</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">min</span>, <span class="hljs-keyword">max</span>(<span class="hljs-keyword">value</span>) <span class="hljs-keyword">as</span> <span class="hljs-keyword">max</span>
-<span class="hljs-keyword">from</span>
-  fv
-<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
-  feature
-), 
-norm <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span> 
-  <span class="hljs-keyword">rowid</span>, 
-  t1.feature, 
-  <span class="hljs-comment">-- zscore(t1.value, t2.mean, t2.stddev) as zscore</span>
-  rescale(t1.<span class="hljs-keyword">value</span>, t2.<span class="hljs-keyword">min</span>, t2.<span class="hljs-keyword">max</span>) <span class="hljs-keyword">as</span> minmax
-<span class="hljs-keyword">from</span> 
-  fv t1 <span class="hljs-keyword">JOIN</span>
-  stats t2 <span class="hljs-keyword">ON</span> (t1.feature = t2.feature) 
-),
-norm_fv <span class="hljs-keyword">as</span> (
-<span class="hljs-keyword">select</span>
-  <span class="hljs-keyword">rowid</span>, 
-  <span class="hljs-comment">-- concat(feature, &quot;:&quot;, zscore) as feature</span>
-  <span class="hljs-comment">-- concat(feature, &quot;:&quot;, minmax) as feature  -- Before Hivemall v0.3.2-1</span>
-  feature(feature, minmax) <span class="hljs-keyword">as</span> feature         <span class="hljs-comment">-- Hivemall v0.3.2-1 or later</span>
-<span class="hljs-keyword">from</span>
-  norm
+scaled <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span> 
+    <span class="hljs-keyword">rowid</span>, 
+    feature, 
+    rescale(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">min</span>(<span class="hljs-keyword">value</span>) <span class="hljs-keyword">over</span> (), <span class="hljs-keyword">max</span>(<span class="hljs-keyword">value</span>) <span class="hljs-keyword">over</span> ()) <span class="hljs-keyword">as</span> minmax,
+    zscore(<span class="hljs-keyword">value</span>, <span class="hljs-keyword">avg</span>(<span class="hljs-keyword">value</span>) <span class="hljs-keyword">over</span> (), <span class="hljs-keyword">stddev_pop</span>(<span class="hljs-keyword">value</span>) <span class="hljs-keyword">over</span> ()) <span class="hljs-keyword">as</span> zscore
+  <span class="hljs-keyword">from</span> 
+    exploded
 )
-<span class="hljs-keyword">select</span> 
-  <span class="hljs-keyword">rowid</span>, 
-  collect_list(feature) <span class="hljs-keyword">as</span> features
+<span class="hljs-keyword">select</span>
+  <span class="hljs-keyword">rowid</span>,
+  collect_list(feature(feature, minmax)) <span class="hljs-keyword">as</span> features
 <span class="hljs-keyword">from</span>
-  norm_fv
+  scaled
 <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
   <span class="hljs-keyword">rowid</span>
 ;
@@ -2607,7 +2576,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Feature Scaling","level":"3.1","depth":1,"next":{"title":"Feature Hashing","level":"3.2","depth":1,"path":"ft_engineering/hashing.md","ref":"ft_engineering/hashing.md","articles":[]},"previous":{"title":"Approximate Aggregate Functions","level":"2.4","depth":1,"path":"misc/approx.md","ref":"misc/approx.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"ft_engineering/scaling.md","mtime":"2019-03-13T08:32:16.815Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-04-19T07:09:48.951Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Feature Scaling","level":"3.1","depth":1,"next":{"title":"Feature Hashing","level":"3.2","depth":1,"path":"ft_engineering/hashing.md","ref":"ft_engineering/hashing.md","articles":[]},"previous":{"title":"Approximate Aggregate Functions","level":"2.4","depth":1,"path":"misc/approx.md","ref":"misc/approx.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"ft_engineering/scaling.md","mtime":"2019-06-19T10:09:28.793Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-19T10:10:55.166Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
