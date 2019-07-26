@@ -2377,65 +2377,173 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<p>Feature binning is a method of dividing quantitative variables into categorical values.
-It groups quantitative values into a pre-defined number of bins.</p>
-<p><em>Note: This feature is supported from Hivemall v0.5-rc.1 or later.</em></p>
+<p>Feature binning is a method of dividing quantitative variables into categorical values. It groups quantitative values into a pre-defined number of bins.</p>
+<p>If the number of bins is set to 3, the bin ranges become something like <code>[-Inf, 1], (1, 10], (10, Inf]</code>.</p>
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
+<li><a href="#data-preparation">Data Preparation</a></li>
 <li><a href="#usage">Usage</a><ul>
-<li><a href="#a-feature-vector-trasformation-by-applying-feature-binning">A. Feature Vector trasformation by applying Feature Binning</a></li>
-<li><a href="#b-get-a-mapping-table-by-feature-binning">B. Get a mapping table by Feature Binning</a></li>
+<li><a href="#custom-rule-for-binning">Custom rule for binning</a></li>
+<li><a href="#binning-based-on-quantiles">Binning based on Quantiles</a></li>
+<li><a href="#concrete-example">Concrete Example</a></li>
+<li><a href="#create-a-mapping-table-by-feature-binning">Create a mapping table by Feature Binning</a></li>
 </ul>
 </li>
-<li><a href="#function-signature">Function Signature</a><ul>
-<li><a href="#udaf-buildbinsweight-numofbins-autoshrink">[UDAF] <code>build_bins(weight, num_of_bins[, auto_shrink])</code></a><ul>
-<li><a href="#input">Input</a></li>
-<li><a href="#output">Output</a></li>
-</ul>
-</li>
-<li><a href="#udf-featurebinningfeatures-quantilesmapweight-quantiles">[UDF] <code>feature_binning(features, quantiles_map)/(weight, quantiles)</code></a><ul>
-<li><a href="#variation-a">Variation: A</a></li>
-<li><a href="#variation-b">Variation: B</a></li>
-</ul>
-</li>
+<li><a href="#function-signatures">Function Signatures</a><ul>
+<li><a href="#udaf-buildbinsweight-numofbins--autoshrinkfalse">UDAF <code>build_bins(weight num_of_bins [, auto_shrink=false])</code></a></li>
+<li><a href="#udf-featurebinningfeatures-quantilesmap">UDF <code>feature_binning(features, quantiles_map)</code></a></li>
+<li><a href="#udf-featurebinningweight-quantiles">UDF <code>feature_binning(weight, quantiles)</code></a></li>
 </ul>
 </li>
 </ul>
 
 </div><!-- tocstop -->
-<h1 id="usage">Usage</h1>
+<h1 id="data-preparation">Data Preparation</h1>
 <p>Prepare sample data (<em>users</em> table) first as follows:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">users</span> (
-  <span class="hljs-keyword">name</span> <span class="hljs-keyword">string</span>, age <span class="hljs-built_in">int</span>, gender <span class="hljs-keyword">string</span>
+  <span class="hljs-keyword">rowid</span> <span class="hljs-built_in">int</span>, <span class="hljs-keyword">name</span> <span class="hljs-keyword">string</span>, age <span class="hljs-built_in">int</span>, gender <span class="hljs-keyword">string</span>
 );
-
 <span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-keyword">users</span> <span class="hljs-keyword">VALUES</span>
-  (<span class="hljs-string">&apos;Jacob&apos;</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&apos;Male&apos;</span>),
-  (<span class="hljs-string">&apos;Mason&apos;</span>, <span class="hljs-number">22</span>, <span class="hljs-string">&apos;Male&apos;</span>),
-  (<span class="hljs-string">&apos;Sophia&apos;</span>, <span class="hljs-number">35</span>, <span class="hljs-string">&apos;Female&apos;</span>),
-  (<span class="hljs-string">&apos;Ethan&apos;</span>, <span class="hljs-number">55</span>, <span class="hljs-string">&apos;Male&apos;</span>),
-  (<span class="hljs-string">&apos;Emma&apos;</span>, <span class="hljs-number">15</span>, <span class="hljs-string">&apos;Female&apos;</span>),
-  (<span class="hljs-string">&apos;Noah&apos;</span>, <span class="hljs-number">46</span>, <span class="hljs-string">&apos;Male&apos;</span>),
-  (<span class="hljs-string">&apos;Isabella&apos;</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&apos;Female&apos;</span>);
+  (<span class="hljs-number">1</span>, <span class="hljs-string">&apos;Jacob&apos;</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&apos;Male&apos;</span>),
+  (<span class="hljs-number">2</span>, <span class="hljs-string">&apos;Mason&apos;</span>, <span class="hljs-number">22</span>, <span class="hljs-string">&apos;Male&apos;</span>),
+  (<span class="hljs-number">3</span>, <span class="hljs-string">&apos;Sophia&apos;</span>, <span class="hljs-number">35</span>, <span class="hljs-string">&apos;Female&apos;</span>),
+  (<span class="hljs-number">4</span>, <span class="hljs-string">&apos;Ethan&apos;</span>, <span class="hljs-number">55</span>, <span class="hljs-string">&apos;Male&apos;</span>),
+  (<span class="hljs-number">5</span>, <span class="hljs-string">&apos;Emma&apos;</span>, <span class="hljs-number">15</span>, <span class="hljs-string">&apos;Female&apos;</span>),
+  (<span class="hljs-number">6</span>, <span class="hljs-string">&apos;Noah&apos;</span>, <span class="hljs-number">46</span>, <span class="hljs-string">&apos;Male&apos;</span>),
+  (<span class="hljs-number">7</span>, <span class="hljs-string">&apos;Isabella&apos;</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&apos;Female&apos;</span>)
+;
+
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">input</span> <span class="hljs-keyword">as</span>
+<span class="hljs-keyword">SELECT</span>
+  <span class="hljs-keyword">rowid</span>,
+  array_concat(
+    categorical_features(
+      <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;name&apos;</span>, <span class="hljs-string">&apos;gender&apos;</span>),
+      <span class="hljs-keyword">name</span>, gender
+    ),
+    quantitative_features(
+      <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;age&apos;</span>),
+      age
+    )
+  ) <span class="hljs-keyword">AS</span> features
+<span class="hljs-keyword">FROM</span>
+  <span class="hljs-keyword">users</span>;
+
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">input</span> <span class="hljs-keyword">limit</span> <span class="hljs-number">2</span>;
 </code></pre>
-<h2 id="a-feature-vector-trasformation-by-applying-feature-binning">A. Feature Vector trasformation by applying Feature Binning</h2>
-<pre><code class="lang-sql">WITH t AS (
+<table>
+<thead>
+<tr>
+<th style="text-align:left">input.rowid</th>
+<th style="text-align:left">input.features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[&quot;name#Jacob&quot;,&quot;gender#Male&quot;,&quot;age:20.0&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">[&quot;name#Mason&quot;,&quot;gender#Male&quot;,&quot;age:22.0&quot;]</td>
+</tr>
+</tbody>
+</table>
+<h1 id="usage">Usage</h1>
+<h2 id="custom-rule-for-binning">Custom rule for binning</h2>
+<p>You can provide a custom rule for binning as follows:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> 
+  features <span class="hljs-keyword">as</span> original,
+  feature_binning(
+    features,
+    <span class="hljs-comment">-- [-INF-10.0], (10.0-20.0], (20.0-30.0], (30.0-40.0], (40.0-INF]</span>
+    <span class="hljs-keyword">map</span>(<span class="hljs-string">&apos;age&apos;</span>, <span class="hljs-built_in">array</span>(-infinity(), <span class="hljs-number">10.0</span>, <span class="hljs-number">20.0</span>, <span class="hljs-number">30.0</span>, <span class="hljs-number">40.0</span>, infinity()))
+  ) <span class="hljs-keyword">as</span> binned
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">input</span>;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">original</th>
+<th style="text-align:left">binned</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">[&quot;name#Jacob&quot;,&quot;gender#Male&quot;,&quot;age:20.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Jacob&quot;,&quot;gender#Male&quot;,&quot;age:1&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;name#Mason&quot;,&quot;gender#Male&quot;,&quot;age:22.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Mason&quot;,&quot;gender#Male&quot;,&quot;age:2&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;name#Sophia&quot;,&quot;gender#Female&quot;,&quot;age:35.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Sophia&quot;,&quot;gender#Female&quot;,&quot;age:3&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;name#Ethan&quot;,&quot;gender#Male&quot;,&quot;age:55.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Ethan&quot;,&quot;gender#Male&quot;,&quot;age:4&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;name#Emma&quot;,&quot;gender#Female&quot;,&quot;age:15.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Emma&quot;,&quot;gender#Female&quot;,&quot;age:1&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;name#Noah&quot;,&quot;gender#Male&quot;,&quot;age:46.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Noah&quot;,&quot;gender#Male&quot;,&quot;age:4&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;name#Isabella&quot;,&quot;gender#Female&quot;,&quot;age:20.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Isabella&quot;,&quot;gender#Female&quot;,&quot;age:1&quot;]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="binning-based-on-quantiles">Binning based on Quantiles</h2>
+<p>You can apply feature binning based on <a href="https://en.wikipedia.org/wiki/Quantile" target="_blank">quantiles</a>. </p>
+<p>Suppose converting <code>age</code> values into 3 bins:</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span>
+  <span class="hljs-keyword">map</span>(<span class="hljs-string">&apos;age&apos;</span>, build_bins(age, <span class="hljs-number">3</span>)) <span class="hljs-keyword">AS</span> quantiles_map
+<span class="hljs-keyword">FROM</span>
+  <span class="hljs-keyword">users</span>
+</code></pre>
+<blockquote>
+<p>{&quot;age&quot;:[-Infinity,18.333333333333332,30.666666666666657,Infinity]}</p>
+</blockquote>
+<p>In the above query result, you can find 4 values for age in <code>quantiles_map</code>. It&apos;s a threshold for 3 bins.</p>
+<pre><code class="lang-sql">WITH bins as (
   <span class="hljs-keyword">SELECT</span>
-    array_concat(
-      categorical_features(
-        <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;name&apos;</span>, <span class="hljs-string">&apos;gender&apos;</span>),
-    <span class="hljs-keyword">name</span>, gender
-      ),
-      quantitative_features(
-    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;age&apos;</span>),
-    age
-      )
-    ) <span class="hljs-keyword">AS</span> features
+    <span class="hljs-keyword">map</span>(<span class="hljs-string">&apos;age&apos;</span>, build_bins(age, <span class="hljs-number">3</span>)) <span class="hljs-keyword">AS</span> quantiles_map
   <span class="hljs-keyword">FROM</span>
     <span class="hljs-keyword">users</span>
-),
-bins <span class="hljs-keyword">AS</span> (
+)
+<span class="hljs-keyword">select</span>
+  feature_binning(
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;age:-Infinity&apos;</span>, <span class="hljs-string">&apos;age:-1&apos;</span>, <span class="hljs-string">&apos;age:0&apos;</span>, <span class="hljs-string">&apos;age:1&apos;</span>, <span class="hljs-string">&apos;age:18.333333333333331&apos;</span>, <span class="hljs-string">&apos;age:18.333333333333332&apos;</span>), quantiles_map
+  ),
+  feature_binning(
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;age:18.3333333333333333&apos;</span>, <span class="hljs-string">&apos;age:18.33333333333334&apos;</span>, <span class="hljs-string">&apos;age:19&apos;</span>, <span class="hljs-string">&apos;age:30&apos;</span>, <span class="hljs-string">&apos;age:30.666666666666656&apos;</span>, <span class="hljs-string">&apos;age:30.666666666666657&apos;</span>), quantiles_map
+  ),
+  feature_binning(
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;age:666666666666658&apos;</span>, <span class="hljs-string">&apos;age:30.66666666666666&apos;</span>, <span class="hljs-string">&apos;age:31&apos;</span>, <span class="hljs-string">&apos;age:99&apos;</span>, <span class="hljs-string">&apos;age:Infinity&apos;</span>), quantiles_map
+  ),
+  feature_binning(
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;age:NaN&apos;</span>), quantiles_map
+  ),
+  feature_binning( <span class="hljs-comment">-- not in map</span>
+    <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;weight:60.3&apos;</span>), quantiles_map
+  )
+<span class="hljs-keyword">from</span>
+  bins
+</code></pre>
+<blockquote>
+<p>[&quot;age:0&quot;,&quot;age:0&quot;,&quot;age:0&quot;,&quot;age:0&quot;,&quot;age:0&quot;,&quot;age:0&quot;]       [&quot;age:0&quot;,&quot;age:1&quot;,&quot;age:1&quot;,&quot;age:1&quot;,&quot;age:1&quot;,&quot;age:1&quot;]       [&quot;age:2&quot;,&quot;a
+ge:2&quot;,&quot;age:2&quot;,&quot;age:2&quot;,&quot;age:2&quot;]  [&quot;age:3&quot;]       [&quot;weight:60.3&quot;]</p>
+</blockquote>
+<p>The following query shows more practical usage:</p>
+<pre><code class="lang-sql">WITH bins AS (
   <span class="hljs-keyword">SELECT</span>
     <span class="hljs-keyword">map</span>(<span class="hljs-string">&apos;age&apos;</span>, build_bins(age, <span class="hljs-number">3</span>)) <span class="hljs-keyword">AS</span> quantiles_map
   <span class="hljs-keyword">FROM</span>
@@ -2444,40 +2552,91 @@ bins <span class="hljs-keyword">AS</span> (
 <span class="hljs-keyword">SELECT</span>
   feature_binning(features, quantiles_map) <span class="hljs-keyword">AS</span> features
 <span class="hljs-keyword">FROM</span>
-  t <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> bins;
+  <span class="hljs-keyword">input</span>
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> bins;
 </code></pre>
-<p><em>Result</em></p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">features: <code>array&lt;features::string&gt;</code></th>
+<th style="text-align:left">features: <code>array&lt;features::string&gt;</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">[&quot;name#Jacob&quot;,&quot;gender#Male&quot;,&quot;age:1&quot;]</td>
+<td style="text-align:left">[&quot;name#Jacob&quot;,&quot;gender#Male&quot;,&quot;age:1&quot;]</td>
 </tr>
 <tr>
-<td style="text-align:center">[&quot;name#Mason&quot;,&quot;gender#Male&quot;,&quot;age:1&quot;]</td>
+<td style="text-align:left">[&quot;name#Mason&quot;,&quot;gender#Male&quot;,&quot;age:1&quot;]</td>
 </tr>
 <tr>
-<td style="text-align:center">[&quot;name#Sophia&quot;,&quot;gender#Female&quot;,&quot;age:2&quot;]</td>
+<td style="text-align:left">[&quot;name#Sophia&quot;,&quot;gender#Female&quot;,&quot;age:2&quot;]</td>
 </tr>
 <tr>
-<td style="text-align:center">[&quot;name#Ethan&quot;,&quot;gender#Male&quot;,&quot;age:2&quot;]</td>
+<td style="text-align:left">[&quot;name#Ethan&quot;,&quot;gender#Male&quot;,&quot;age:2&quot;]</td>
 </tr>
 <tr>
-<td style="text-align:center">[&quot;name#Emma&quot;,&quot;gender#Female&quot;,&quot;age:0&quot;]</td>
-</tr>
-<tr>
-<td style="text-align:center">[&quot;name#Noah&quot;,&quot;gender#Male&quot;,&quot;age:2&quot;]</td>
-</tr>
-<tr>
-<td style="text-align:center">[&quot;name#Isabella&quot;,&quot;gender#Female&quot;,&quot;age:1&quot;]</td>
+<td style="text-align:left">...</td>
 </tr>
 </tbody>
 </table>
-<h2 id="b-get-a-mapping-table-by-feature-binning">B. Get a mapping table by Feature Binning</h2>
+<h2 id="concrete-example">Concrete Example</h2>
+<p>Here, we show a more practical usage of <code>feature_binning</code> UDF that applied feature binning for given feature vectors.</p>
+<pre><code class="lang-sql">WITH extracted as (
+  <span class="hljs-keyword">select</span> 
+    extract_feature(feature) <span class="hljs-keyword">as</span> <span class="hljs-keyword">index</span>,
+    extract_weight(feature) <span class="hljs-keyword">as</span> <span class="hljs-keyword">value</span>
+  <span class="hljs-keyword">from</span>
+    <span class="hljs-keyword">input</span> l
+    LATERAL <span class="hljs-keyword">VIEW</span> explode(features) r <span class="hljs-keyword">as</span> feature
+  <span class="hljs-keyword">where</span>
+    <span class="hljs-keyword">instr</span>(feature, <span class="hljs-string">&apos;:&apos;</span>) &gt; <span class="hljs-number">0</span> <span class="hljs-comment">-- filter out categorical features</span>
+),
+<span class="hljs-keyword">mapping</span> <span class="hljs-keyword">as</span> (
+  <span class="hljs-keyword">select</span>
+    <span class="hljs-keyword">index</span>, 
+    build_bins(<span class="hljs-keyword">value</span>, <span class="hljs-number">5</span>, <span class="hljs-literal">true</span>) <span class="hljs-keyword">as</span> quantiles <span class="hljs-comment">-- 5 bins with auto bin shrinking</span>
+  <span class="hljs-keyword">from</span>
+    extracted
+  <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+    <span class="hljs-keyword">index</span>
+),
+bins <span class="hljs-keyword">as</span> (
+   <span class="hljs-keyword">select</span> 
+    to_map(<span class="hljs-keyword">index</span>, quantiles) <span class="hljs-keyword">as</span> quantiles 
+   <span class="hljs-keyword">from</span>
+    <span class="hljs-keyword">mapping</span>
+)
+<span class="hljs-keyword">select</span>
+  l.features <span class="hljs-keyword">as</span> original,
+  feature_binning(l.features, r.quantiles) <span class="hljs-keyword">as</span> features
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">input</span> l
+  <span class="hljs-keyword">cross</span> <span class="hljs-keyword">join</span> bins r
+<span class="hljs-comment">-- limit 10;</span>
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">original</th>
+<th style="text-align:left">features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">[&quot;name#Jacob&quot;,&quot;gender#Male&quot;,&quot;age:20.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Jacob&quot;,&quot;gender#Male&quot;,&quot;age:2&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">[&quot;name#Isabella&quot;,&quot;gender#Female&quot;,&quot;age:20.0&quot;]</td>
+<td style="text-align:left">[&quot;name#Isabella&quot;,&quot;gender#Female&quot;,&quot;age:2&quot;]</td>
+</tr>
+<tr>
+<td style="text-align:left">...</td>
+<td style="text-align:left">...</td>
+</tr>
+</tbody>
+</table>
+<h2 id="create-a-mapping-table-by-feature-binning">Create a mapping table by Feature Binning</h2>
 <pre><code class="lang-sql">WITH bins AS (
   <span class="hljs-keyword">SELECT</span> build_bins(age, <span class="hljs-number">3</span>) <span class="hljs-keyword">AS</span> quantiles
   <span class="hljs-keyword">FROM</span> <span class="hljs-keyword">users</span>
@@ -2487,7 +2646,6 @@ bins <span class="hljs-keyword">AS</span> (
 <span class="hljs-keyword">FROM</span>
   <span class="hljs-keyword">users</span> <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> bins;
 </code></pre>
-<p><em>Result</em></p>
 <table>
 <thead>
 <tr>
@@ -2526,9 +2684,9 @@ bins <span class="hljs-keyword">AS</span> (
 </tr>
 </tbody>
 </table>
-<h1 id="function-signature">Function Signature</h1>
-<h2 id="udaf-buildbinsweight-numofbins-autoshrink">[UDAF] <code>build_bins(weight, num_of_bins[, auto_shrink])</code></h2>
-<h3 id="input">Input</h3>
+<h1 id="function-signatures">Function Signatures</h1>
+<h3 id="udaf-buildbinsweight-numofbins--autoshrinkfalse">UDAF <code>build_bins(weight num_of_bins [, auto_shrink=false])</code></h3>
+<h4 id="input">Input</h4>
 <table>
 <thead>
 <tr>
@@ -2540,12 +2698,12 @@ bins <span class="hljs-keyword">AS</span> (
 <tbody>
 <tr>
 <td style="text-align:center">weight</td>
-<td style="text-align:center">2 &lt;=</td>
+<td style="text-align:center">greather than or equals to 2</td>
 <td style="text-align:center">behavior when separations are repeated: T=&gt;skip, F=&gt;exception</td>
 </tr>
 </tbody>
 </table>
-<h3 id="output">Output</h3>
+<h4 id="output">Output</h4>
 <table>
 <thead>
 <tr>
@@ -2554,14 +2712,13 @@ bins <span class="hljs-keyword">AS</span> (
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">array of separation value</td>
+<td style="text-align:center">thresholds of bins based on quantiles</td>
 </tr>
 </tbody>
 </table>
 <div class="panel panel-primary"><div class="panel-heading"><h3 class="panel-title" id="note"><i class="fa fa-edit"></i> Note</h3></div><div class="panel-body"><p>There is the possibility quantiles are repeated because of too many <code>num_of_bins</code> or too few data.
-If <code>auto_shrink</code> is true, skip duplicated quantiles. If not, throw an exception.</p></div></div>
-<h2 id="udf-featurebinningfeatures-quantilesmapweight-quantiles">[UDF] <code>feature_binning(features, quantiles_map)/(weight, quantiles)</code></h2>
-<h3 id="variation-a">Variation: A</h3>
+If <code>auto_shrink</code> is set to true, skip duplicated quantiles. If not, throw an exception.</p></div></div>
+<h3 id="udf-featurebinningfeatures-quantilesmap">UDF <code>feature_binning(features, quantiles_map)</code></h3>
 <h4 id="input">Input</h4>
 <table>
 <thead>
@@ -2572,8 +2729,8 @@ If <code>auto_shrink</code> is true, skip duplicated quantiles. If not, throw an
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">serialized feature</td>
-<td style="text-align:center">entry:: key: col name, val: quantiles</td>
+<td style="text-align:center">feature vector</td>
+<td style="text-align:center">a map where key=column name and value=quantiles</td>
 </tr>
 </tbody>
 </table>
@@ -2586,11 +2743,11 @@ If <code>auto_shrink</code> is true, skip duplicated quantiles. If not, throw an
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">serialized and binned features</td>
+<td style="text-align:center">binned features</td>
 </tr>
 </tbody>
 </table>
-<h3 id="variation-b">Variation: B</h3>
+<h3 id="udf-featurebinningweight-quantiles">UDF <code>feature_binning(weight, quantiles)</code></h3>
 <h4 id="input">Input</h4>
 <table>
 <thead>
@@ -2674,7 +2831,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Feature Binning","level":"3.4","depth":1,"next":{"title":"Feature Paring","level":"3.5","depth":1,"path":"ft_engineering/pairing.md","ref":"ft_engineering/pairing.md","articles":[{"title":"Polynomial features","level":"3.5.1","depth":2,"path":"ft_engineering/polynomial.md","ref":"ft_engineering/polynomial.md","articles":[]}]},"previous":{"title":"Feature Selection","level":"3.3","depth":1,"path":"ft_engineering/selection.md","ref":"ft_engineering/selection.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"ft_engineering/binning.md","mtime":"2019-03-13T08:32:16.816Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-06-28T06:21:58.843Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Feature Binning","level":"3.4","depth":1,"next":{"title":"Feature Paring","level":"3.5","depth":1,"path":"ft_engineering/pairing.md","ref":"ft_engineering/pairing.md","articles":[{"title":"Polynomial features","level":"3.5.1","depth":2,"path":"ft_engineering/polynomial.md","ref":"ft_engineering/polynomial.md","articles":[]}]},"previous":{"title":"Feature Selection","level":"3.3","depth":1,"path":"ft_engineering/selection.md","ref":"ft_engineering/selection.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"ft_engineering/binning.md","mtime":"2019-07-01T05:23:45.140Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-26T07:34:33.544Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
