@@ -2077,13 +2077,13 @@
 
     
         
-        <li class="header">Part XIII - Hivemall on Spark</li>
+        <li class="header">Part XIII - Hivemall on SparkSQL</li>
         
         
     
-        <li class="chapter " data-level="13.1" data-path="../spark/getting_started/">
+        <li class="chapter " data-level="13.1" data-path="../spark/getting_started/README.md">
             
-                <a href="../spark/getting_started/">
+                <span>
             
                     
                         <b>13.1.</b>
@@ -2133,27 +2133,12 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="13.2.1" data-path="../spark/binaryclass/a9a_df.html">
-            
-                <a href="../spark/binaryclass/a9a_df.html">
-            
-                    
-                        <b>13.2.1.</b>
-                    
-                    a9a Tutorial for DataFrame
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="13.2.2" data-path="../spark/binaryclass/a9a_sql.html">
+        <li class="chapter " data-level="13.2.1" data-path="../spark/binaryclass/a9a_sql.html">
             
                 <a href="../spark/binaryclass/a9a_sql.html">
             
                     
-                        <b>13.2.2.</b>
+                        <b>13.2.1.</b>
                     
                     a9a Tutorial for SQL
             
@@ -2184,80 +2169,14 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="13.3.1" data-path="../spark/regression/e2006_df.html">
-            
-                <a href="../spark/regression/e2006_df.html">
-            
-                    
-                        <b>13.3.1.</b>
-                    
-                    E2006-tfidf Regression Tutorial for DataFrame
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="13.3.2" data-path="../spark/regression/e2006_sql.html">
+        <li class="chapter " data-level="13.3.1" data-path="../spark/regression/e2006_sql.html">
             
                 <a href="../spark/regression/e2006_sql.html">
             
                     
-                        <b>13.3.2.</b>
+                        <b>13.3.1.</b>
                     
                     E2006-tfidf Regression Tutorial for SQL
-            
-                </a>
-            
-
-            
-        </li>
-    
-
-            </ul>
-            
-        </li>
-    
-        <li class="chapter " data-level="13.4" data-path="../spark/misc/misc.html">
-            
-                <a href="../spark/misc/misc.html">
-            
-                    
-                        <b>13.4.</b>
-                    
-                    Generic Features
-            
-                </a>
-            
-
-            
-            <ul class="articles">
-                
-    
-        <li class="chapter " data-level="13.4.1" data-path="../spark/misc/topk_join.html">
-            
-                <a href="../spark/misc/topk_join.html">
-            
-                    
-                        <b>13.4.1.</b>
-                    
-                    Top-k Join Processing
-            
-                </a>
-            
-
-            
-        </li>
-    
-        <li class="chapter " data-level="13.4.2" data-path="../spark/misc/functions.html">
-            
-                <a href="../spark/misc/functions.html">
-            
-                    
-                        <b>13.4.2.</b>
-                    
-                    Other Utility Functions
             
                 </a>
             
@@ -2955,6 +2874,38 @@ bloom <span class="hljs-keyword">as</span> (
 </li>
 <li><p><code>train_randomforest_regressor(array&lt;double|string&gt; features, double target [, string options])</code> - Returns a relation consists of &lt;int model_id, int model_type, string model, array&lt;double&gt; var_importance, double oob_errors, int oob_tests&gt;</p>
 </li>
+<li><p><code>decision_path(string modelId, string model, array&lt;double|string&gt; features [, const string options] [, optional array&lt;string&gt; featureNames=null, optional array&lt;string&gt; classNames=null])</code> - Returns a decision path for each prediction in array&lt;string&gt;</p>
+<pre><code class="lang-sql">SELECT
+  t.passengerid,
+  decision_path(m.model_id, m.model, t.features, &apos;-classification&apos;)
+FROM
+  model_rf m
+  LEFT OUTER JOIN
+  test_rf t;
+&gt; | 892 | [&quot;2 [0.0] = 0.0&quot;,&quot;0 [3.0] = 3.0&quot;,&quot;1 [696.0] != 107.0&quot;,&quot;7 [7.8292] &lt;= 7.9104&quot;,&quot;1 [696.0] != 828.0&quot;,&quot;1 [696.0] != 391.0&quot;,&quot;0 [0.961038961038961, 0.03896103896103896]&quot;] |
+
+-- Show 100 frequent branches
+WITH tmp as (
+  SELECT
+    decision_path(m.model_id, m.model, t.features, &apos;-classification -no_verbose -no_leaf&apos;, array(&apos;pclass&apos;,&apos;name&apos;,&apos;sex&apos;,&apos;age&apos;,&apos;sibsp&apos;,&apos;parch&apos;,&apos;ticket&apos;,&apos;fare&apos;,&apos;cabin&apos;,&apos;embarked&apos;), array(&apos;no&apos;,&apos;yes&apos;)) as path
+  FROM
+    model_rf m
+    LEFT OUTER JOIN -- CROSS JOIN
+    test_rf t
+)
+select
+  r.branch,
+  count(1) as cnt
+from
+  tmp l
+  LATERAL VIEW explode(l.path) r as branch
+group by
+  r.branch
+order by
+  cnt desc
+limit 100;
+</code></pre>
+</li>
 <li><p><code>guess_attribute_types(ANY, ...)</code> - Returns attribute types</p>
 <pre><code class="lang-sql">select guess_attribute_types(*) from train limit 1;
 &gt; Q,Q,C,C,C,C,Q,C,C,C,Q,C,Q,Q,Q,Q,C,Q
@@ -3057,7 +3008,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2019-06-28T06:28:35.738Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-26T07:34:33.544Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2019-10-23T08:42:41.348Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-23T09:05:15.700Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
