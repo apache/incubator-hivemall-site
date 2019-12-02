@@ -1151,6 +1151,21 @@
             
         </li>
     
+        <li class="chapter " data-level="6.3.7" data-path="news20b_xgboost.html">
+            
+                <a href="news20b_xgboost.html">
+            
+                    
+                        <b>6.3.7.</b>
+                    
+                    XGBoost
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1458,12 +1473,27 @@
             
         </li>
     
-        <li class="chapter " data-level="7.1.5" data-path="../multiclass/news20_ensemble.html">
+        <li class="chapter " data-level="7.1.5" data-path="../multiclass/news20_xgboost.html">
+            
+                <a href="../multiclass/news20_xgboost.html">
+            
+                    
+                        <b>7.1.5.</b>
+                    
+                    XGBoost
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.1.6" data-path="../multiclass/news20_ensemble.html">
             
                 <a href="../multiclass/news20_ensemble.html">
             
                     
-                        <b>7.1.5.</b>
+                        <b>7.1.6.</b>
                     
                     Ensemble learning
             
@@ -1473,12 +1503,12 @@
             
         </li>
     
-        <li class="chapter " data-level="7.1.6" data-path="../multiclass/news20_one-vs-the-rest.html">
+        <li class="chapter " data-level="7.1.7" data-path="../multiclass/news20_one-vs-the-rest.html">
             
                 <a href="../multiclass/news20_one-vs-the-rest.html">
             
                     
-                        <b>7.1.6.</b>
+                        <b>7.1.7.</b>
                     
                     one-vs-the-rest Classifier
             
@@ -1547,6 +1577,21 @@
                         <b>7.2.3.</b>
                     
                     Random Forest
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.4" data-path="../multiclass/iris_xgboost.html">
+            
+                <a href="../multiclass/iris_xgboost.html">
+            
+                    
+                        <b>7.2.4.</b>
+                    
+                    XGBoost
             
                 </a>
             
@@ -1635,6 +1680,21 @@
                         <b>8.2.3.</b>
                     
                     Passive Aggressive, AROW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.4" data-path="../regression/e2006_xgboost.html">
+            
+                <a href="../regression/e2006_xgboost.html">
+            
+                    
+                        <b>8.2.4.</b>
+                    
+                    XGBoost
             
                 </a>
             
@@ -2309,7 +2369,10 @@ The example gives a baseline score without any feature engineering.</p>
 <li><a href="#prediction">Prediction</a></li>
 <li><a href="#kaggle-submission">Kaggle submission</a></li>
 <li><a href="#graphviz-export">Graphviz export</a></li>
-<li><a href="#test-by-dividing-training-dataset">Test by dividing training dataset</a></li>
+<li><a href="#test-by-dividing-training-dataset">Test by dividing training dataset</a><ul>
+<li><a href="#tracing-predictions">Tracing predictions</a></li>
+</ul>
+</li>
 </ul>
 
 </div><!-- tocstop -->
@@ -2418,7 +2481,6 @@ awk <span class="hljs-string">&apos;{ FPAT=&quot;([^,]*)|(\&quot;[^\&quot;]+\&qu
   test_quantified
 ;
 </code></pre>
-<hr>
 <h1 id="training">Training</h1>
 <p><code>select guess_attribute_types(pclass, name, sex, age, sibsp, parch, ticket, fare, cabin, embarked) from train limit 1;</code></p>
 <blockquote>
@@ -2464,24 +2526,16 @@ For example, <code>pclass</code> is a categorical variable.</p></div></div>
 <span class="hljs-keyword">FROM</span> (
   <span class="hljs-keyword">SELECT</span>
     passengerid,
-    <span class="hljs-comment">-- rf_ensemble(predicted) as predicted</span>
-    <span class="hljs-comment">-- v0.5.0 or later</span>
     rf_ensemble(predicted.<span class="hljs-keyword">value</span>, predicted.posteriori, model_weight) <span class="hljs-keyword">as</span> predicted
     <span class="hljs-comment">-- rf_ensemble(predicted.value, predicted.posteriori) as predicted -- avoid OOB accuracy (i.e., model_weight)</span>
   <span class="hljs-keyword">FROM</span> (
     <span class="hljs-keyword">SELECT</span>
       t.passengerid, 
-      <span class="hljs-comment">-- from v0.4.1-alpha.3 to v0.4.2-rc4</span>
-      <span class="hljs-comment">-- tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted</span>
-      <span class="hljs-comment">-- v0.5.0 or later</span>
       p.model_weight,
       tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, <span class="hljs-string">&quot;-classification&quot;</span>) <span class="hljs-keyword">as</span> predicted
       <span class="hljs-comment">-- tree_predict_v1(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted -- to use the old model in v0.5.0 or later</span>
     <span class="hljs-keyword">FROM</span> (
       <span class="hljs-keyword">SELECT</span> 
-        <span class="hljs-comment">-- from v0.4.1-alpha.3 or v0.4.2-rc4</span>
-        <span class="hljs-comment">-- model_id, model_type, pred_model</span>
-        <span class="hljs-comment">-- v0.5.0 or later</span>
         model_id, model_weight, <span class="hljs-keyword">model</span>
       <span class="hljs-keyword">FROM</span> 
         model_rf 
@@ -2539,7 +2593,6 @@ usage: tree_export(string model, const string options, optional
 ;
 </code></pre>
 <p><a href="https://gist.github.com/myui/a83ba3795bad9b278cf8bcc59f946e2c#file-titanic-dot" target="_blank">Here is an example</a> plotting a decision tree using Graphviz or <a href="https://viz-js.com/" target="_blank">Vis.js</a>.</p>
-<hr>
 <h1 id="test-by-dividing-training-dataset">Test by dividing training dataset</h1>
 <pre><code class="lang-sql"><span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> train_rf_07;
 <span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> train_rf_07 
@@ -2585,25 +2638,17 @@ usage: tree_export(string model, const string options, optional
 <span class="hljs-keyword">FROM</span> (
   <span class="hljs-keyword">SELECT</span>
     passengerid,
-    <span class="hljs-comment">-- rf_ensemble(predicted) as predicted</span>
-    <span class="hljs-comment">-- v0.5.0 or later</span>
     rf_ensemble(predicted.<span class="hljs-keyword">value</span>, predicted.posteriori, model_weight) <span class="hljs-keyword">as</span> predicted
     <span class="hljs-comment">-- rf_ensemble(predicted.value, predicted.posteriori) as predicted -- avoid OOB accuracy (i.e., model_weight)</span>
   <span class="hljs-keyword">FROM</span> (
     <span class="hljs-keyword">SELECT</span>
-      t.passengerid, 
-      <span class="hljs-comment">-- from v0.4.1-alpha.3 or v0.4.2-rc4</span>
-      <span class="hljs-comment">-- tree_predict(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted</span>
-      <span class="hljs-comment">-- v0.5.0 or later</span>
+      t.passengerid,
       p.model_weight,
       tree_predict(p.model_id, p.<span class="hljs-keyword">model</span>, t.features, <span class="hljs-string">&quot;-classification&quot;</span>) <span class="hljs-keyword">as</span> predicted
       <span class="hljs-comment">-- tree_predict(p.model_id, p.model, t.features, ${classification}) as predicted</span>
       <span class="hljs-comment">-- tree_predict_v1(p.model_id, p.model_type, p.pred_model, t.features, ${classification}) as predicted -- to use the old model in v0.5.0 or later</span>
     <span class="hljs-keyword">FROM</span> (
       <span class="hljs-keyword">SELECT</span> 
-        <span class="hljs-comment">-- from v0.4.1-alpha.3 to v0.4.2-rc4</span>
-        <span class="hljs-comment">-- model_id, model_type, pred_model</span>
-        <span class="hljs-comment">-- v0.5.0 or later</span>
         model_id, model_weight, <span class="hljs-keyword">model</span>
       <span class="hljs-keyword">FROM</span> 
         model_rf_07
@@ -2614,31 +2659,85 @@ usage: tree_export(string model, const string options, optional
   <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
     passengerid
 ) t2;
-
-<span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> rf_submit_03 <span class="hljs-keyword">as</span>
-<span class="hljs-keyword">select</span> 
-  t.survived <span class="hljs-keyword">as</span> actual, 
-  p.label <span class="hljs-keyword">as</span> predicted,
-  p.probabilities
-<span class="hljs-keyword">from</span> 
-  test_rf_03 t 
-  <span class="hljs-keyword">JOIN</span> predicted_rf_03 p <span class="hljs-keyword">on</span> (t.passengerid = p.passengerid)
-;
-
-<span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">from</span> test_rf_03;
 </code></pre>
-<blockquote>
-<p>260</p>
-</blockquote>
-<pre><code class="lang-sql"><span class="hljs-keyword">set</span> hivevar:testcnt=<span class="hljs-number">260</span>;
-
-<span class="hljs-keyword">select</span> <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>)/${testcnt} <span class="hljs-keyword">as</span> accuracy 
-<span class="hljs-keyword">from</span> rf_submit_03 
-<span class="hljs-keyword">where</span> actual = predicted;
+<pre><code class="lang-sql">WITH rf_submit_03 as (
+  <span class="hljs-keyword">select</span> 
+    t.survived <span class="hljs-keyword">as</span> actual, 
+    p.label <span class="hljs-keyword">as</span> predicted
+  <span class="hljs-keyword">from</span> 
+    test_rf_03 t 
+    <span class="hljs-keyword">JOIN</span> predicted_rf_03 p <span class="hljs-keyword">on</span> (t.passengerid = p.passengerid)
+)
+<span class="hljs-keyword">select</span> <span class="hljs-keyword">sum</span>(<span class="hljs-keyword">if</span>(actual=predicted,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>))/<span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> accuracy 
+<span class="hljs-keyword">from</span> rf_submit_03;
 </code></pre>
 <blockquote>
 <p>0.8153846153846154</p>
 </blockquote>
+<h2 id="tracing-predictions">Tracing predictions</h2>
+<p>Find important attributes and conditions predicted to survive.</p>
+<pre><code class="lang-sql">WITH tmp as (
+  <span class="hljs-keyword">SELECT</span>
+    t.survived <span class="hljs-keyword">as</span> actual,
+    decision_path(m.model_id, m.<span class="hljs-keyword">model</span>, t.features, <span class="hljs-string">&apos;-classification -no_verbose&apos;</span>, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;pclass&apos;</span>,<span class="hljs-string">&apos;name&apos;</span>,<span class="hljs-string">&apos;sex&apos;</span>,<span class="hljs-string">&apos;age&apos;</span>,<span class="hljs-string">&apos;sibsp&apos;</span>,<span class="hljs-string">&apos;parch&apos;</span>,<span class="hljs-string">&apos;ticket&apos;</span>,<span class="hljs-string">&apos;fare&apos;</span>,<span class="hljs-string">&apos;cabin&apos;</span>,<span class="hljs-string">&apos;embarked&apos;</span>)) <span class="hljs-keyword">as</span> <span class="hljs-keyword">path</span>
+  <span class="hljs-keyword">FROM</span>
+    model_rf_07 m
+    <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-comment">-- CROSS JOIN</span>
+    test_rf_03 t
+)
+<span class="hljs-keyword">select</span>
+  r.branch,
+  <span class="hljs-keyword">count</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> cnt
+<span class="hljs-keyword">from</span>
+  tmp l
+  LATERAL <span class="hljs-keyword">VIEW</span> explode(array_slice(<span class="hljs-keyword">path</span>, <span class="hljs-number">0</span>, <span class="hljs-number">-1</span>)) r <span class="hljs-keyword">as</span> branch
+<span class="hljs-keyword">where</span>
+  <span class="hljs-comment">-- actual = 1 and      -- actual is survived</span>
+  last_element(<span class="hljs-keyword">path</span>) = <span class="hljs-number">1</span> <span class="hljs-comment">-- predicted is survived</span>
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span>
+  r.branch
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span>
+  cnt <span class="hljs-keyword">desc</span>
+<span class="hljs-keyword">limit</span> <span class="hljs-number">100</span>;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">r.branch</th>
+<th style="text-align:left">cnt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">sex != 0.0</td>
+<td style="text-align:left">29786</td>
+</tr>
+<tr>
+<td style="text-align:left">pclass != 3.0</td>
+<td style="text-align:left">18520</td>
+</tr>
+<tr>
+<td style="text-align:left">pclass = 3.0</td>
+<td style="text-align:left">7444</td>
+</tr>
+<tr>
+<td style="text-align:left">sex = 0.0</td>
+<td style="text-align:left">6494</td>
+</tr>
+<tr>
+<td style="text-align:left">embarked != 1.0</td>
+<td style="text-align:left">6175</td>
+</tr>
+<tr>
+<td style="text-align:left">ticket != 22.0</td>
+<td style="text-align:left">5560</td>
+</tr>
+<tr>
+<td style="text-align:left">...</td>
+<td style="text-align:left">...</td>
+</tr>
+</tbody>
+</table>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2694,7 +2793,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Kaggle Titanic Tutorial","level":"6.7","depth":1,"next":{"title":"Criteo Tutorial","level":"6.8","depth":1,"path":"binaryclass/criteo.md","ref":"binaryclass/criteo.md","articles":[{"title":"Data Preparation","level":"6.8.1","depth":2,"path":"binaryclass/criteo_dataset.md","ref":"binaryclass/criteo_dataset.md","articles":[]},{"title":"Field-Aware Factorization Machines","level":"6.8.2","depth":2,"path":"binaryclass/criteo_ffm.md","ref":"binaryclass/criteo_ffm.md","articles":[]}]},"previous":{"title":"PA1, AROW, SCW","level":"6.6.2","depth":2,"path":"binaryclass/webspam_scw.md","ref":"binaryclass/webspam_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"binaryclass/titanic_rf.md","mtime":"2019-09-09T08:00:00.798Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-31T07:47:21.349Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Kaggle Titanic Tutorial","level":"6.7","depth":1,"next":{"title":"Criteo Tutorial","level":"6.8","depth":1,"path":"binaryclass/criteo.md","ref":"binaryclass/criteo.md","articles":[{"title":"Data Preparation","level":"6.8.1","depth":2,"path":"binaryclass/criteo_dataset.md","ref":"binaryclass/criteo_dataset.md","articles":[]},{"title":"Field-Aware Factorization Machines","level":"6.8.2","depth":2,"path":"binaryclass/criteo_ffm.md","ref":"binaryclass/criteo_ffm.md","articles":[]}]},"previous":{"title":"PA1, AROW, SCW","level":"6.6.2","depth":2,"path":"binaryclass/webspam_scw.md","ref":"binaryclass/webspam_scw.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"binaryclass/titanic_rf.md","mtime":"2019-12-02T10:21:01.353Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-02T10:22:23.932Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
