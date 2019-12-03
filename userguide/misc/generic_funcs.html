@@ -725,6 +725,21 @@
             
         </li>
     
+        <li class="chapter " data-level="3.6.4" data-path="../ft_engineering/onehot.html">
+            
+                <a href="../ft_engineering/onehot.html">
+            
+                    
+                        <b>3.6.4.</b>
+                    
+                    One-hot encoding
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1151,6 +1166,21 @@
             
         </li>
     
+        <li class="chapter " data-level="6.3.7" data-path="../binaryclass/news20b_xgboost.html">
+            
+                <a href="../binaryclass/news20b_xgboost.html">
+            
+                    
+                        <b>6.3.7.</b>
+                    
+                    XGBoost
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1458,12 +1488,27 @@
             
         </li>
     
-        <li class="chapter " data-level="7.1.5" data-path="../multiclass/news20_ensemble.html">
+        <li class="chapter " data-level="7.1.5" data-path="../multiclass/news20_xgboost.html">
+            
+                <a href="../multiclass/news20_xgboost.html">
+            
+                    
+                        <b>7.1.5.</b>
+                    
+                    XGBoost
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.1.6" data-path="../multiclass/news20_ensemble.html">
             
                 <a href="../multiclass/news20_ensemble.html">
             
                     
-                        <b>7.1.5.</b>
+                        <b>7.1.6.</b>
                     
                     Ensemble learning
             
@@ -1473,12 +1518,12 @@
             
         </li>
     
-        <li class="chapter " data-level="7.1.6" data-path="../multiclass/news20_one-vs-the-rest.html">
+        <li class="chapter " data-level="7.1.7" data-path="../multiclass/news20_one-vs-the-rest.html">
             
                 <a href="../multiclass/news20_one-vs-the-rest.html">
             
                     
-                        <b>7.1.6.</b>
+                        <b>7.1.7.</b>
                     
                     one-vs-the-rest Classifier
             
@@ -1547,6 +1592,21 @@
                         <b>7.2.3.</b>
                     
                     Random Forest
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.4" data-path="../multiclass/iris_xgboost.html">
+            
+                <a href="../multiclass/iris_xgboost.html">
+            
+                    
+                        <b>7.2.4.</b>
+                    
+                    XGBoost
             
                 </a>
             
@@ -1635,6 +1695,21 @@
                         <b>8.2.3.</b>
                     
                     Passive Aggressive, AROW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.4" data-path="../regression/e2006_xgboost.html">
+            
+                <a href="../regression/e2006_xgboost.html">
+            
+                    
+                        <b>8.2.4.</b>
+                    
+                    XGBoost
             
                 </a>
             
@@ -2300,6 +2375,7 @@
 <!-- toc --><div id="toc" class="toc">
 
 <ul>
+<li><a href="#aggregation">Aggregation</a></li>
 <li><a href="#array">Array</a></li>
 <li><a href="#bitset">Bitset</a></li>
 <li><a href="#compression">Compression</a></li>
@@ -2316,6 +2392,55 @@
 </ul>
 
 </div><!-- tocstop -->
+<h1 id="aggregation">Aggregation</h1>
+<ul>
+<li><p><code>majority_vote(Primitive x)</code> - Returns the most frequent value of x</p>
+<pre><code class="lang-sql"><span class="hljs-comment">-- see https://issues.apache.org/jira/browse/HIVE-17406 </span>
+WITH data as (
+  <span class="hljs-keyword">select</span>
+    explode(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;1&apos;</span>, <span class="hljs-string">&apos;2&apos;</span>, <span class="hljs-string">&apos;2&apos;</span>, <span class="hljs-string">&apos;2&apos;</span>, <span class="hljs-string">&apos;5&apos;</span>, <span class="hljs-string">&apos;4&apos;</span>, <span class="hljs-string">&apos;1&apos;</span>, <span class="hljs-string">&apos;2&apos;</span>)) <span class="hljs-keyword">as</span> k
+)
+<span class="hljs-keyword">select</span>
+  majority_vote(k) <span class="hljs-keyword">as</span> k
+<span class="hljs-keyword">from</span> 
+  <span class="hljs-keyword">data</span>;
+2
+</code></pre>
+</li>
+<li><p><code>max_by(x, y)</code> - Returns the value of x associated with the maximum value of y over all input values.</p>
+<pre><code class="lang-sql"><span class="hljs-comment">-- see https://issues.apache.org/jira/browse/HIVE-17406 </span>
+WITH data as (
+  <span class="hljs-keyword">select</span> <span class="hljs-string">&apos;jake&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">name</span>, <span class="hljs-number">18</span> <span class="hljs-keyword">as</span> age
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-string">&apos;tom&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">name</span>, <span class="hljs-number">64</span> <span class="hljs-keyword">as</span> age
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-string">&apos;lisa&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">name</span>, <span class="hljs-number">32</span> <span class="hljs-keyword">as</span> age
+)
+<span class="hljs-keyword">select</span>
+  max_by(<span class="hljs-keyword">name</span>, age) <span class="hljs-keyword">as</span> <span class="hljs-keyword">name</span>
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">data</span>;
+tom
+</code></pre>
+</li>
+<li><p><code>min_by(x, y)</code> - Returns the value of x associated with the minimum value of y over all input values.</p>
+<pre><code class="lang-sql"><span class="hljs-comment">-- see https://issues.apache.org/jira/browse/HIVE-17406 </span>
+WITH data as (
+  <span class="hljs-keyword">select</span> <span class="hljs-string">&apos;jake&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">name</span>, <span class="hljs-number">18</span> <span class="hljs-keyword">as</span> age
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-string">&apos;tom&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">name</span>, <span class="hljs-number">64</span> <span class="hljs-keyword">as</span> age
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-string">&apos;lisa&apos;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">name</span>, <span class="hljs-number">32</span> <span class="hljs-keyword">as</span> age
+)
+<span class="hljs-keyword">select</span>
+  min_by(<span class="hljs-keyword">name</span>, age) <span class="hljs-keyword">as</span> <span class="hljs-keyword">name</span>
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">data</span>;
+
+jake
+</code></pre>
+</li>
+</ul>
 <h1 id="array">Array</h1>
 <ul>
 <li><p><code>arange([int start=0, ] int stop, [int step=1])</code> - Return evenly spaced values within a given interval</p>
@@ -2326,30 +2451,30 @@ SELECT arange(1, 6, 2);
 &gt; 1, 3, 5
 
 SELECT arange(-1, -6, 2);
-&gt; -1, -3, -5
+-1, -3, -5
 </code></pre>
 </li>
 <li><p><code>argmax(array&lt;T&gt; a)</code> - Returns the first index of the maximum value</p>
-<pre><code class="lang-sql">SELECT argmax(array(5,2,0,1));
-&gt; 0
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> argmax(<span class="hljs-built_in">array</span>(<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>));
+0
 </code></pre>
 </li>
 <li><p><code>argmin(array&lt;T&gt; a)</code> - Returns the first index of the minimum value</p>
-<pre><code class="lang-sql">SELECT argmin(array(5,2,0,1));
-&gt; 2
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> argmin(<span class="hljs-built_in">array</span>(<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>));
+2
 </code></pre>
 </li>
 <li><p><code>argrank(array&lt;ANY&gt; a)</code> - Returns the indices that would sort an array.</p>
-<pre><code class="lang-sql">SELECT argrank(array(5,2,0,1)), argsort(argsort(array(5,2,0,1)));
-&gt; [3, 2, 0, 1]     [3, 2, 0, 1]
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> argrank(<span class="hljs-built_in">array</span>(<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)), argsort(argsort(<span class="hljs-built_in">array</span>(<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)));
+[3, 2, 0, 1]     [3, 2, 0, 1]
 </code></pre>
 </li>
 <li><p><code>argsort(array&lt;ANY&gt; a)</code> - Returns the indices that would sort an array.</p>
-<pre><code class="lang-sql">SELECT argsort(array(5,2,0,1));
-&gt; 2, 3, 1, 0
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> argsort(<span class="hljs-built_in">array</span>(<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>));
+2, 3, 1, 0
 
-SELECT array_slice(array(5,2,0,1), argsort(array(5,2,0,1)));
-&gt; 0, 1, 2, 5
+<span class="hljs-keyword">SELECT</span> array_slice(<span class="hljs-built_in">array</span>(<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>), argsort(<span class="hljs-built_in">array</span>(<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)));
+0, 1, 2, 5
 </code></pre>
 </li>
 <li><p><code>array_append(array&lt;T&gt; arr, T elem)</code> - Append an element to the end of an array</p>
@@ -2389,12 +2514,30 @@ SELECT array_slice(array(5,2,0,1), argsort(array(5,2,0,1)));
  [3]
 </code></pre>
 </li>
-<li><p><code>array_remove(array&lt;int|text&gt; original, int|text|array&lt;int&gt; target)</code> - Returns an array that the target is removed from the original array</p>
-<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-literal">null</span>,<span class="hljs-number">3</span>),<span class="hljs-built_in">array</span>(<span class="hljs-literal">null</span>));
- [3]
+<li><p><code>array_remove(array&lt;PRIMITIVE&gt; values, PRIMITIVE|array&lt;PRIMITIVE&gt; target)</code> - Returns an array that the target elements are removed from the original array</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-number">2.0</span>,<span class="hljs-number">2.1</span>,<span class="hljs-number">3.0</span>,<span class="hljs-number">4.0</span>,<span class="hljs-number">2.0</span>),<span class="hljs-number">2</span>), array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-number">2.0</span>,<span class="hljs-number">3.0</span>,<span class="hljs-number">4.0</span>),<span class="hljs-built_in">array</span>(<span class="hljs-number">3</span>,<span class="hljs-number">2.0</span>));
+[2.1,3,4]       [4]
 
-<span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-string">&quot;aaa&quot;</span>,<span class="hljs-string">&quot;bbb&quot;</span>),<span class="hljs-string">&quot;bbb&quot;</span>);
- [&quot;aaa&quot;]
+<span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-literal">null</span>,<span class="hljs-number">3</span>),<span class="hljs-literal">null</span>);
+[1,3]
+
+<span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-literal">null</span>,<span class="hljs-number">3</span>,<span class="hljs-literal">null</span>,<span class="hljs-number">5</span>),<span class="hljs-literal">null</span>);
+[1,3,5]
+
+<span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-literal">null</span>,<span class="hljs-number">3</span>),<span class="hljs-built_in">array</span>(<span class="hljs-literal">null</span>));
+[1,3]
+
+<span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb&apos;</span>),<span class="hljs-string">&apos;bbb&apos;</span>);
+[&quot;aaa&quot;]
+
+<span class="hljs-keyword">SELECT</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb&apos;</span>,<span class="hljs-string">&apos;ccc&apos;</span>,<span class="hljs-string">&apos;bbb&apos;</span>), <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;bbb&apos;</span>,<span class="hljs-string">&apos;ccc&apos;</span>));
+[&quot;aaa&quot;]
+
+<span class="hljs-keyword">select</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-literal">null</span>),<span class="hljs-literal">null</span>);
+[]
+
+<span class="hljs-keyword">select</span> array_remove(<span class="hljs-built_in">array</span>(<span class="hljs-literal">null</span>,<span class="hljs-string">&apos;bbb&apos;</span>),<span class="hljs-string">&apos;aaa&apos;</span>);
+[null,&quot;bbb&quot;]
 </code></pre>
 </li>
 <li><p><code>array_slice(array&lt;ANY&gt; values, int offset [, int length])</code> - Slices the given array by the given offset and length parameters.</p>
@@ -2894,8 +3037,8 @@ from input;
 <li><p><code>infinity()</code> - Returns the constant representing positive infinity.</p>
 </li>
 <li><p><code>is_finite(x)</code> - Determine if x is finite.</p>
-<pre><code class="lang-sql">SELECT is_finite(333), is_finite(infinity());
-&gt; true false
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> is_finite(<span class="hljs-number">333</span>), is_finite(infinity());
+true false
 </code></pre>
 </li>
 <li><p><code>is_infinite(x)</code> - Determine if x is infinite.</p>
@@ -2904,31 +3047,31 @@ from input;
 </li>
 <li><p><code>l2_norm(double x)</code> - Return a L2 norm of the given input x.</p>
 <pre><code class="lang-sql">WITH input as (
-  select generate_series(1,3) as v
+  <span class="hljs-keyword">select</span> generate_series(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>) <span class="hljs-keyword">as</span> v
 )
-select l2_norm(v) as l2norm
-from input;
-&gt; 3.7416573867739413 = sqrt(1^2+2^2+3^2))
+<span class="hljs-keyword">select</span> l2_norm(v) <span class="hljs-keyword">as</span> l2norm
+<span class="hljs-keyword">from</span> <span class="hljs-keyword">input</span>;
+3.7416573867739413 = sqrt(1^2+2^2+3^2))
 </code></pre>
 </li>
 <li><p><code>nan()</code> - Returns the constant representing not-a-number.</p>
-<pre><code class="lang-sql">SELECT nan(), is_nan(nan());
-&gt; NaN true
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">nan</span>(), is_nan(<span class="hljs-keyword">nan</span>());
+NaN true
 </code></pre>
 </li>
 <li><p><code>sigmoid(x)</code> - Returns 1.0 / (1.0 + exp(-x))</p>
 <pre><code class="lang-sql">WITH input as (
-  SELECT 3.0 as x
-  UNION ALL
-  SELECT -3.0 as x
+  <span class="hljs-keyword">SELECT</span> <span class="hljs-number">3.0</span> <span class="hljs-keyword">as</span> x
+  <span class="hljs-keyword">UNION</span> ALL
+  <span class="hljs-keyword">SELECT</span> <span class="hljs-number">-3.0</span> <span class="hljs-keyword">as</span> x
 )
-select 
-  1.0 / (1.0 + exp(-x)),
+<span class="hljs-keyword">select</span> 
+  <span class="hljs-number">1.0</span> / (<span class="hljs-number">1.0</span> + <span class="hljs-keyword">exp</span>(-x)),
   sigmoid(x)
-from
-  input;
-&gt; 0.04742587317756678   0.04742587357759476
-&gt; 0.9525741268224334    0.9525741338729858
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">input</span>;
+0.04742587317756678   0.04742587357759476
+0.9525741268224334    0.9525741338729858
 </code></pre>
 </li>
 </ul>
@@ -2936,17 +3079,17 @@ from
 <ul>
 <li><p><code>transpose_and_dot(array&lt;number&gt; X, array&lt;number&gt; Y)</code> - Returns dot(X.T, Y) as array&lt;array&lt;double&gt;&gt;, shape = (X.#cols, Y.#cols)</p>
 <pre><code class="lang-sql">WITH input as (
-  select array(1.0, 2.0, 3.0, 4.0) as x, array(1, 2) as y
-  UNION ALL
-  select array(2.0, 3.0, 4.0, 5.0) as x, array(1, 2) as y
+  <span class="hljs-keyword">select</span> <span class="hljs-built_in">array</span>(<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>, <span class="hljs-number">4.0</span>) <span class="hljs-keyword">as</span> x, <span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>) <span class="hljs-keyword">as</span> y
+  <span class="hljs-keyword">UNION</span> ALL
+  <span class="hljs-keyword">select</span> <span class="hljs-built_in">array</span>(<span class="hljs-number">2.0</span>, <span class="hljs-number">3.0</span>, <span class="hljs-number">4.0</span>, <span class="hljs-number">5.0</span>) <span class="hljs-keyword">as</span> x, <span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>) <span class="hljs-keyword">as</span> y
 )
-select
-  transpose_and_dot(x, y) as xy,
-  transpose_and_dot(y, x) as yx
-from 
-  input;
+<span class="hljs-keyword">select</span>
+  transpose_and_dot(x, y) <span class="hljs-keyword">as</span> xy,
+  transpose_and_dot(y, x) <span class="hljs-keyword">as</span> yx
+<span class="hljs-keyword">from</span> 
+  <span class="hljs-keyword">input</span>;
 
-&gt; [[&quot;3.0&quot;,&quot;6.0&quot;],[&quot;5.0&quot;,&quot;10.0&quot;],[&quot;7.0&quot;,&quot;14.0&quot;],[&quot;9.0&quot;,&quot;18.0&quot;]]   [[&quot;3.0&quot;,&quot;5.0&quot;,&quot;7.0&quot;,&quot;9.0&quot;],[&quot;6.0&quot;,&quot;10.0&quot;,&quot;14.0&quot;,&quot;18.0&quot;]]
+[[&quot;3.0&quot;,&quot;6.0&quot;],[&quot;5.0&quot;,&quot;10.0&quot;],[&quot;7.0&quot;,&quot;14.0&quot;],[&quot;9.0&quot;,&quot;18.0&quot;]]   [[&quot;3.0&quot;,&quot;5.0&quot;,&quot;7.0&quot;,&quot;9.0&quot;],[&quot;6.0&quot;,&quot;10.0&quot;,&quot;14.0&quot;,&quot;18.0&quot;]]
 </code></pre>
 </li>
 <li><p><code>vector_add(array&lt;NUMBER&gt; x, array&lt;NUMBER&gt; y)</code> - Perform vector ADD operation.</p>
@@ -3136,7 +3279,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List of Generic Hivemall Functions","level":"2.1","depth":1,"next":{"title":"Efficient Top-K Query Processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"previous":{"title":"Map-side join causes ClassCastException on Tez","level":"1.6.5","depth":2,"path":"troubleshooting/mapjoin_classcastex.md","ref":"troubleshooting/mapjoin_classcastex.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/generic_funcs.md","mtime":"2019-10-29T06:33:55.061Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-31T07:47:21.349Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of Generic Hivemall Functions","level":"2.1","depth":1,"next":{"title":"Efficient Top-K Query Processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"previous":{"title":"Map-side join causes ClassCastException on Tez","level":"1.6.5","depth":2,"path":"troubleshooting/mapjoin_classcastex.md","ref":"troubleshooting/mapjoin_classcastex.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/generic_funcs.md","mtime":"2019-12-02T10:27:36.728Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-03T05:13:24.522Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

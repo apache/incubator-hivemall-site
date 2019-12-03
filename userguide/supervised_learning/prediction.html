@@ -725,6 +725,21 @@
             
         </li>
     
+        <li class="chapter " data-level="3.6.4" data-path="../ft_engineering/onehot.html">
+            
+                <a href="../ft_engineering/onehot.html">
+            
+                    
+                        <b>3.6.4.</b>
+                    
+                    One-hot encoding
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1151,6 +1166,21 @@
             
         </li>
     
+        <li class="chapter " data-level="6.3.7" data-path="../binaryclass/news20b_xgboost.html">
+            
+                <a href="../binaryclass/news20b_xgboost.html">
+            
+                    
+                        <b>6.3.7.</b>
+                    
+                    XGBoost
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1458,12 +1488,27 @@
             
         </li>
     
-        <li class="chapter " data-level="7.1.5" data-path="../multiclass/news20_ensemble.html">
+        <li class="chapter " data-level="7.1.5" data-path="../multiclass/news20_xgboost.html">
+            
+                <a href="../multiclass/news20_xgboost.html">
+            
+                    
+                        <b>7.1.5.</b>
+                    
+                    XGBoost
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.1.6" data-path="../multiclass/news20_ensemble.html">
             
                 <a href="../multiclass/news20_ensemble.html">
             
                     
-                        <b>7.1.5.</b>
+                        <b>7.1.6.</b>
                     
                     Ensemble learning
             
@@ -1473,12 +1518,12 @@
             
         </li>
     
-        <li class="chapter " data-level="7.1.6" data-path="../multiclass/news20_one-vs-the-rest.html">
+        <li class="chapter " data-level="7.1.7" data-path="../multiclass/news20_one-vs-the-rest.html">
             
                 <a href="../multiclass/news20_one-vs-the-rest.html">
             
                     
-                        <b>7.1.6.</b>
+                        <b>7.1.7.</b>
                     
                     one-vs-the-rest Classifier
             
@@ -1547,6 +1592,21 @@
                         <b>7.2.3.</b>
                     
                     Random Forest
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.4" data-path="../multiclass/iris_xgboost.html">
+            
+                <a href="../multiclass/iris_xgboost.html">
+            
+                    
+                        <b>7.2.4.</b>
+                    
+                    XGBoost
             
                 </a>
             
@@ -1635,6 +1695,21 @@
                         <b>8.2.3.</b>
                     
                     Passive Aggressive, AROW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.4" data-path="../regression/e2006_xgboost.html">
+            
+                <a href="../regression/e2006_xgboost.html">
+            
+                    
+                        <b>8.2.4.</b>
+                    
+                    XGBoost
             
                 </a>
             
@@ -2596,14 +2671,111 @@ E(\mathbf{w}) := \frac{1}{n} \sum_{i=1}^{n} L(\mathbf{w}; \mathbf{x}_i, y_i) + \
 </ul>
 <p>For details of available options, following queries might be helpful to list all of them:</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">select</span> train_regressor(<span class="hljs-string">&apos;-help&apos;</span>);
-<span class="hljs-comment">-- v0.5.0 or before</span>
-<span class="hljs-comment">-- select train_regressor(array(), 0, &apos;-help&apos;);</span>
-
 <span class="hljs-keyword">select</span> train_classifier(<span class="hljs-string">&apos;-help&apos;</span>);
-<span class="hljs-comment">-- v0.5.0 or before</span>
-<span class="hljs-comment">-- select train_classifier(array(), 0, &apos;-help&apos;);</span>
 </code></pre>
-<p>In practice, you can try different combinations of the options in order to achieve higher prediction accuracy.</p>
+<pre><code>SELECT train_regressor(&apos;-help&apos;);
+
+FAILED: UDFArgumentException
+train_regressor takes two or three arguments: List&lt;Int|BigInt|Text&gt; features, float target [, constant string options]
+
+usage: train_regressor(list&lt;string|int|bigint&gt; features, double label [,
+       const string options]) - Returns a relation consists of
+       &lt;string|int|bigint feature, float weight&gt; [-alpha &lt;arg&gt;] [-amsgrad]
+       [-beta &lt;arg&gt;] [-beta1 &lt;arg&gt;] [-beta2 &lt;arg&gt;] [-beta3 &lt;arg&gt;] [-c
+       &lt;arg&gt;] [-cv_rate &lt;arg&gt;] [-decay] [-dense] [-dims &lt;arg&gt;]
+       [-disable_cv] [-disable_halffloat] [-eps &lt;arg&gt;] [-eta &lt;arg&gt;] [-eta0
+       &lt;arg&gt;] [-inspect_opts] [-iter &lt;arg&gt;] [-iters &lt;arg&gt;] [-l1_ratio
+       &lt;arg&gt;] [-lambda &lt;arg&gt;] [-loss &lt;arg&gt;] [-mini_batch &lt;arg&gt;] [-mix
+       &lt;arg&gt;] [-mix_cancel] [-mix_session &lt;arg&gt;] [-mix_threshold &lt;arg&gt;]
+       [-opt &lt;arg&gt;] [-power_t &lt;arg&gt;] [-reg &lt;arg&gt;] [-rho &lt;arg&gt;] [-scale
+       &lt;arg&gt;] [-ssl] [-t &lt;arg&gt;]
+ -alpha &lt;arg&gt;                            Coefficient of learning rate
+                                         [default: 1.0
+                                         (adam/RMSPropGraves), 0.02
+                                         (AdamHD/Nesterov)]
+ -amsgrad                                Whether to use AMSGrad variant of
+                                         Adam
+ -beta &lt;arg&gt;                             Hyperparameter for tuning alpha
+                                         in Adam-HD [default: 1e-6f]
+ -beta1,--momentum &lt;arg&gt;                 Exponential decay rate of the
+                                         first order moment used in Adam
+                                         [default: 0.9]
+ -beta2 &lt;arg&gt;                            Exponential decay rate of the
+                                         second order moment used in Adam
+                                         [default: 0.999]
+ -beta3 &lt;arg&gt;                            Exponential decay rate of alpha
+                                         value  [default: 0.999]
+ -c &lt;arg&gt;                                Clipping constant of alpha used
+                                         in Eve optimizer so that clipped
+[default: 10]
+-cv_rate,--convergence_rate &lt;arg&gt;       Threshold to determine
+                                         convergence [default: 0.005]
+ -decay                                  Weight decay rate [default: 0.0]
+ -dense,--densemodel                     Use dense model or not
+ -dims,--feature_dimensions &lt;arg&gt;        The dimension of model [default:
+                                         16777216 (2^24)]
+ -disable_cv,--disable_cvtest            Whether to disable convergence
+                                         check [default: OFF]
+ -disable_halffloat                      Toggle this option to disable the
+                                         use of SpaceEfficientDenseModel
+ -eps &lt;arg&gt;                              Denominator value of
+                                         AdaDelta/AdaGrad/Adam [default:
+                                         1e-8 (AdaDelta/Adam), 1.0
+                                         (Adagrad)]
+ -eta &lt;arg&gt;                              Learning rate scheme [default:
+                                         inverse/inv, fixed, simple]
+ -eta0 &lt;arg&gt;                             The initial learning rate
+                                         [default: 0.1]
+ -inspect_opts                           Inspect Optimizer options
+ -iter,--iterations &lt;arg&gt;                The maximum number of iterations
+                                         [default: 10]
+ -iters,--iterations &lt;arg&gt;               The maximum number of iterations
+                                         [default: 10]
+ -l1_ratio &lt;arg&gt;                         Ratio of L1 regularizer as a part
+                                         of Elastic Net regularization
+                                         [default: 0.5]
+ -lambda &lt;arg&gt;                           Regularization term [default
+                                         0.0001]
+ -loss,--loss_function &lt;arg&gt;             Loss function [SquaredLoss
+                                         (default), QuantileLoss,
+                                         EpsilonInsensitiveLoss,
+                                         SquaredEpsilonInsensitiveLoss,
+                                         HuberLoss]
+ -mini_batch,--mini_batch_size &lt;arg&gt;     Mini batch size [default: 1].
+                                         Expecting the value in range
+                                         [1,100] or so.
+ -mix,--mix_servers &lt;arg&gt;                Comma separated list of MIX
+                                         servers
+ -mix_cancel,--enable_mix_canceling      Enable mix cancel requests
+ -mix_session,--mix_session_name &lt;arg&gt;   Mix session name [default:
+                                         ${mapred.job.id}]
+ -mix_threshold &lt;arg&gt;                    Threshold to mix local updates in
+                                         range (0,127] [default: 3]
+ -opt,--optimizer &lt;arg&gt;                  Optimizer to update weights
+                                         [default: adagrad, sgd, momentum,
+                                         nesterov, rmsprop, rmspropgraves,
+                                         adadelta, adam, eve, adam_hd]
+ -power_t &lt;arg&gt;                          The exponent for inverse scaling
+                                         learning rate [default: 0.1]
+ -reg,--regularization &lt;arg&gt;             Regularization type [default:
+                                         rda, l1, l2, elasticnet]
+ -rho,--decay &lt;arg&gt;                       Exponential decay rate of the
+                                         first and second order moments
+                                         [default 0.95 (AdaDelta,
+                                         rmsprop)]
+ -scale &lt;arg&gt;                            Scaling factor for cumulative
+                                         weights [100.0]
+ -ssl                                    Use SSL for the communication
+                                         with mix servers
+ -t,--total_steps &lt;arg&gt;                  a total of n_samples * epochs
+time steps
+</code></pre><p>In practice, you can try different combinations of the options in order to achieve higher prediction accuracy.</p>
+<p>You can also find the default optimizer hyperparameters by <code>-inspect_opts</code> option as follows:</p>
+<pre><code class="lang-sql">select train_regressor(array(), 0, &apos;-inspect_opts -optimizer adam -reg l1&apos;);
+
+FAILED: UDFArgumentException Inspected Optimizer options ...
+{disable_cvtest=false, regularization=L1, loss_function=SquaredLoss, eps=1.0E-8, decay=0.0, iterations=10, eta0=0.1, lambda=1.0E-4, eta=Invscaling, optimizer=adam, beta1=0.9, beta2=0.999, alpha=1.0, cv_rate=0.005, power_t=0.1}
+</code></pre>
 <p><div id="page-footer" class="localized-footer"><hr><!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -2659,7 +2831,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"How Prediction Works","level":"5.1","depth":1,"next":{"title":"Step-by-Step Tutorial on Supervised Learning","level":"5.2","depth":1,"path":"supervised_learning/tutorial.md","ref":"supervised_learning/tutorial.md","articles":[]},"previous":{"title":"Logistic Regression data generation","level":"4.5.1","depth":2,"path":"eval/lr_datagen.md","ref":"eval/lr_datagen.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"supervised_learning/prediction.md","mtime":"2019-09-09T08:00:00.903Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-31T07:47:21.349Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"How Prediction Works","level":"5.1","depth":1,"next":{"title":"Step-by-Step Tutorial on Supervised Learning","level":"5.2","depth":1,"path":"supervised_learning/tutorial.md","ref":"supervised_learning/tutorial.md","articles":[]},"previous":{"title":"Logistic Regression data generation","level":"4.5.1","depth":2,"path":"eval/lr_datagen.md","ref":"eval/lr_datagen.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"supervised_learning/prediction.md","mtime":"2019-11-27T07:18:18.544Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-03T05:13:24.522Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

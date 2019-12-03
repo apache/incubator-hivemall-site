@@ -36,6 +36,7 @@
 <url> <loc>https://hivemall.incubator.apache.org/ft_engineering/vectorization.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/ft_engineering/quantify.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/ft_engineering/binarize.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://hivemall.incubator.apache.org/ft_engineering/onehot.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/ft_engineering/term_vector.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/ft_engineering/tfidf.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/ft_engineering/bm25.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -61,6 +62,7 @@
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_generic.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_adagrad.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20_rf.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://hivemall.incubator.apache.org/binaryclass/news20b_xgboost.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/kdd2010a.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/kdd2010a_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/binaryclass/kdd2010a_scw.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
@@ -79,17 +81,20 @@
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/news20_one-vs-the-rest_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/news20_pa.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/news20_scw.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://hivemall.incubator.apache.org/multiclass/news20_xgboost.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/news20_ensemble.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/news20_one-vs-the-rest.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/iris.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/iris_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/iris_scw.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/multiclass/iris_randomforest.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://hivemall.incubator.apache.org/multiclass/iris_xgboost.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/general.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/e2006.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/e2006_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/e2006_generic.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/e2006_arow.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
+<url> <loc>https://hivemall.incubator.apache.org/regression/e2006_xgboost.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/kddcup12tr2.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/kddcup12tr2_dataset.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>
 <url> <loc>https://hivemall.incubator.apache.org/regression/kddcup12tr2_lr.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> </url>

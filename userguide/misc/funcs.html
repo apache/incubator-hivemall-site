@@ -725,6 +725,21 @@
             
         </li>
     
+        <li class="chapter " data-level="3.6.4" data-path="../ft_engineering/onehot.html">
+            
+                <a href="../ft_engineering/onehot.html">
+            
+                    
+                        <b>3.6.4.</b>
+                    
+                    One-hot encoding
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1151,6 +1166,21 @@
             
         </li>
     
+        <li class="chapter " data-level="6.3.7" data-path="../binaryclass/news20b_xgboost.html">
+            
+                <a href="../binaryclass/news20b_xgboost.html">
+            
+                    
+                        <b>6.3.7.</b>
+                    
+                    XGBoost
+            
+                </a>
+            
+
+            
+        </li>
+    
 
             </ul>
             
@@ -1458,12 +1488,27 @@
             
         </li>
     
-        <li class="chapter " data-level="7.1.5" data-path="../multiclass/news20_ensemble.html">
+        <li class="chapter " data-level="7.1.5" data-path="../multiclass/news20_xgboost.html">
+            
+                <a href="../multiclass/news20_xgboost.html">
+            
+                    
+                        <b>7.1.5.</b>
+                    
+                    XGBoost
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.1.6" data-path="../multiclass/news20_ensemble.html">
             
                 <a href="../multiclass/news20_ensemble.html">
             
                     
-                        <b>7.1.5.</b>
+                        <b>7.1.6.</b>
                     
                     Ensemble learning
             
@@ -1473,12 +1518,12 @@
             
         </li>
     
-        <li class="chapter " data-level="7.1.6" data-path="../multiclass/news20_one-vs-the-rest.html">
+        <li class="chapter " data-level="7.1.7" data-path="../multiclass/news20_one-vs-the-rest.html">
             
                 <a href="../multiclass/news20_one-vs-the-rest.html">
             
                     
-                        <b>7.1.6.</b>
+                        <b>7.1.7.</b>
                     
                     one-vs-the-rest Classifier
             
@@ -1547,6 +1592,21 @@
                         <b>7.2.3.</b>
                     
                     Random Forest
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2.4" data-path="../multiclass/iris_xgboost.html">
+            
+                <a href="../multiclass/iris_xgboost.html">
+            
+                    
+                        <b>7.2.4.</b>
+                    
+                    XGBoost
             
                 </a>
             
@@ -1635,6 +1695,21 @@
                         <b>8.2.3.</b>
                     
                     Passive Aggressive, AROW
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2.4" data-path="../regression/e2006_xgboost.html">
+            
+                <a href="../regression/e2006_xgboost.html">
+            
+                    
+                        <b>8.2.4.</b>
+                    
+                    XGBoost
             
                 </a>
             
@@ -2609,6 +2684,15 @@ bins <span class="hljs-keyword">as</span> (
 <li><p><code>array_hash_values(array&lt;string&gt; values, [string prefix [, int numFeatures], boolean useIndexAsPrefix])</code> returns hash values in array&lt;int&gt;</p>
 </li>
 <li><p><code>feature_hashing(array&lt;string&gt; features [, const string options])</code> - returns a hashed feature vector in array&lt;string&gt;</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa:1.0&apos;</span>,<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb:2.0&apos;</span>), <span class="hljs-string">&apos;-libsvm&apos;</span>);
+ [&quot;4063537:1.0&quot;,&quot;4063537:1&quot;,&quot;8459207:2.0&quot;]
+
+<span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa:1.0&apos;</span>,<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb:2.0&apos;</span>), <span class="hljs-string">&apos;-features 10&apos;</span>);
+ [&quot;7:1.0&quot;,&quot;7&quot;,&quot;1:2.0&quot;]
+
+<span class="hljs-keyword">select</span> feature_hashing(<span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;aaa:1.0&apos;</span>,<span class="hljs-string">&apos;aaa&apos;</span>,<span class="hljs-string">&apos;bbb:2.0&apos;</span>), <span class="hljs-string">&apos;-features 10 -libsvm&apos;</span>);
+ [&quot;1:2.0&quot;,&quot;7:1.0&quot;,&quot;7:1&quot;]
+</code></pre>
 </li>
 <li><p><code>mhash(string word)</code> returns a murmurhash3 INT value starting from 1</p>
 </li>
@@ -2666,6 +2750,24 @@ bins <span class="hljs-keyword">as</span> (
 <li><p><code>indexed_features(double v1, double v2, ...)</code> - Returns a list of features as array&lt;string&gt;: [1:v1, 2:v2, ..]</p>
 </li>
 <li><p><code>onehot_encoding(PRIMITIVE feature, ...)</code> - Compute onehot encoded label for each feature</p>
+<pre><code class="lang-sql">WITH mapping as (
+  <span class="hljs-keyword">select</span> 
+    m.f1, m.f2 
+  <span class="hljs-keyword">from</span> (
+    <span class="hljs-keyword">select</span> onehot_encoding(species, <span class="hljs-keyword">category</span>) m
+    <span class="hljs-keyword">from</span> <span class="hljs-keyword">test</span>
+  ) tmp
+)
+<span class="hljs-keyword">select</span>
+  <span class="hljs-built_in">array</span>(m.f1[t.species],m.f2[t.<span class="hljs-keyword">category</span>],feature(<span class="hljs-string">&apos;count&apos;</span>,<span class="hljs-keyword">count</span>)) <span class="hljs-keyword">as</span> sparse_features
+<span class="hljs-keyword">from</span>
+  <span class="hljs-keyword">test</span> t
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-keyword">mapping</span> m;
+
+[&quot;2&quot;,&quot;8&quot;,&quot;count:9&quot;]
+[&quot;5&quot;,&quot;8&quot;,&quot;count:10&quot;]
+[&quot;1&quot;,&quot;6&quot;,&quot;count:101&quot;]
+</code></pre>
 </li>
 <li><p><code>quantified_features(boolean output, col1, col2, ...)</code> - Returns an identified features in a dense array&lt;double&gt;</p>
 </li>
@@ -2699,22 +2801,194 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 <h1 id="distance-measures">Distance measures</h1>
 <ul>
 <li><p><code>angular_distance(ftvec1, ftvec2)</code> - Returns an angular distance of the given two vectors</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  angular_distance(l.features, r.features) <span class="hljs-keyword">as</span> distance,
+  distance2similarity(angular_distance(l.features, r.features)) <span class="hljs-keyword">as</span> similarity
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  distance <span class="hljs-keyword">asc</span>;
+
+doc1    doc2    distance        similarity
+1       3       0.31678355      0.75942624
+1       2       0.33333337      0.75
+2       3       0.09841931      0.91039914
+2       1       0.33333337      0.75
+3       2       0.09841931      0.91039914
+3       1       0.31678355      0.75942624
+</code></pre>
 </li>
 <li><p><code>cosine_distance(ftvec1, ftvec2)</code> - Returns a cosine distance of the given two vectors</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  cosine_distance(l.features, r.features) <span class="hljs-keyword">as</span> distance,
+  distance2similarity(cosine_distance(l.features, r.features)) <span class="hljs-keyword">as</span> similarity
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  distance <span class="hljs-keyword">asc</span>;
+
+doc1    doc2    distance        similarity
+1       3       0.45566893      0.6869694
+1       2       0.5     0.6666667
+2       3       0.04742068      0.95472616
+2       1       0.5     0.6666667
+3       2       0.04742068      0.95472616
+3       1       0.45566893      0.6869694
+</code></pre>
 </li>
 <li><p><code>euclid_distance(ftvec1, ftvec2)</code> - Returns the square root of the sum of the squared differences: sqrt(sum((x - y)^2))</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  euclid_distance(l.features, r.features) <span class="hljs-keyword">as</span> distance,
+  distance2similarity(euclid_distance(l.features, r.features)) <span class="hljs-keyword">as</span> similarity
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  distance <span class="hljs-keyword">asc</span>;
+
+doc1    doc2    distance        similarity
+1       2       2.4494898       0.28989795
+1       3       2.6457512       0.2742919
+2       3       1.0     0.5
+2       1       2.4494898       0.28989795
+3       2       1.0     0.5
+3       1       2.6457512       0.2742919
+</code></pre>
 </li>
-<li><p><code>hamming_distance(A, B [,int k])</code> - Returns Hamming distance between A and B</p>
+<li><p><code>hamming_distance(integer A, integer B)</code> - Returns Hamming distance between A and B</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> 
+  hamming_distance(<span class="hljs-number">0</span>,<span class="hljs-number">3</span>) <span class="hljs-keyword">as</span> c1, 
+  hamming_distance(<span class="hljs-string">&quot;0&quot;</span>,<span class="hljs-string">&quot;3&quot;</span>) <span class="hljs-keyword">as</span> c2 <span class="hljs-comment">-- 0=0x00, 3=0x11</span>
+;
+
+c1      c2
+2       2
+</code></pre>
 </li>
-<li><p><code>jaccard_distance(A, B [,int k])</code> - Returns Jaccard distance between A and B</p>
+<li><p><code>jaccard_distance(integer A, integer B [,int k=128])</code> - Returns Jaccard distance between A and B</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> 
+  jaccard_distance(<span class="hljs-number">0</span>,<span class="hljs-number">3</span>) <span class="hljs-keyword">as</span> c1, 
+  jaccard_distance(<span class="hljs-string">&quot;0&quot;</span>,<span class="hljs-string">&quot;3&quot;</span>) <span class="hljs-keyword">as</span> c2, <span class="hljs-comment">-- 0=0x00, 0=0x11</span>
+  jaccard_distance(<span class="hljs-number">0</span>,<span class="hljs-number">4</span>) <span class="hljs-keyword">as</span> c3
+;
+
+c1      c2      c3
+0.03125 0.03125 0.015625
+</code></pre>
 </li>
-<li><p><code>kld(double m1, double sigma1, double mu2, double sigma 2)</code> - Returns KL divergence between two distributions</p>
+<li><p><code>kld(double mu1, double sigma1, double mu2, double sigma2)</code> - Returns KL divergence between two distributions</p>
 </li>
 <li><p><code>manhattan_distance(list x, list y)</code> - Returns sum(|x - y|)</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  manhattan_distance(l.features, r.features) <span class="hljs-keyword">as</span> distance,
+  distance2similarity(angular_distance(l.features, r.features)) <span class="hljs-keyword">as</span> similarity
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  distance <span class="hljs-keyword">asc</span>;
+
+doc1    doc2    distance        similarity
+1       2       4.0     0.75
+1       3       5.0     0.75942624
+2       3       1.0     0.91039914
+2       1       4.0     0.75
+3       2       1.0     0.91039914
+3       1       5.0     0.75942624
+</code></pre>
 </li>
 <li><p><code>minkowski_distance(list x, list y, double p)</code> - Returns sum(|x - y|^p)^(1/p)</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  minkowski_distance(l.features, r.features, <span class="hljs-number">1</span>) <span class="hljs-keyword">as</span> distance1, <span class="hljs-comment">-- p=1 (manhattan_distance)</span>
+  minkowski_distance(l.features, r.features, <span class="hljs-number">2</span>) <span class="hljs-keyword">as</span> distance2, <span class="hljs-comment">-- p=2 (euclid_distance)</span>
+  minkowski_distance(l.features, r.features, <span class="hljs-number">3</span>) <span class="hljs-keyword">as</span> distance3, <span class="hljs-comment">-- p=3</span>
+  manhattan_distance(l.features, r.features) <span class="hljs-keyword">as</span> manhattan_distance,
+  euclid_distance(l.features, r.features) <span class="hljs-keyword">as</span> euclid_distance
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  distance1 <span class="hljs-keyword">asc</span>;
+
+doc1    doc2    distance1       distance2       distance3       manhattan_distance      euclid_distance
+1       2       4.0     2.4494898       2.1544347       4.0     2.4494898
+1       3       5.0     2.6457512       2.2239802       5.0     2.6457512
+2       3       1.0     1.0     1.0     1.0     1.0
+2       1       4.0     2.4494898       2.1544347       4.0     2.4494898
+3       2       1.0     1.0     1.0     1.0     1.0
+3       1       5.0     2.6457512       2.2239802       5.0     2.6457512
+</code></pre>
 </li>
 <li><p><code>popcnt(a [, b])</code> - Returns a popcount value</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> 
+  popcnt(<span class="hljs-number">3</span>),
+  popcnt(<span class="hljs-string">&quot;3&quot;</span>),  <span class="hljs-comment">-- 3=0x11</span>
+  popcnt(<span class="hljs-built_in">array</span>(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>));
+
+2       2       3
+</code></pre>
 </li>
 </ul>
 <h1 id="locality-sensitive-hashing">Locality-sensitive hashing</h1>
@@ -2729,16 +3003,128 @@ Google Maps: https://www.google.com/maps/@${lat},${lon},${zoom}z
 <h1 id="similarity-measures">Similarity measures</h1>
 <ul>
 <li><p><code>angular_similarity(ftvec1, ftvec2)</code> - Returns an angular similarity of the given two vectors</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  angular_similarity(l.features, r.features) <span class="hljs-keyword">as</span> similarity
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  similarity <span class="hljs-keyword">desc</span>;
+
+doc1    doc2    similarity
+1       3       0.68321645
+1       2       0.6666666
+2       3       0.9015807
+2       1       0.6666666
+3       2       0.9015807
+3       1       0.68321645
+</code></pre>
 </li>
 <li><p><code>cosine_similarity(ftvec1, ftvec2)</code> - Returns a cosine similarity of the given two vectors</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  cosine_similarity(l.features, r.features) <span class="hljs-keyword">as</span> similarity
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  similarity <span class="hljs-keyword">desc</span>;
+
+doc1    doc2    similarity
+1       3       0.5443311
+1       2       0.5
+2       3       0.9525793
+2       1       0.5
+3       2       0.9525793
+3       1       0.5443311
+</code></pre>
 </li>
 <li><p><code>dimsum_mapper(array&lt;string&gt; row, map&lt;int col_id, double norm&gt; colNorms [, const string options])</code> - Returns column-wise partial similarities</p>
 </li>
 <li><p><code>distance2similarity(float d)</code> - Returns 1.0 / (1.0 + d)</p>
 </li>
 <li><p><code>euclid_similarity(ftvec1, ftvec2)</code> - Returns a euclid distance based similarity, which is <code>1.0 / (1.0 + distance)</code>, of the given two vectors</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  euclid_similarity(l.features, r.features) <span class="hljs-keyword">as</span> similarity
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  similarity <span class="hljs-keyword">desc</span>;
+
+doc1    doc2    similarity
+1       2       0.28989795
+1       3       0.2742919
+2       3       0.5
+2       1       0.28989795
+3       2       0.5
+3       1       0.2742919
+</code></pre>
 </li>
 <li><p><code>jaccard_similarity(A, B [,int k])</code> - Returns Jaccard similarity coefficient of A and B</p>
+<pre><code class="lang-sql">WITH docs as (
+  <span class="hljs-keyword">select</span> <span class="hljs-number">1</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:2.0&apos;</span>, <span class="hljs-string">&apos;banana:1.0&apos;</span>, <span class="hljs-string">&apos;kuwi:0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">2</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:1.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+  <span class="hljs-keyword">union</span> all
+  <span class="hljs-keyword">select</span> <span class="hljs-number">3</span> <span class="hljs-keyword">as</span> docid, <span class="hljs-built_in">array</span>(<span class="hljs-string">&apos;apple:2.0&apos;</span>, <span class="hljs-string">&apos;orange:0&apos;</span>, <span class="hljs-string">&apos;banana:2.0&apos;</span>, <span class="hljs-string">&apos;kuwi:1.0&apos;</span>) <span class="hljs-keyword">as</span> features
+) 
+<span class="hljs-keyword">select</span>
+  l.docid <span class="hljs-keyword">as</span> doc1,
+  r.docid <span class="hljs-keyword">as</span> doc2,
+  jaccard_similarity(l.features, r.features) <span class="hljs-keyword">as</span> similarity
+<span class="hljs-keyword">from</span> 
+  docs l
+  <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> docs r
+<span class="hljs-keyword">where</span>
+  l.docid != r.docid
+<span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> 
+  doc1 <span class="hljs-keyword">asc</span>,
+  similarity <span class="hljs-keyword">desc</span>;
+
+doc1    doc2    similarity
+1       2       0.14285715
+1       3       0.0
+2       3       0.6
+2       1       0.14285715
+3       2       0.6
+3       1       0.0
+</code></pre>
 </li>
 </ul>
 <h1 id="evaluation">Evaluation</h1>
@@ -2882,7 +3268,7 @@ FROM
   model_rf m
   LEFT OUTER JOIN
   test_rf t;
-&gt; | 892 | [&quot;2 [0.0] = 0.0&quot;,&quot;0 [3.0] = 3.0&quot;,&quot;1 [696.0] != 107.0&quot;,&quot;7 [7.8292] &lt;= 7.9104&quot;,&quot;1 [696.0] != 828.0&quot;,&quot;1 [696.0] != 391.0&quot;,&quot;0 [0.961038961038961, 0.03896103896103896]&quot;] |
+ | 892 | [&quot;2 [0.0] = 0.0&quot;,&quot;0 [3.0] = 3.0&quot;,&quot;1 [696.0] != 107.0&quot;,&quot;7 [7.8292] &lt;= 7.9104&quot;,&quot;1 [696.0] != 828.0&quot;,&quot;1 [696.0] != 391.0&quot;,&quot;0 [0.961038961038961, 0.03896103896103896]&quot;] |
 
 -- Show 100 frequent branches
 WITH tmp as (
@@ -2907,8 +3293,8 @@ limit 100;
 </code></pre>
 </li>
 <li><p><code>guess_attribute_types(ANY, ...)</code> - Returns attribute types</p>
-<pre><code class="lang-sql">select guess_attribute_types(*) from train limit 1;
-&gt; Q,Q,C,C,C,C,Q,C,C,C,Q,C,Q,Q,Q,Q,C,Q
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span> guess_attribute_types(*) <span class="hljs-keyword">from</span> train <span class="hljs-keyword">limit</span> <span class="hljs-number">1</span>;
+ Q,Q,C,C,C,C,Q,C,C,C,Q,C,Q,Q,Q,Q,C,Q
 </code></pre>
 </li>
 <li><p><code>rf_ensemble(int yhat [, array&lt;double&gt; proba [, double model_weight=1.0]])</code> - Returns ensembled prediction results in &lt;int label, double probability, array&lt;double&gt; probabilities&gt;</p>
@@ -2920,15 +3306,75 @@ limit 100;
 </ul>
 <h1 id="xgboost">XGBoost</h1>
 <ul>
-<li><p><code>train_multiclass_xgboost_classifier(string[] features, double target [, string options])</code> - Returns a relation consisting of &lt;string model_id, array&lt;byte&gt; pred_model&gt;</p>
+<li><p><code>train_xgboost(array&lt;string|double&gt; features, &lt;int|double&gt; target, const string options)</code> - Returns a relation consists of &lt;string model_id, array&lt;string&gt; pred_model&gt;</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> 
+  train_xgboost(features, label, <span class="hljs-string">&apos;-objective binary:logistic -iters 10&apos;</span>) 
+    <span class="hljs-keyword">as</span> (model_id, <span class="hljs-keyword">model</span>)
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span> features, label
+  <span class="hljs-keyword">from</span> xgb_input
+  cluster <span class="hljs-keyword">by</span> <span class="hljs-keyword">rand</span>(<span class="hljs-number">43</span>) <span class="hljs-comment">-- shuffle</span>
+) shuffled;
+</code></pre>
 </li>
-<li><p><code>train_xgboost_classifier(string[] features, double target [, string options])</code> - Returns a relation consisting of &lt;string model_id, array&lt;byte&gt; pred_model&gt;</p>
+<li><p><code>xgboost_batch_predict(PRIMITIVE rowid, array&lt;string|double&gt; features, string model_id, array&lt;string&gt; pred_model [, string options])</code> - Returns a prediction result as (string rowid, array&lt;double&gt; predicted)</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span>
+  <span class="hljs-keyword">rowid</span>, 
+  array_avg(predicted) <span class="hljs-keyword">as</span> predicted,
+  <span class="hljs-keyword">avg</span>(predicted[<span class="hljs-number">0</span>]) <span class="hljs-keyword">as</span> predicted0
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span>
+    xgboost_batch_predict(<span class="hljs-keyword">rowid</span>, features, model_id, <span class="hljs-keyword">model</span>) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rowid</span>, predicted)
+  <span class="hljs-keyword">from</span>
+    xgb_model l
+    <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> xgb_input r
+) t
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">rowid</span>;
+</code></pre>
 </li>
-<li><p><code>train_xgboost_regr(string[] features, double target [, string options])</code> - Returns a relation consisting of &lt;string model_id, array&lt;byte&gt; pred_model&gt;</p>
+<li><p><code>xgboost_predict(PRIMITIVE rowid, array&lt;string|double&gt; features, string model_id, array&lt;string&gt; pred_model [, string options])</code> - Returns a prediction result as (string rowid, array&lt;double&gt; predicted)</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span>
+  <span class="hljs-keyword">rowid</span>, 
+  array_avg(predicted) <span class="hljs-keyword">as</span> predicted,
+  <span class="hljs-keyword">avg</span>(predicted[<span class="hljs-number">0</span>]) <span class="hljs-keyword">as</span> predicted0
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span>
+    xgboost_predict(<span class="hljs-keyword">rowid</span>, features, model_id, <span class="hljs-keyword">model</span>) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rowid</span>, predicted)
+  <span class="hljs-keyword">from</span>
+    xgb_model l
+    <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> xgb_input r
+) t
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">rowid</span>;
+</code></pre>
 </li>
-<li><p><code>xgboost_multiclass_predict(string rowid, string[] features, string model_id, array&lt;byte&gt; pred_model [, string options])</code> - Returns a prediction result as (string rowid, string label, float probability)</p>
+<li><p><code>xgboost_predict_one(PRIMITIVE rowid, array&lt;string|double&gt; features, string model_id, array&lt;string&gt; pred_model [, string options])</code> - Returns a prediction result as (string rowid, double predicted)</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span>
+  <span class="hljs-keyword">rowid</span>, 
+  <span class="hljs-keyword">avg</span>(predicted) <span class="hljs-keyword">as</span> predicted
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span>
+    xgboost_predict_one(<span class="hljs-keyword">rowid</span>, features, model_id, <span class="hljs-keyword">model</span>) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rowid</span>, predicted)
+  <span class="hljs-keyword">from</span>
+    xgb_model l
+    <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> xgb_input r
+) t
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">rowid</span>;
+</code></pre>
 </li>
-<li><p><code>xgboost_predict(string rowid, string[] features, string model_id, array&lt;byte&gt; pred_model [, string options])</code> - Returns a prediction result as (string rowid, float predicted)</p>
+<li><p><code>xgboost_predict_triple(PRIMITIVE rowid, array&lt;string|double&gt; features, string model_id, array&lt;string&gt; pred_model [, string options])</code> - Returns a prediction result as (string rowid, string label, double probability)</p>
+<pre><code class="lang-sql"><span class="hljs-keyword">select</span>
+  <span class="hljs-keyword">rowid</span>,
+  label,
+  <span class="hljs-keyword">avg</span>(prob) <span class="hljs-keyword">as</span> prob
+<span class="hljs-keyword">from</span> (
+  <span class="hljs-keyword">select</span>
+    xgboost_predict_triple(<span class="hljs-keyword">rowid</span>, features, model_id, <span class="hljs-keyword">model</span>) <span class="hljs-keyword">as</span> (<span class="hljs-keyword">rowid</span>, label, prob)
+  <span class="hljs-keyword">from</span>
+    xgb_model l
+    <span class="hljs-keyword">LEFT</span> <span class="hljs-keyword">OUTER</span> <span class="hljs-keyword">JOIN</span> xgb_input r
+) t
+<span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> <span class="hljs-keyword">rowid</span>, label;
+</code></pre>
 </li>
 <li><p><code>xgboost_version()</code> - Returns the version of xgboost</p>
 <pre><code class="lang-sql"><span class="hljs-keyword">SELECT</span> xgboost_version();
@@ -3012,7 +3458,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2019-10-31T07:44:09.231Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-10-31T07:47:21.349Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"List of Functions","level":"1.3","depth":1,"next":{"title":"Tips for Effective Hivemall","level":"1.4","depth":1,"path":"tips/README.md","ref":"tips/README.md","articles":[{"title":"Explicit add_bias() for better prediction","level":"1.4.1","depth":2,"path":"tips/addbias.md","ref":"tips/addbias.md","articles":[]},{"title":"Use rand_amplify() to better prediction results","level":"1.4.2","depth":2,"path":"tips/rand_amplify.md","ref":"tips/rand_amplify.md","articles":[]},{"title":"Real-time prediction on RDBMS","level":"1.4.3","depth":2,"path":"tips/rt_prediction.md","ref":"tips/rt_prediction.md","articles":[]},{"title":"Ensemble learning for stable prediction","level":"1.4.4","depth":2,"path":"tips/ensemble_learning.md","ref":"tips/ensemble_learning.md","articles":[]},{"title":"Mixing models for a better prediction convergence (MIX server)","level":"1.4.5","depth":2,"path":"tips/mixserver.md","ref":"tips/mixserver.md","articles":[]},{"title":"Run Hivemall on Amazon Elastic MapReduce","level":"1.4.6","depth":2,"path":"tips/emr.md","ref":"tips/emr.md","articles":[]}]},"previous":{"title":"Input Format","level":"1.2.3","depth":2,"path":"getting_started/input-format.md","ref":"getting_started/input-format.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/funcs.md","mtime":"2019-12-02T10:27:36.727Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-03T05:13:24.522Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
