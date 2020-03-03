@@ -2372,13 +2372,6 @@
   under the License.
 -->
 <p>This example explains how to run ensemble learning in Hivemall.<br>Two heads are better than one? Let&apos;s verify it by ensemble learning.</p>
-<hr>
-<h2 id="udf-preparation">UDF preparation</h2>
-<pre><code class="lang-sql"><span class="hljs-keyword">delete</span> jar /home/myui/tmp/hivemall.jar;
-add jar /home/myui/tmp/hivemall.jar;
-
-source /home/myui/tmp/define-all.hive;
-</code></pre>
 <h1 id="case1-model-ensemblemixing">[Case1] Model ensemble/mixing</h1>
 <h2 id="training">training</h2>
 <pre><code class="lang-sql"><span class="hljs-keyword">SET</span> hive.exec.<span class="hljs-keyword">parallel</span>=<span class="hljs-literal">true</span>;
@@ -2456,12 +2449,6 @@ where actual == predicted;
 </code></pre><blockquote>
 <p>0.8494866015527173</p>
 </blockquote>
-<h2 id="cleaning">Cleaning</h2>
-<pre><code class="lang-sql"><span class="hljs-keyword">drop</span> <span class="hljs-keyword">table</span> news20mc_ensemble_model1;
-<span class="hljs-keyword">drop</span> <span class="hljs-keyword">view</span> news20mc_ensemble_predict1;
-<span class="hljs-keyword">drop</span> <span class="hljs-keyword">view</span> news20mc_ensemble_submit1;
-</code></pre>
-<hr>
 <p>Unfortunately, too many cooks spoil the broth in this case :-(</p>
 <table>
 <thead>
@@ -2489,7 +2476,6 @@ where actual == predicted;
 </tr>
 </tbody>
 </table>
-<hr>
 <h1 id="case2-prediction-ensemble">[Case2] Prediction ensemble</h1>
 <h2 id="prediction">prediction</h2>
 <pre><code class="lang-sql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">replace</span> <span class="hljs-keyword">view</span> news20mc_pred_ensemble_predict1 
@@ -2618,7 +2604,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Ensemble learning","level":"7.1.6","depth":2,"next":{"title":"one-vs-the-rest Classifier","level":"7.1.7","depth":2,"path":"multiclass/news20_one-vs-the-rest.md","ref":"multiclass/news20_one-vs-the-rest.md","articles":[]},"previous":{"title":"XGBoost","level":"7.1.5","depth":2,"path":"multiclass/news20_xgboost.md","ref":"multiclass/news20_xgboost.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/news20_ensemble.md","mtime":"2019-09-09T08:00:00.845Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-12-03T05:13:24.522Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Ensemble learning","level":"7.1.6","depth":2,"next":{"title":"one-vs-the-rest Classifier","level":"7.1.7","depth":2,"path":"multiclass/news20_one-vs-the-rest.md","ref":"multiclass/news20_one-vs-the-rest.md","articles":[]},"previous":{"title":"XGBoost","level":"7.1.5","depth":2,"path":"multiclass/news20_xgboost.md","ref":"multiclass/news20_xgboost.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","sitemap","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"sitemap":{"hostname":"https://hivemall.incubator.apache.org/"},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"multiclass/news20_ensemble.md","mtime":"2020-01-27T06:24:15.671Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-03-03T06:56:41.246Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
