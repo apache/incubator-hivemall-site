@@ -2568,33 +2568,93 @@ usage: tokenize_ko(String line [, const string mode = &quot;discard&quot; (or co
 select tokenize_ko();
 &gt; 8.8.2
 
-select tokenize_ko(&apos;&#xC18C;&#xC124; &#xBB34;&#xAD81;&#xD654;&#xAF43;&#xC774; &#xD53C;&#xC5C8;&#xC2B5;&#xB2C8;&#xB2E4;.&apos;);
-&gt; [&quot;&#xC18C;&#xC124;&quot;,&quot;&#xBB34;&#xAD81;&quot;,&quot;&#xD654;&quot;,&quot;&#xAF43;&quot;,&quot;&#xD53C;&quot;]
+select tokenize_ko(&apos;&#xC911;&#xC694;&#xD55C; &#xC0C8; &#xAE30;&#xB2A5;&#xC744; &#xAC1C;&#xBC1C;&#xD574;&#xC918;&#xC11C; &#xC815;&#xB9D0; &#xACE0;&#xB9C8;&#xC6CC;&#xC694;!&apos;);
+&gt; [&quot;&#xC911;&#xC694;&quot;,&quot;&#xAE30;&#xB2A5;&quot;,&quot;&#xAC1C;&#xBC1C;&quot;,&quot;&#xC8FC;&quot;,&quot;&#xACE0;&#xB9D9;&quot;]
 
-select tokenize_ko(&apos;&#xC18C;&#xC124; &#xBB34;&#xAD81;&#xD654;&#xAF43;&#xC774; &#xD53C;&#xC5C8;&#xC2B5;&#xB2C8;&#xB2E4;.&apos;, &apos;-mode discard&apos;);
-&gt; [&quot;&#xC18C;&#xC124;&quot;,&quot;&#xBB34;&#xAD81;&quot;,&quot;&#xD654;&quot;,&quot;&#xAF43;&quot;,&quot;&#xD53C;&quot;]
+-- explicitly using default options
+select tokenize_ko(&apos;&#xC911;&#xC694;&#xD55C; &#xC0C8; &#xAE30;&#xB2A5;&#xC744; &#xAC1C;&#xBC1C;&#xD574;&#xC918;&#xC11C; &#xC815;&#xB9D0; &#xACE0;&#xB9C8;&#xC6CC;&#xC694;!&apos;, &apos;-mode discard&apos;, 
+  -- stopwords (null to use default)
+  -- see https://github.com/apache/incubator-hivemall/blob/master/nlp/src/main/resources/hivemall/nlp/tokenizer/ext/stopwords-ko.txt 
+  null, 
+  -- stoptags
+  -- see https://lucene.apache.org/core/8_8_2/analyzers-nori/org/apache/lucene/analysis/ko/POS.Tag.html
+  array(
+   &apos;E&apos;,   -- Verbal endings
+   &apos;IC&apos;,  -- Interjection
+   &apos;J&apos;,   -- Ending Particle
+   &apos;MAG&apos;, -- General Adverb
+   &apos;MAJ&apos;, -- Conjunctive adverb
+   &apos;MM&apos;,  -- Determiner
+   &apos;SP&apos;,  -- Space 
+   &apos;SSC&apos;, -- Closing brackets
+   &apos;SSO&apos;, -- Opening brackets
+   &apos;SC&apos;,  -- Separator
+   &apos;SE&apos;,  -- Ellipsis
+   &apos;XPN&apos;, -- Prefix
+   &apos;XSA&apos;, -- Adjective Suffix
+   &apos;XSN&apos;, -- Noun Suffix
+   &apos;XSV&apos;, -- Verb Suffix
+   &apos;UNA&apos;, -- Unknown
+   &apos;NA&apos;,  -- Unknown
+   &apos;VSV&apos;  -- Unknown
+  )
+);
+&gt; [&quot;&#xC911;&#xC694;&quot;,&quot;&#xAE30;&#xB2A5;&quot;,&quot;&#xAC1C;&#xBC1C;&quot;,&quot;&#xC8FC;&quot;,&quot;&#xACE0;&#xB9D9;&quot;]
 
-select tokenize_ko(&apos;&#xC18C;&#xC124; &#xBB34;&#xAD81;&#xD654;&#xAF43;&#xC774; &#xD53C;&#xC5C8;&#xC2B5;&#xB2C8;&#xB2E4;.&apos;, &apos;mixed&apos;);
-&gt; [&quot;&#xC18C;&#xC124;&quot;,&quot;&#xBB34;&#xAD81;&#xD654;&quot;,&quot;&#xBB34;&#xAD81;&quot;,&quot;&#xD654;&quot;,&quot;&#xAF43;&quot;,&quot;&#xD53C;&quot;]
+-- None mode, without General Adverb (MAG)
+select tokenize_ko(&apos;&#xC911;&#xC694;&#xD55C; &#xC0C8; &#xAE30;&#xB2A5;&#xC744; &#xAC1C;&#xBC1C;&#xD574;&#xC918;&#xC11C; &#xC815;&#xB9D0; &#xACE0;&#xB9C8;&#xC6CC;&#xC694;!&apos;, 
+  -- No decomposition for compound.
+  &apos;-mode none&apos;, 
+  -- stopwords (null to use default)
+  null, 
+  array(
+   &apos;E&apos;,   -- Verbal endings
+   &apos;IC&apos;,  -- Interjection
+   &apos;J&apos;,   -- Ending Particle
+   -- &apos;MAG&apos;, -- General Adverb
+   &apos;MAJ&apos;, -- Conjunctive adverb
+   &apos;MM&apos;,  -- Determiner
+   &apos;SP&apos;,  -- Space 
+   &apos;SSC&apos;, -- Closing brackets
+   &apos;SSO&apos;, -- Opening brackets
+   &apos;SC&apos;,  -- Separator
+   &apos;SE&apos;,  -- Ellipsis
+   &apos;XPN&apos;, -- Prefix
+   &apos;XSA&apos;, -- Adjective Suffix
+   &apos;XSN&apos;, -- Noun Suffix
+   &apos;XSV&apos;, -- Verb Suffix
+   &apos;UNA&apos;, -- Unknown
+   &apos;NA&apos;,  -- Unknown
+   &apos;VSV&apos;  -- Unknown
+  )
+);
+&gt; [&quot;&#xC911;&#xC694;&quot;,&quot;&#xAE30;&#xB2A5;&quot;,&quot;&#xAC1C;&#xBC1C;&quot;,&quot;&#xC918;&#xC11C;&quot;,&quot;&#xC815;&#xB9D0;&quot;,&quot;&#xACE0;&#xB9C8;&#xC6CC;&#xC694;&quot;]
 
-select tokenize_ko(&apos;&#xC18C;&#xC124; &#xBB34;&#xAD81;&#xD654;&#xAF43;&#xC774; &#xD53C;&#xC5C8;&#xC2B5;&#xB2C8;&#xB2E4;.&apos;, &apos;-mode mixed&apos;);
-&gt; [&quot;&#xC18C;&#xC124;&quot;,&quot;&#xBB34;&#xAD81;&#xD654;&quot;,&quot;&#xBB34;&#xAD81;&quot;,&quot;&#xD654;&quot;,&quot;&#xAF43;&quot;,&quot;&#xD53C;&quot;]
+-- discard mode: Decompose compounds and discards the original form (default).
+-- https://lucene.apache.org/core/8_8_2/analyzers-nori/org/apache/lucene/analysis/ko/KoreanTokenizer.DecompoundMode.html
+select tokenize_ko(&apos;&#xC911;&#xC694;&#xD55C; &#xC0C8; &#xAE30;&#xB2A5;&#xC744; &#xAC1C;&#xBC1C;&#xD574;&#xC918;&#xC11C; &#xC815;&#xB9D0; &#xACE0;&#xB9C8;&#xC6CC;&#xC694;!&apos;, &apos;-mode discard&apos;);
+&gt; [&quot;&#xC911;&#xC694;&quot;,&quot;&#xAE30;&#xB2A5;&quot;,&quot;&#xAC1C;&#xBC1C;&quot;,&quot;&#xC8FC;&quot;,&quot;&#xACE0;&#xB9D9;&quot;]
 
-select tokenize_ko(&apos;&#xC18C;&#xC124; &#xBB34;&#xAD81;&#xD654;&#xAF43;&#xC774; &#xD53C;&#xC5C8;&#xC2B5;&#xB2C8;&#xB2E4;.&apos;, &apos;-mode none&apos;);
-&gt; [&quot;&#xC18C;&#xC124;&quot;,&quot;&#xBB34;&#xAD81;&#xD654;&quot;,&quot;&#xAF43;&quot;,&quot;&#xD53C;&quot;]
+-- default stopward (null), with stoptags
+select tokenize_ko(&apos;&#xC911;&#xC694;&#xD55C; &#xC0C8; &#xAE30;&#xB2A5;&#xC744; &#xAC1C;&#xBC1C;&#xD574;&#xC918;&#xC11C; &#xC815;&#xB9D0; &#xACE0;&#xB9C8;&#xC6CC;&#xC694;!&apos;, &apos;-mode discard&apos;, null, array(&apos;E&apos;, &apos;VV&apos;));
+&gt; [&quot;&#xC911;&#xC694;&quot;,&quot;&#xD558;&quot;,&quot;&#xC0C8;&quot;,&quot;&#xAE30;&#xB2A5;&quot;,&quot;&#xC744;&quot;,&quot;&#xAC1C;&#xBC1C;&quot;,&quot;&#xD558;&quot;,&quot;&#xC8FC;&quot;,&quot;&#xC815;&#xB9D0;&quot;,&quot;&#xACE0;&#xB9D9;&quot;]
+
+-- mixed mode: Decompose compounds and keeps the original form.
+select tokenize_ko(&apos;&#xC911;&#xC694;&#xD55C; &#xC0C8; &#xAE30;&#xB2A5;&#xC744; &#xAC1C;&#xBC1C;&#xD574;&#xC918;&#xC11C; &#xC815;&#xB9D0; &#xACE0;&#xB9C8;&#xC6CC;&#xC694;!&apos;, &apos;mixed&apos;);
+&gt; [&quot;&#xC911;&#xC694;&quot;,&quot;&#xAE30;&#xB2A5;&quot;,&quot;&#xAC1C;&#xBC1C;&quot;,&quot;&#xC918;&#xC11C;&quot;,&quot;&#xC8FC;&quot;,&quot;&#xACE0;&#xB9C8;&#xC6CC;&#xC694;&quot;,&quot;&#xACE0;&#xB9D9;&quot;]
+
+select tokenize_ko(&apos;&#xC911;&#xC694;&#xD55C; &#xC0C8; &#xAE30;&#xB2A5;&#xC744; &#xAC1C;&#xBC1C;&#xD574;&#xC918;&#xC11C; &#xC815;&#xB9D0; &#xACE0;&#xB9C8;&#xC6CC;&#xC694;!&apos;, &apos;-mode mixed&apos;);
+&gt; [&quot;&#xC911;&#xC694;&quot;,&quot;&#xAE30;&#xB2A5;&quot;,&quot;&#xAC1C;&#xBC1C;&quot;,&quot;&#xC918;&#xC11C;&quot;,&quot;&#xC8FC;&quot;,&quot;&#xACE0;&#xB9C8;&#xC6CC;&#xC694;&quot;,&quot;&#xACE0;&#xB9D9;&quot;]
+
+-- node mode: No decomposition for compound.
+select tokenize_ko(&apos;&#xC911;&#xC694;&#xD55C; &#xC0C8; &#xAE30;&#xB2A5;&#xC744; &#xAC1C;&#xBC1C;&#xD574;&#xC918;&#xC11C; &#xC815;&#xB9D0; &#xACE0;&#xB9C8;&#xC6CC;&#xC694;!&apos;, &apos;-mode none&apos;);
+&gt; [&quot;&#xC911;&#xC694;&quot;,&quot;&#xAE30;&#xB2A5;&quot;,&quot;&#xAC1C;&#xBC1C;&quot;,&quot;&#xC918;&#xC11C;&quot;,&quot;&#xACE0;&#xB9C8;&#xC6CC;&#xC694;&quot;]
 
 select tokenize_ko(&apos;Hello, world.&apos;, &apos;-mode none&apos;);
 &gt; [&quot;hello&quot;,&quot;world&quot;]
 
 select tokenize_ko(&apos;Hello, world.&apos;, &apos;-mode none -outputUnknownUnigrams&apos;);
 &gt; [&quot;h&quot;,&quot;e&quot;,&quot;l&quot;,&quot;l&quot;,&quot;o&quot;,&quot;w&quot;,&quot;o&quot;,&quot;r&quot;,&quot;l&quot;,&quot;d&quot;]
-
--- default stopward (null), with stoptags
-select tokenize_ko(&apos;&#xC18C;&#xC124; &#xBB34;&#xAD81;&#xD654;&#xAF43;&#xC774; &#xD53C;&#xC5C8;&#xC2B5;&#xB2C8;&#xB2E4;.&apos;, &apos;discard&apos;, null, array(&apos;E&apos;));
-&gt; [&quot;&#xC18C;&#xC124;&quot;,&quot;&#xBB34;&#xAD81;&quot;,&quot;&#xD654;&quot;,&quot;&#xAF43;&quot;,&quot;&#xC774;&quot;,&quot;&#xD53C;&quot;]
-
-select tokenize_ko(&apos;&#xC18C;&#xC124; &#xBB34;&#xAD81;&#xD654;&#xAF43;&#xC774; &#xD53C;&#xC5C8;&#xC2B5;&#xB2C8;&#xB2E4;.&apos;, &apos;discard&apos;, null, array(&apos;E&apos;, &apos;VV&apos;));
-&gt; [&quot;&#xC18C;&#xC124;&quot;,&quot;&#xBB34;&#xAD81;&quot;,&quot;&#xD654;&quot;,&quot;&#xAF43;&quot;,&quot;&#xC774;&quot;]
 
 select tokenize_ko(&apos;&#xB098;&#xB294; C++ &#xC5B8;&#xC5B4;&#xB97C; &#xD504;&#xB85C;&#xADF8;&#xB798;&#xBC0D; &#xC5B8;&#xC5B4;&#xB85C; &#xC0AC;&#xB791;&#xD55C;&#xB2E4;.&apos;, &apos;-mode discard&apos;);
 &gt; [&quot;&#xB098;&quot;,&quot;c&quot;,&quot;&#xC5B8;&#xC5B4;&quot;,&quot;&#xD504;&#xB85C;&#xADF8;&#xB798;&#xBC0D;&quot;,&quot;&#xC5B8;&#xC5B4;&quot;,&quot;&#xC0AC;&#xB791;&quot;]
@@ -2682,7 +2742,7 @@ Apache Hivemall is an effort undergoing incubation at The Apache Software Founda
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Text Tokenizer","level":"2.3","depth":1,"next":{"title":"Approximate Aggregate Functions","level":"2.4","depth":1,"path":"misc/approx.md","ref":"misc/approx.md","articles":[]},"previous":{"title":"Efficient Top-K Query Processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/tokenizer.md","mtime":"2021-04-23T08:57:43.520Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-04-23T10:09:00.077Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Text Tokenizer","level":"2.3","depth":1,"next":{"title":"Approximate Aggregate Functions","level":"2.4","depth":1,"path":"misc/approx.md","ref":"misc/approx.md","articles":[]},"previous":{"title":"Efficient Top-K Query Processing","level":"2.2","depth":1,"path":"misc/topk.md","ref":"misc/topk.md","articles":[]},"dir":"ltr"},"config":{"plugins":["theme-api","edit-link","github","splitter","etoc","callouts","toggle-chapters","anchorjs","codeblock-filename","expandable-chapters","multipart","codeblock-filename","katex","emphasize","localized-footer"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"emphasize":{},"callouts":{},"etoc":{"h2lb":3,"header":1,"maxdepth":3,"mindepth":1,"notoc":true},"github":{"url":"https://github.com/apache/incubator-hivemall/"},"splitter":{},"search":{},"downloadpdf":{"base":"https://github.com/apache/incubator-hivemall/docs/gitbook","label":"PDF","multilingual":false},"multipart":{},"localized-footer":{"filename":"FOOTER.md","hline":"true"},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"katex":{},"fontsettings":{"theme":"white","family":"sans","size":2,"font":"sans"},"highlight":{},"codeblock-filename":{},"theme-api":{"languages":[],"split":false,"theme":"dark"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"edit-link":{"label":"Edit","base":"https://github.com/apache/incubator-hivemall/tree/master/docs/gitbook"},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":true},"anchorjs":{"selector":"h1,h2,h3,*:not(.callout) > h4,h5"},"toggle-chapters":{},"expandable-chapters":{}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Hivemall User Manual","links":{"sidebar":{"<i class=\"fa fa-home\"></i> Home":"https://hivemall.incubator.apache.org/"}},"gitbook":"3.x.x","description":"User Manual for Apache Hivemall"},"file":{"path":"misc/tokenizer.md","mtime":"2021-05-14T03:25:28.290Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2021-05-14T03:26:17.240Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
